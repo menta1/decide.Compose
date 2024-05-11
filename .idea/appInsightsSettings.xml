@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.mental.decide" />
+                  <option name="mobileSdkAppId" value="1:984830786560:android:384408a6c51edd36fcace5" />
+                  <option name="projectId" value="decidedebug" />
+                  <option name="projectNumber" value="984830786560" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

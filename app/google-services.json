@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "984830786560",
+    "project_id": "decidedebug",
+    "storage_bucket": "decidedebug.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984830786560:android:f41b035095b93ee0fcace5",
+        "android_client_info": {
+          "package_name": "com.decide.examcatalogs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "984830786560-nf9rbpqe6sjvhhpil7tvavcfqphn6914.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLGkKP0Qa8PQYYBXMprUYuEUcif6-W3tA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "984830786560-nf9rbpqe6sjvhhpil7tvavcfqphn6914.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984830786560:android:384408a6c51edd36fcace5",
+        "android_client_info": {
+          "package_name": "com.mental.decide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "984830786560-4j0p5lo4g1plev92hmphdg2sums8llg9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mental.decide",
+            "certificate_hash": "5f0c7013b121dc33800c5993d8baa09af83f1817"
+          }
+        },
+        {
+          "client_id": "984830786560-nf9rbpqe6sjvhhpil7tvavcfqphn6914.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLGkKP0Qa8PQYYBXMprUYuEUcif6-W3tA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "984830786560-nf9rbpqe6sjvhhpil7tvavcfqphn6914.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984830786560:android:ca09cf7c0d965100fcace5",
+        "android_client_info": {
+          "package_name": "com.mental.decide.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "984830786560-nf9rbpqe6sjvhhpil7tvavcfqphn6914.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLGkKP0Qa8PQYYBXMprUYuEUcif6-W3tA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "984830786560-nf9rbpqe6sjvhhpil7tvavcfqphn6914.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

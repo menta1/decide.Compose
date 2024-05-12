@@ -1,4 +1,4 @@
-package com.decide.decide
+package com.decide.mental
 
 import org.junit.Test
 

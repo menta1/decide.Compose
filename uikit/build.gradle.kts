@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mental.uikit"
+    namespace = "com.decide.uikit"
     compileSdk = 34
 
     defaultConfig {

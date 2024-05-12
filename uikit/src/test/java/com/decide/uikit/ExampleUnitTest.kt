@@ -1,4 +1,4 @@
-package com.decide.uikit
+package com.mental.uikit
 
 import org.junit.Test
 

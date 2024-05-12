@@ -12,11 +12,15 @@ plugins {
 }
 
 android {
-    namespace = "com.mental.decide"
+    signingConfigs {
+        create("release") {
+        }
+    }
+    namespace = "com.decide.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.mental.decide"
+        applicationId = "com.decide.app"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -35,6 +39,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

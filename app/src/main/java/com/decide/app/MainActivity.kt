@@ -1,4 +1,4 @@
-package com.decide.decide
+package com.decide.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

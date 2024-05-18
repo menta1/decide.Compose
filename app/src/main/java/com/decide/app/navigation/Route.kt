@@ -1,4 +1,4 @@
-package com.decide.mental.navigation
+package com.decide.app.navigation
 
 interface DecideDestination {
     val route: String

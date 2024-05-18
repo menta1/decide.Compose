@@ -1,4 +1,4 @@
-package com.mental.uikit.theme
+package com.decide.uikit.theme
 
 import androidx.compose.ui.graphics.Color
 

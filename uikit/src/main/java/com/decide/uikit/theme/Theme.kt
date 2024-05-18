@@ -1,4 +1,4 @@
-package com.mental.uikit.theme
+package com.decide.uikit.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

@@ -77,12 +77,14 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.kotlinx.immutable)
 
     //Navigation
     implementation(libs.androidx.navigation.compose)
 
     //Room
     implementation(libs.androidx.room.runtime)
+
     annotationProcessor(libs.androidx.room.room.compiler)
     ksp(libs.androidx.room.room.compiler)
     implementation(libs.androidx.room.ktx)
@@ -109,6 +111,11 @@ dependencies {
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.firestore)
+    implementation(libs.play.services.auth)
 
     //Network
     implementation(libs.retrofit)

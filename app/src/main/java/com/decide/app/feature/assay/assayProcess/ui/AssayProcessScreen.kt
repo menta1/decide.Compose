@@ -49,17 +49,16 @@ fun AssayProcessScreen(
     modifier: Modifier = Modifier,
     idAssay: Int?,
     viewModel: AssayProcessViewModel = hiltViewModel(),
-    onClickStart: (argument: Int) -> Unit,
+    onClickDone: (argument: Int) -> Unit,
     onClickBack: () -> Unit
 ) {
-
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     AssayContent(
         state = state,
         modifier = modifier,
-        onClickStart = { onClickStart(it) },
+        onClickStart = { onClickDone(it) },
         onClickBack = {
             Log.d("TAG", "onClickBack")
             onClickBack() }) { event ->
@@ -110,7 +109,7 @@ fun AssayContent(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun AssayWithText(
+fun     AssayWithText(
     questionAssay: QuestionAssay,
     progress: Float,
     onClickStart: (argument: Int) -> Unit,

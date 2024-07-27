@@ -10,7 +10,7 @@ import androidx.navigation.navArgument
 import com.decide.app.feature.assay.assayCheckStarted.AssayCheckStartedScreen
 import com.decide.app.feature.assay.assayDescription.ui.AssayDescriptionScreen
 import com.decide.app.feature.assay.assayProcess.ui.AssayProcessScreen
-import com.decide.app.feature.assay.assayResult.AssayWithResultScreen
+import com.decide.app.feature.assay.assayResult.ui.AssayWithResultScreen
 import com.decide.app.navigation.Assay
 import com.decide.app.navigation.AssayCheckStarted
 import com.decide.app.navigation.AssayDescription
@@ -51,7 +51,8 @@ fun NavGraphBuilder.addNestedAssayGraph(
 
 
         composable(
-            route = AssayProcess.route + "{idAssay}", arguments = listOf(navArgument("idAssay") {
+            route = AssayProcess.route + "{idAssay}",
+            arguments = listOf(navArgument("idAssay") {
                 type = NavType.IntType
             })
         ) { entry ->
@@ -59,18 +60,29 @@ fun NavGraphBuilder.addNestedAssayGraph(
             AssayProcessScreen(
                 idAssay = idAssay,
                 onClickBack = {
-                    navController.navigate(Assay.route){
+                    navController.navigate(Assay.route) {
                         popUpTo(navController.graph.startDestinationId) {
                             inclusive = true
                         }
                     }
 
-                }, onClickStart = {
-
+                }, onClickDone = {
+                    navController.navigate(AssayWithResult.route + { idAssay })
                 })
         }
-        composable(route = AssayWithResult.route) {
-            AssayWithResultScreen()
+
+        composable(route = AssayWithResult.route + "{idAssay}",
+            arguments = listOf(navArgument("idAssay") {
+                type = NavType.IntType
+            })
+        ) { entry ->
+            val idAssay = entry.arguments?.getInt("idAssay")
+            AssayWithResultScreen(
+//                idAssay = idAssay,
+                onClickExit = {
+
+                }
+            )
         }
     }
 }

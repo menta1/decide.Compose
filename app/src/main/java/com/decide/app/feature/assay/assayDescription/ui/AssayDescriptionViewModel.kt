@@ -1,6 +1,5 @@
 package com.decide.app.feature.assay.assayDescription.ui
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -6,6 +6,8 @@ import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRep
 import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepositoryImpl
 import com.decide.app.feature.assay.assayProcess.data.AssayProcessRepository
 import com.decide.app.feature.assay.assayProcess.data.AssayProcessRepositoryImpl
+import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepository
+import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepositoryImpl
 import com.decide.app.feature.assay.mainAssay.data.AssayMainRepository
 import com.decide.app.feature.assay.mainAssay.data.AssayMainRepositoryImpl
 import dagger.Binds
@@ -28,4 +30,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindRemoteAssayStorage(remoteAssayStorageImpl: RemoteAssayStorageImpl): RemoteAssayStorage
+
+    @Binds
+    abstract fun bindAssayWithResultRepository(assayWithResultRepositoryImpl: AssayWithResultRepositoryImpl): AssayWithResultRepository
 }

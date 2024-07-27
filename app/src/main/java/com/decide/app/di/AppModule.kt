@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import androidx.room.Room
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.local.dao.AssayDao
-import com.decide.app.database.local.dao.TempDao
 import com.decide.app.utils.NetworkChecker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -60,14 +59,5 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTempDao(database: AppDatabase): TempDao {
-        return database.tempDao()
-    }
-
-    @Provides
-    @Singleton
     fun coroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO)
-
-//    @Provides
-//    fun provideRemoteAssayStorage() = RemoteAssayStorageImpl
 }

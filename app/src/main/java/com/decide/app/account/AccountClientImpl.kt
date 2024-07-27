@@ -2,7 +2,6 @@ package com.decide.app.account
 
 import android.content.SharedPreferences
 import com.decide.app.account.modal.AuthResponse
-import com.decide.app.utils.Response
 import com.decide.app.account.modal.UserAuth
 import com.decide.app.account.modal.UserDto
 import com.decide.app.utils.Constants.INTERNET_PROBLEM
@@ -10,6 +9,7 @@ import com.decide.app.utils.Constants.RESPONSE_EXCEPTION
 import com.decide.app.utils.Constants.RESPONSE_SUCCESS
 import com.decide.app.utils.Constants.TYPE_PROBLEM
 import com.decide.app.utils.NetworkChecker
+import com.decide.app.utils.Response
 import com.google.firebase.auth.FirebaseAuth
 
 class AccountClientImpl (

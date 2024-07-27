@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepository
+import com.decide.app.feature.assay.assayProcess.data.AssayProcessRepository
 import com.decide.app.feature.assay.mainAssay.modals.QuestionAssay
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,14 +19,15 @@ import javax.inject.Inject
 @HiltViewModel
 class AssayProcessViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: AssayDescriptionRepository
-) : ViewModel() {
+    private val repository: AssayProcessRepository,
 
-    private val userId: Int = checkNotNull(savedStateHandle["idAssay"])
+    ) : ViewModel() {
+
+    private val assayId: Int = checkNotNull(savedStateHandle["idAssay"])
 
     init {
-        Log.d("TAG", "userId = " + userId.toString())
-        getId(userId)
+        Log.d("TAG", "userId = " + assayId.toString())
+        getId(assayId)
     }
 
     private val _state: MutableStateFlow<AssayProcessState> =
@@ -36,10 +37,14 @@ class AssayProcessViewModel @Inject constructor(
     private val listAnswers: MutableList<Answers> = mutableListOf()
     private var listQuestions: List<QuestionAssay> = mutableListOf()
     private var currentProgress = 1
+
     fun onEvent(event: EventAssayProcess) {
         listAnswers.add(Answers(event.idQuestion, event.idAnswer))
         _state.update {
             if (listQuestions.size == event.idQuestion + 1) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    repository.saveResult(assayId, listAnswers)
+                }
                 AssayProcessState.End
             } else {
                 currentProgress += 1
@@ -69,5 +74,9 @@ class AssayProcessViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun saveResult(){
+
     }
 }

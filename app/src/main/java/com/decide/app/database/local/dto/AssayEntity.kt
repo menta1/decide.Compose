@@ -2,9 +2,7 @@ package com.decide.app.database.local.dto
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.decide.app.feature.assay.mainAssay.modals.AnswerAssay
 import com.decide.app.feature.assay.mainAssay.modals.Assay
-import com.decide.app.feature.assay.mainAssay.modals.QuestionAssay
 
 @Entity(tableName = "assay_table")
 data class AssayEntity(
@@ -13,10 +11,11 @@ data class AssayEntity(
     val name: String,
     val description: String,
     val nameCategory: String,
-    val countQuestions: List<QuestionAssayEntity>,
+    val questions: List<QuestionEntity>,
     val dateCreation: String,
     val rating: String,
-    val type: Int
+    val type: Int,
+    val results: List<ResultCompletedAssayEntity>
 )
 
 fun AssayEntity.toAssay(): Assay {
@@ -26,7 +25,7 @@ fun AssayEntity.toAssay(): Assay {
         name,
         description,
         nameCategory,
-        convertToQuestionAssay(countQuestions),
+        convertToQuestionAssay(questions),
         dateCreation,
         rating,
         type

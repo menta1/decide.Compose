@@ -1,8 +1,10 @@
 package com.decide.app.database.remote.assay
 
 import android.util.Log
+import com.decide.app.database.local.dto.KeyEntity
 import com.decide.app.database.remote.assay.dto.AssayDTO
 import com.decide.app.database.remote.assay.dto.CategoryDTO
+import com.decide.app.database.remote.assay.dto.KeyDto
 import com.decide.app.utils.NetworkChecker
 import com.decide.app.utils.Resource
 import com.google.android.gms.tasks.Task
@@ -13,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
@@ -73,13 +74,34 @@ class RemoteAssayStorageImpl @Inject constructor(
             }
     }
 
+    override suspend fun getKey(id: String, onResult: (Resource<KeyDto>) -> Unit) {
+
+        if (!networkChecker.isConnected()) {
+            onResult(Resource.Error(Exception("No internet")))
+        }
+
+        try {
+            firebaseFirestore.collection(KEYS).document(id).get()
+                .addOnCompleteListener {
+                    onResult(
+                        Resource.Success(it.result.toObject(KeyDto::class.java)!!)
+                    )
+                }
+                .addOnFailureListener {
+                    onResult(Resource.Error(it))
+                }
+        } catch (e: Exception) {
+            onResult(Resource.Error(e))
+        }
+    }
+
     companion object {
         const val COLLECTION_USERS = "USERS"
         const val EXAMS_SHORT = "EXAMS_SHORT"
         const val EXAMS = "EXAMS"
         const val EXAM = "EXAM"
         const val CATEGORIES = "CATEGORIES"
-        const val KEY = "KEY"
+        const val KEYS = "KEYS"
         const val TAG = "TAG"
         const val CATEGORY_IMAGE_STORAGE = "category"
 

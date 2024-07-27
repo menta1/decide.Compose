@@ -1,6 +1,5 @@
 package com.decide.app.feature.assay.mainAssay.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.feature.assay.mainAssay.data.AssayMainRepository

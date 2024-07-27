@@ -1,15 +1,12 @@
 package com.decide.app.feature.assay.mainAssay.data
 
-import android.content.Context
 import android.util.Log
-import androidx.room.PrimaryKey
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.remote.assay.RemoteAssayStorage
 import com.decide.app.database.remote.assay.dto.toAssay
 import com.decide.app.feature.assay.mainAssay.modals.Assay
 import com.decide.app.utils.Resource
 import com.decide.app.utils.toAssayEntity
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,12 +32,16 @@ class AssayMainRepositoryImpl @Inject constructor(
                 }
 
                 is Resource.Success -> {
+
                     coroutineScope.launch {
                         localAssayStorage.assayDao().insert(it.data.map { assayDTO ->
+                            Log.d("TAG", "AssayMainRepositoryImpl 35 ${it.data}")
                             assayDTO.toAssay().toAssayEntity()
                         })
                     }
+
                     onSuccess(it.data.map { assayDTO ->
+                        Log.d("TAG", "AssayMainRepositoryImpl 42 = ${assayDTO.name}")
                         assayDTO.toAssay()
                     })
                 }

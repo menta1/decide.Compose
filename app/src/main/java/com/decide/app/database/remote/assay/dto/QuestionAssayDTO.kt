@@ -1,10 +1,7 @@
 package com.decide.app.database.remote.assay.dto
 
-import com.decide.app.database.local.dto.QuestionAssayEntity
-import com.decide.app.database.local.dto.convertToAnswerAssay
 import com.decide.app.feature.assay.mainAssay.modals.QuestionAssay
 import kotlinx.serialization.SerialName
-import java.net.URL
 
 data class QuestionAssayDTO(
     @SerialName("id") val id: Int = 0,

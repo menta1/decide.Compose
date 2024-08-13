@@ -48,13 +48,4 @@ class AssayDescriptionViewModel @Inject constructor(
             }
         }
     }
-
-//    init {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _state.update {
-//                Log.d("TAG", repository.getTemp().description)
-//                AssayDescriptionState.Success(repository.getTemp())
-//            }
-//        }
-//    }
 }

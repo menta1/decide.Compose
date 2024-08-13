@@ -4,10 +4,11 @@ import com.decide.app.feature.assay.mainAssay.modals.AnswerAssay
 import kotlinx.serialization.SerialName
 
 data class AnswerAssayDTO(
-    @SerialName("id")  val id: Int = 0,
-    @SerialName("text")  val text: String = "",
-    @SerialName("value")  val value: Int = 0
+    @SerialName("id") val id: Int = 0,
+    @SerialName("text") val text: String = "",
+    @SerialName("value") val value: Int = 0
 )
+
 fun AnswerAssayDTO.toAnswerAssay(): AnswerAssay {
     return AnswerAssay(
         id, text, value

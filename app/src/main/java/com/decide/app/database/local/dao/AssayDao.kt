@@ -11,12 +11,17 @@ import com.decide.app.database.local.dto.ResultCompletedAssayEntity
 interface AssayDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(assays: List<AssayEntity>)
+    suspend fun insert(assays: List<AssayEntity>)
 
     @Query("SELECT * FROM assay_table WHERE id = :id")
-    fun getAssay(id: Int): AssayEntity
+    suspend fun getAssay(id: Int): AssayEntity
 
     @Query("UPDATE assay_table SET results =:newResult WHERE id = :id")
-    fun addNewResult(id: Int, newResult: List<ResultCompletedAssayEntity>): Int
+    suspend fun addNewResult(id: Int, newResult: List<ResultCompletedAssayEntity>): Int
 
+    @Query("SELECT * FROM assay_table WHERE idCategory = :idCategory")
+    suspend fun fetchAllAssaysByIdCategory(idCategory: Int): List<AssayEntity>
+
+    @Query("SELECT * FROM assay_table WHERE results IS NOT NULL AND results != '[]'")
+    fun getAssaysWithNonEmptyResults(): List<AssayEntity>
 }

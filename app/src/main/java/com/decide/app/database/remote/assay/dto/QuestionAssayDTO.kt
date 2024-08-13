@@ -9,6 +9,7 @@ data class QuestionAssayDTO(
     @SerialName("listAnswers") val listAnswers: List<AnswerAssayDTO> = emptyList(),
     @SerialName("image") val image: String = ""
 )
+
 fun QuestionAssayDTO.toQuestionAssay(): QuestionAssay {
     return QuestionAssay(
         id, text, convertToAnswerAssay(listAnswers), image

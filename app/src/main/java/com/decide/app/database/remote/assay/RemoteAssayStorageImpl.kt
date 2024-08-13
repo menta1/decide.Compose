@@ -1,7 +1,5 @@
 package com.decide.app.database.remote.assay
 
-import android.util.Log
-import com.decide.app.database.local.dto.KeyEntity
 import com.decide.app.database.remote.assay.dto.AssayDTO
 import com.decide.app.database.remote.assay.dto.CategoryDTO
 import com.decide.app.database.remote.assay.dto.KeyDto
@@ -61,17 +59,27 @@ class RemoteAssayStorageImpl @Inject constructor(
         }
     }
 
-    override fun getCategories(): Flow<Result<List<CategoryDTO>>> = flow {
+    override suspend fun getCategories(onResult: (Resource<List<CategoryDTO>>) -> Unit) {
         if (!networkChecker.isConnected()) {
-            emit(Result.failure(Throwable("No internet")))
+            onResult(Resource.Error(Exception("No internet")))
         }
-        firebaseFirestore.collection(CATEGORIES).snapshots()
-            .map {
-                Result.success(listOf(it.toObjects(CategoryDTO::class.java)))
-            }
-            .catch {
-                Result.failure<Exception>(it)
-            }
+        try {
+            firebaseFirestore.collection(CATEGORIES).get()
+                .addOnCompleteListener { task: Task<QuerySnapshot> ->
+                    onResult(
+                        Resource.Success(task.result
+                            .map {
+                                it.toObject(CategoryDTO::class.java)
+                            })
+                    )
+                }
+                .addOnFailureListener {
+                    onResult(Resource.Error(it))
+                }
+        } catch (e: Exception) {
+            onResult(Resource.Error(e))
+        }
+
     }
 
     override suspend fun getKey(id: String, onResult: (Resource<KeyDto>) -> Unit) {
@@ -96,19 +104,8 @@ class RemoteAssayStorageImpl @Inject constructor(
     }
 
     companion object {
-        const val COLLECTION_USERS = "USERS"
-        const val EXAMS_SHORT = "EXAMS_SHORT"
         const val EXAMS = "EXAMS"
-        const val EXAM = "EXAM"
         const val CATEGORIES = "CATEGORIES"
         const val KEYS = "KEYS"
-        const val TAG = "TAG"
-        const val CATEGORY_IMAGE_STORAGE = "category"
-
-        const val USER_ID = "userId"
-        const val USER_RESULT_EXAMS = "RESULTS_EXAMS"
-
-        const val USER_ID_DEF = "-1"
-
     }
 }

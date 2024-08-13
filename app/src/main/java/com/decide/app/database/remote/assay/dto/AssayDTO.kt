@@ -12,11 +12,19 @@ data class AssayDTO(
     @SerialName("questions") val questions: List<QuestionAssayDTO> = emptyList(),
     @SerialName("dateCreation") val dateCreation: String = "",
     @SerialName("rating") val rating: String = "",
-    @SerialName("type") val type:Int = -1
+    @SerialName("type") val type: Int = -1
 )
 
 fun AssayDTO.toAssay() = Assay(
-    id, idCategory, name, description, nameCategory, convertToQuestionAssay(questions), dateCreation, rating, type
+    id,
+    idCategory,
+    name,
+    description,
+    nameCategory,
+    convertToQuestionAssay(questions),
+    dateCreation,
+    rating,
+    type
 )
 //fun Assay.toAssayUI() = AssayUI(
 //    id = id,

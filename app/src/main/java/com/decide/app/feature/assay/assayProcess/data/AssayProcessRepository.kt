@@ -6,5 +6,5 @@ import com.decide.app.utils.Resource
 
 interface AssayProcessRepository {
     suspend fun getAssay(id: Int): Resource<Assay>
-    suspend fun saveResult(id: Int, answers:List<Answers> ): Resource<Boolean>
+    suspend fun saveResult(id: Int, answers: List<Answers>): Resource<Boolean>
 }

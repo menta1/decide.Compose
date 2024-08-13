@@ -64,7 +64,8 @@ fun CardAssay(
             .fillMaxWidth()
             .clickable { onClickAssay() }
             .clip(RoundedCornerShape(16.dp))
-            .background(DecideTheme.colors.inputWhite), horizontalArrangement = Arrangement.Start
+            .background(DecideTheme.colors.inputWhite),
+        horizontalArrangement = Arrangement.Start
     ) {
         Box(
             modifier = modifier.size(100.dp)

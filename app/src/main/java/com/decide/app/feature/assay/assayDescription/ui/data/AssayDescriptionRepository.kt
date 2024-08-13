@@ -4,6 +4,6 @@ import com.decide.app.feature.assay.mainAssay.modals.Assay
 import com.decide.app.utils.Resource
 
 interface AssayDescriptionRepository {
-   // fun getTemp(): Assay
+    // fun getTemp(): Assay
     suspend fun getAssay(id: Int): Resource<Assay>
 }

@@ -1,6 +1,5 @@
 package com.decide.app.feature.assay.assayProcess.ui
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,72 +46,68 @@ import com.decide.uikit.ui.card.CardQuestion
 @Composable
 fun AssayProcessScreen(
     modifier: Modifier = Modifier,
-    idAssay: Int?,
-    viewModel: AssayProcessViewModel = hiltViewModel(),
     onClickDone: (argument: Int) -> Unit,
     onClickBack: () -> Unit
 ) {
-
+    val viewModel: AssayProcessViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    AssayContent(
+    AssayProcessScreen(
         state = state,
         modifier = modifier,
-        onClickStart = { onClickDone(it) },
+        onClickDone = { onClickDone(it) },
         onClickBack = {
-            Log.d("TAG", "onClickBack")
-            onClickBack() }) { event ->
+            onClickBack()
+        }) { event ->
         viewModel.onEvent(event)
     }
 }
 
 @Composable
-fun AssayContent(
+fun AssayProcessScreen(
     state: AssayProcessState,
     modifier: Modifier,
-    onClickStart: (argument: Int) -> Unit,
+    onClickDone: (argument: Int) -> Unit,
     onClickBack: () -> Unit,
     onEvent: (event: EventAssayProcess) -> Unit,
 ) {
 
     when (state) {
+
         is AssayProcessState.AssayWithImage -> {
-            Log.d("TAG", "AssayWithImage")
         }
 
         is AssayProcessState.AssayWithText -> {
             AssayWithText(
+                state = state,
+                modifier = modifier,
                 questionAssay = state.question,
                 progress = state.progress,
-                onClickStart = { onClickStart(it) },
                 onClickBack = { onClickBack() })
             { onEvent(it) }
         }
 
         is AssayProcessState.AssayWithTimer -> {
-            Log.d("TAG", "AssayWithTimer")
         }
 
         AssayProcessState.Default -> {
-            Log.d("TAG", "Default")
         }
 
-        AssayProcessState.End -> {
-            Log.d("TAG", "End")
+        is AssayProcessState.End -> {
+            onClickDone(state.idAssay)
         }
 
         AssayProcessState.Error -> {
-            Log.d("TAG", "Error")
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun     AssayWithText(
+fun AssayWithText(
+    state: AssayProcessState,
+    modifier: Modifier,
     questionAssay: QuestionAssay,
     progress: Float,
-    onClickStart: (argument: Int) -> Unit,
     onClickBack: () -> Unit,
     onEvent: (event: EventAssayProcess) -> Unit
 ) {
@@ -127,7 +122,7 @@ fun     AssayWithText(
     val onChangeState: (Int) -> Unit = { selectedValue = it }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 15.dp)
             .background(DecideTheme.colors.mainBlue),
@@ -154,7 +149,6 @@ fun     AssayWithText(
         Box(modifier = Modifier.fillMaxHeight()) {
             Column(
                 modifier = Modifier
-                    //.fillMaxWidth()
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -173,7 +167,7 @@ fun     AssayWithText(
                             selected = isSelectedItem(it.id)
                         ) {
                             onChangeState(it.id)
-                            answer = it.id
+                            answer = it.value
                         }
                     }
                     Spacer(modifier = Modifier.height(84.dp))
@@ -189,11 +183,11 @@ fun     AssayWithText(
                 isActive = answer != -1
             ) {
                 if (answer != -1) {
+                    onEvent(EventAssayProcess(questionAssay.id, answer))
                     answer = -1
                     selectedValue = 0
-                    onEvent(EventAssayProcess(questionAssay.id, answer))
-                }
 
+                }
             }
         }
     }

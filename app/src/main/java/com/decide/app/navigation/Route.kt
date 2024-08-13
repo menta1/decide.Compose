@@ -50,7 +50,10 @@ object AssayWithResult : DecideDestination {
         get() = "ASSAY_WITH_RESULT"
 }
 
-object categoriesSpecific: DecideDestination{
+
+//Category Branch
+
+object CategoriesSpecific : DecideDestination {
     override val route: String
         get() = "CATEGORIES_SPECIFIC"
 
@@ -74,24 +77,24 @@ object Settings : DecideDestination {
         get() = "SETTINGS"
 }
 
-object EditProfile: DecideDestination{
+object EditProfile : DecideDestination {
     override val route: String
         get() = "EDIT_PROFILE"
 }
 
-object Notification: DecideDestination{
+object Notification : DecideDestination {
     override val route: String
         get() = "NOTIFICATION"
 
 }
 
-object Terms: DecideDestination{
+object Terms : DecideDestination {
     override val route: String
         get() = "TERMS"
 
 }
 
-object AuthenticationRouteBranch: DecideDestination{
+object AuthenticationRouteBranch : DecideDestination {
     override val route: String
         get() = "AUTHENTICATION_ROUTE_BRANCH"
 }

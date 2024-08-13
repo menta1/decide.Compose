@@ -58,7 +58,6 @@ fun NavGraphBuilder.addNestedAssayGraph(
         ) { entry ->
             val idAssay = entry.arguments?.getInt("idAssay")
             AssayProcessScreen(
-                idAssay = idAssay,
                 onClickBack = {
                     navController.navigate(Assay.route) {
                         popUpTo(navController.graph.startDestinationId) {
@@ -66,21 +65,24 @@ fun NavGraphBuilder.addNestedAssayGraph(
                         }
                     }
 
-                }, onClickDone = {
-                    navController.navigate(AssayWithResult.route + { idAssay })
+                }, onClickDone = { id ->
+                    navController.navigate(AssayWithResult.route + id)
                 })
         }
 
-        composable(route = AssayWithResult.route + "{idAssay}",
+        composable(
+            route = AssayWithResult.route + "{idAssay}",
             arguments = listOf(navArgument("idAssay") {
                 type = NavType.IntType
             })
-        ) { entry ->
-            val idAssay = entry.arguments?.getInt("idAssay")
+        ) {
             AssayWithResultScreen(
-//                idAssay = idAssay,
                 onClickExit = {
-
+                    navController.navigate(Assay.route){
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

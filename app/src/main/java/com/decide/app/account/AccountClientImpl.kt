@@ -12,7 +12,7 @@ import com.decide.app.utils.NetworkChecker
 import com.decide.app.utils.Response
 import com.google.firebase.auth.FirebaseAuth
 
-class AccountClientImpl (
+class AccountClientImpl(
     private val firebaseAuth: FirebaseAuth,
     private val networkChecker: NetworkChecker,
     private val sharedPreferences: SharedPreferences

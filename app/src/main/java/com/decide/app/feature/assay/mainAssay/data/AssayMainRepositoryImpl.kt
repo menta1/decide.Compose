@@ -1,6 +1,5 @@
 package com.decide.app.feature.assay.mainAssay.data
 
-import android.util.Log
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.remote.assay.RemoteAssayStorage
 import com.decide.app.database.remote.assay.dto.toAssay
@@ -20,7 +19,7 @@ class AssayMainRepositoryImpl @Inject constructor(
     private val localAssayStorage: AppDatabase,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) : AssayMainRepository {
-    
+
     override suspend fun getAssays(
         onSuccess: (List<Assay>) -> Unit,
         onError: (message: String) -> Unit
@@ -35,13 +34,11 @@ class AssayMainRepositoryImpl @Inject constructor(
 
                     coroutineScope.launch {
                         localAssayStorage.assayDao().insert(it.data.map { assayDTO ->
-                            Log.d("TAG", "AssayMainRepositoryImpl 35 ${it.data}")
                             assayDTO.toAssay().toAssayEntity()
                         })
                     }
 
                     onSuccess(it.data.map { assayDTO ->
-                        Log.d("TAG", "AssayMainRepositoryImpl 42 = ${assayDTO.name}")
                         assayDTO.toAssay()
                     })
                 }

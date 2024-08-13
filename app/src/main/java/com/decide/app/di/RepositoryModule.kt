@@ -10,6 +10,12 @@ import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepository
 import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepositoryImpl
 import com.decide.app.feature.assay.mainAssay.data.AssayMainRepository
 import com.decide.app.feature.assay.mainAssay.data.AssayMainRepositoryImpl
+import com.decide.app.feature.category.mainCategory.data.CategoryRepository
+import com.decide.app.feature.category.mainCategory.data.CategoryRepositoryImpl
+import com.decide.app.feature.category.specificCategory.data.CategoriesSpecificRepository
+import com.decide.app.feature.category.specificCategory.data.CategoriesSpecificRepositoryImpl
+import com.decide.app.feature.passed.data.PassedScreenRepository
+import com.decide.app.feature.passed.data.PassedScreenRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +39,13 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindAssayWithResultRepository(assayWithResultRepositoryImpl: AssayWithResultRepositoryImpl): AssayWithResultRepository
+
+    @Binds
+    abstract fun bindCategoryRepository(categoryRepositoryImpl: CategoryRepositoryImpl): CategoryRepository
+
+    @Binds
+    abstract fun bindCategoriesSpecificRepository(categoriesSpecificRepositoryImpl: CategoriesSpecificRepositoryImpl): CategoriesSpecificRepository
+
+    @Binds
+    abstract fun bindPassedScreenRepository(passedScreenRepositoryImpl: PassedScreenRepositoryImpl): PassedScreenRepository
 }

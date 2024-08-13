@@ -3,6 +3,7 @@ package com.decide.app.database.local.dto
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.decide.app.feature.assay.mainAssay.modals.Assay
+import com.decide.app.feature.passed.PassedAssay
 
 @Entity(tableName = "assay_table")
 data class AssayEntity(
@@ -29,5 +30,11 @@ fun AssayEntity.toAssay(): Assay {
         dateCreation,
         rating,
         type
+    )
+}
+
+fun AssayEntity.toPassedAssay(): PassedAssay {
+    return PassedAssay(
+        id, idCategory, name, nameCategory, rating, results
     )
 }

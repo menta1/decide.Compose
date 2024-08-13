@@ -1,6 +1,5 @@
 package com.decide.app.feature.assay.assayProcess.ui
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,13 +19,11 @@ import javax.inject.Inject
 class AssayProcessViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: AssayProcessRepository,
-
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val assayId: Int = checkNotNull(savedStateHandle["idAssay"])
 
     init {
-        Log.d("TAG", "userId = " + assayId.toString())
         getId(assayId)
     }
 
@@ -45,7 +42,7 @@ class AssayProcessViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     repository.saveResult(assayId, listAnswers)
                 }
-                AssayProcessState.End
+                AssayProcessState.End(idAssay = assayId)
             } else {
                 currentProgress += 1
                 AssayProcessState.AssayWithText(
@@ -66,7 +63,6 @@ class AssayProcessViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    Log.d("TAG", "Resource.Success")
                     listQuestions = assay.data.countQuestions
                     _state.update {
                         AssayProcessState.AssayWithText(listQuestions.first(), 0f)
@@ -74,9 +70,5 @@ class AssayProcessViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun saveResult(){
-
     }
 }

@@ -5,7 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun MainScreen(){
+fun MainScreen() {
     val mainViewModel = hiltViewModel<MainScreenViewModel>()
     val navController = rememberNavController()
 

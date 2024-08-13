@@ -33,16 +33,18 @@ fun AssayDescriptionScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 15.dp)
             .background(DecideTheme.colors.mainBlue),
     ) {
         ButtonBackArrow(text = "Назад", onClick = { onClickBack() })
 
-        Box(modifier = Modifier
-            .fillMaxHeight()
-            .padding(top = 25.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(top = 25.dp)
+        ) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text(
                     modifier = Modifier.fillMaxHeight(),

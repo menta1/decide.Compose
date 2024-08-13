@@ -9,6 +9,7 @@ data class AnswerAssayEntity(
     val text: String,
     val value: Int
 )
+
 fun AnswerAssayEntity.toAnswerAssay(): AnswerAssay {
     return AnswerAssay(
         id, text, value

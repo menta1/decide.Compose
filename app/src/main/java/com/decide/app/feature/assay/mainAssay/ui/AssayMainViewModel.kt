@@ -47,6 +47,7 @@ class AssayMainViewModel @Inject constructor(
                 })
         }
     }
+
     fun onSuccess(data: List<Assay>) {
 
     }

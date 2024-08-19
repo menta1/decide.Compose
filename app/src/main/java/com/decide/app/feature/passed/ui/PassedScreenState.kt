@@ -1,7 +1,6 @@
 package com.decide.app.feature.passed.ui
 
-import com.decide.app.feature.passed.PassedAssay
-import com.decide.app.navigation.Assay
+import com.decide.app.feature.passed.models.PassedAssay
 
 sealed class PassedScreenState {
 

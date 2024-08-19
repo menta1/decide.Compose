@@ -27,8 +27,8 @@ fun AppScreen(
     val modifier = Modifier
 
     Scaffold(modifier = modifier
-        .navigationBarsPadding()
-        .background(DecideTheme.colors.mainBlue),
+        .background(DecideTheme.colors.mainBlue)
+        .navigationBarsPadding(),
         bottomBar = {
             if (itemsNavBottomBar.contains(
                     navController.currentBackStackEntryAsState().value?.destination?.route
@@ -38,6 +38,7 @@ fun AppScreen(
             }
         }) { innerPadding ->
         Modifier.padding(innerPadding)
+
         AppHost(
             navController = navController, startDestination = startDestination, modifier = modifier
         )

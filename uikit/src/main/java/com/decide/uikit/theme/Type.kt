@@ -38,6 +38,13 @@ data class DecideTypography(
         lineHeight = 34.sp,
         letterSpacing = (-0.32).sp,
     ),
+    val defaultTextEmpty: TextStyle = TextStyle(
+        fontFamily = firaSansRegular,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.sp,
+    ),
     val cardAccent: TextStyle = TextStyle(
         fontFamily = mulishBold,
         fontWeight = FontWeight.Bold,

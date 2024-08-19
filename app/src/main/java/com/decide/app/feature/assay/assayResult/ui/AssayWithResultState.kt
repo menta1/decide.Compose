@@ -12,7 +12,7 @@ sealed class AssayWithResultState {
     data object Loading : AssayWithResultState()
 
     @Immutable
-    data class Loaded(val result: String) : AssayWithResultState()
+    data class Loaded(val result: String, val shortResult: String) : AssayWithResultState()
 
     @Immutable
     data object Error : AssayWithResultState()

@@ -1,6 +1,5 @@
 package com.decide.app.feature.assay.mainAssay.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,10 +15,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.decide.app.R
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.card.CardAssay
 import com.decide.uikit.ui.searchBar.SearchBarDecide
@@ -57,7 +58,7 @@ fun AssayMainScreen(
             .fillMaxSize()
             .background(DecideTheme.colors.mainBlue)
             .padding(horizontal = 15.dp)
-            .padding(top = 70.dp),
+            .padding(top = 8.dp),
     ) {
         Text(
             text = "Психологические тесты",
@@ -80,12 +81,15 @@ fun AssayMainScreen(
                             textCategory = assay.nameCategory,
                             textAssay = assay.name,
                             textRating = assay.rating,
-                            textQuestion = assay.countQuestions,
+                            textQuestion = pluralStringResource(
+                                id = R.plurals.questions,
+                                count = assay.countQuestions.toInt(),
+                                assay.countQuestions.toInt()
+                            ),
                             onClickBookmark = {
 
                             },
                             onClickAssay = {
-                                Log.d("TAG", "itemsIndexed 88 = $index data=${assay.name}")
                                 onClickAssay(index + 1)
                             }
                         )

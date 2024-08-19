@@ -114,13 +114,13 @@ fun CardAssay(
                         contentDescription = "icon",
                         tint = DecideTheme.colors.accentYellow
                     )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(text = textRating, color = textColorRating, style = textStyleRating)
-                    Spacer(modifier = Modifier.width(12.dp))
+
                     Icon(
                         painter = painterResource(id = R.drawable.divider_small),
                         contentDescription = ""
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
                     Text(text = textQuestion, color = textColorQuestion, style = textStyleQuestion)
                 }
             }

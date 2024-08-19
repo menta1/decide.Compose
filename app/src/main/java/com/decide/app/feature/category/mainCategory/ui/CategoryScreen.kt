@@ -31,8 +31,7 @@ import com.decide.uikit.ui.card.CardCategory
 
 @Composable
 fun CategoryScreen(
-    modifier: Modifier = Modifier,
-    onClickSpecificCategory: (id: Int) -> Unit
+    modifier: Modifier = Modifier, onClickSpecificCategory: (id: Int) -> Unit
 ) {
 
     val viewModel: CategoryViewModel = hiltViewModel()
@@ -40,24 +39,20 @@ fun CategoryScreen(
 
 
     CategoryScreen(
-        modifier = modifier,
-        state = state,
-        onClickSpecificCategory = onClickSpecificCategory
+        modifier = modifier, state = state, onClickSpecificCategory = onClickSpecificCategory
     )
 
 }
 
 @Composable
 fun CategoryScreen(
-    modifier: Modifier = Modifier,
-    state: CategoryState,
-    onClickSpecificCategory: (id: Int) -> Unit
+    modifier: Modifier = Modifier, state: CategoryState, onClickSpecificCategory: (id: Int) -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(DecideTheme.colors.mainBlue)
-            .padding(top = 36.dp)
+            .padding(top = 8.dp)
             .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
@@ -70,9 +65,7 @@ fun CategoryScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(
-            modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (state) {
                 is CategoryState.Success -> {
@@ -82,10 +75,12 @@ fun CategoryScreen(
                         contentPadding = PaddingValues(bottom = 55.dp)
                     ) {
                         itemsIndexed(state.categories) { index: Int, item: Category ->
-
+                            /**
+                             * Нужно проверить содержит ли категория хотя бы один тест
+                             * в противном случае не показывать
+                             */
                             SortingCategories(
-                                index,
-                                item,
+                                item = item,
                                 onClick = { onClickSpecificCategory(item.id) })
                         }
                     }
@@ -104,117 +99,10 @@ fun CategoryScreen(
     }
 }
 
-@Preview
 @Composable
-fun PreviewCategoryScreen() {
-    val state: CategoryState by remember {
-        mutableStateOf(
-            CategoryState.Success(
-                listOf(
-                    Category(
-                        id = 1,
-                        name = "Психическое состояние",
-                        nameEng = "Mental condition",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 2,
-                        name = "Свойства личности",
-                        nameEng = "Personality properties",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    ),
-                    Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = ""
-                    )
-                )
-            )
-        )
-    }
-    DecideTheme {
-        CategoryScreen(onClickSpecificCategory = {}, state = state)
-    }
-}
-
-@Composable
-private fun SortingCategories(index: Int, item: Category, onClick: () -> Unit) {
+private fun SortingCategories(item: Category, onClick: () -> Unit) {
     var painter: Painter = painterResource(id = R.drawable.category1)
-    when (index) {
+    when (item.id) {
         1 -> {
             painter = painterResource(id = R.drawable.category1)
         }
@@ -268,4 +156,99 @@ private fun SortingCategories(index: Int, item: Category, onClick: () -> Unit) {
         image = painter,
         textCategory = item.name,
     ) { onClick() }
+}
+
+@Preview
+@Composable
+fun PreviewCategoryScreen() {
+    val state: CategoryState by remember {
+        mutableStateOf(
+            CategoryState.Success(
+                listOf(
+                    Category(
+                        id = 1,
+                        name = "Психическое состояние",
+                        nameEng = "Mental condition",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 2,
+                        name = "Свойства личности",
+                        nameEng = "Personality properties",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    ), Category(
+                        id = 3,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = ""
+                    )
+                )
+            )
+        )
+    }
+    DecideTheme {
+        CategoryScreen(onClickSpecificCategory = {}, state = state)
+    }
 }

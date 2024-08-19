@@ -43,7 +43,7 @@ fun AssayDescriptionScreen(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(top = 25.dp)
+                .padding(top = 8.dp)
         ) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text(

@@ -21,21 +21,16 @@ class CategoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getCategories(
-                onSuccess = { result ->
-                    _state.update {
-                        CategoryState.Success(result)
-                    }
-
-                },
-                onError = { exception ->
-                    _state.update {
-                        CategoryState.Error(exception)
-                    }
+            repository.getCategories(onSuccess = { result ->
+                _state.update {
+                    CategoryState.Success(result)
                 }
 
-            )
+            }, onError = { exception ->
+                _state.update {
+                    CategoryState.Error(exception)
+                }
+            })
         }
-
     }
 }

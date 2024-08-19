@@ -4,7 +4,7 @@ import com.decide.app.database.remote.assay.RemoteAssayStorage
 import com.decide.app.database.remote.assay.RemoteAssayStorageImpl
 import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepository
 import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepositoryImpl
-import com.decide.app.feature.assay.assayProcess.data.AssayProcessRepository
+import com.decide.app.feature.assay.assayProcess.domain.AssayProcessRepository
 import com.decide.app.feature.assay.assayProcess.data.AssayProcessRepositoryImpl
 import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepository
 import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepositoryImpl

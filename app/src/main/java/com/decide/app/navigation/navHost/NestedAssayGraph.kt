@@ -51,8 +51,7 @@ fun NavGraphBuilder.addNestedAssayGraph(
 
 
         composable(
-            route = AssayProcess.route + "{idAssay}",
-            arguments = listOf(navArgument("idAssay") {
+            route = AssayProcess.route + "{idAssay}", arguments = listOf(navArgument("idAssay") {
                 type = NavType.IntType
             })
         ) { entry ->
@@ -64,27 +63,29 @@ fun NavGraphBuilder.addNestedAssayGraph(
                             inclusive = true
                         }
                     }
-
                 }, onClickDone = { id ->
-                    navController.navigate(AssayWithResult.route + id)
+                    navController.navigate("${AssayWithResult.route}?idAssay=$id")
                 })
         }
 
         composable(
-            route = AssayWithResult.route + "{idAssay}",
-            arguments = listOf(navArgument("idAssay") {
-                type = NavType.IntType
-            })
+            route = "${AssayWithResult.route}?idAssay={idAssay}&dateAssay={dateAssay}",
+            arguments = listOf(
+                navArgument("idAssay") {
+                    type = NavType.IntType
+                }, navArgument("dateAssay") {
+                    type = NavType.StringType
+                    defaultValue = "-1"
+                    nullable = true
+                })
         ) {
-            AssayWithResultScreen(
-                onClickExit = {
-                    navController.navigate(Assay.route){
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = true
-                        }
+            AssayWithResultScreen(onClickExit = {
+                navController.navigate(Assay.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
                     }
                 }
-            )
+            })
         }
     }
 }

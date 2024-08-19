@@ -14,6 +14,7 @@ import com.decide.app.feature.passed.ui.PassedScreen
 import com.decide.app.feature.profile.profileMain.ProfileScreen
 import com.decide.app.navigation.Assay
 import com.decide.app.navigation.AssayRouteBranch
+import com.decide.app.navigation.AssayWithResult
 import com.decide.app.navigation.CategoriesSpecific
 import com.decide.app.navigation.Category
 import com.decide.app.navigation.Passed
@@ -44,6 +45,7 @@ fun AppHost(
                 }
             )
         }
+
         composable(
             route = CategoriesSpecific.route + "{idCategory}",
             arguments = listOf(navArgument("idCategory") {
@@ -57,10 +59,13 @@ fun AppHost(
                 },
                 onClickBack = {})
         }
-        composable(route = Passed.route) {
-            PassedScreen(){
 
-            }
+        composable(route = Passed.route) {
+            PassedScreen(
+                onClickResult = { id: Int, date: Long ->
+                    navController.navigate(route = "${AssayWithResult.route}?idAssay=$id&dateAssay=$date")
+                }
+            )
         }
         composable(route = Profile.route) {
             ProfileScreen()

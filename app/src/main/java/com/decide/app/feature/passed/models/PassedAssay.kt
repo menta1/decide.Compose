@@ -1,4 +1,4 @@
-package com.decide.app.feature.passed
+package com.decide.app.feature.passed.models
 
 data class PassedAssay(
     val id: Int,

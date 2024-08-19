@@ -8,12 +8,21 @@ import javax.inject.Inject
 class AssayWithResultRepositoryImpl @Inject constructor(
     private val assayDao: AssayDao
 ) : AssayWithResultRepository {
-    override suspend fun getResult(id: Int): Resource<String> {
+    override suspend fun getResult(id: Int, dateResult: Long): Resource<Pair<String, String>> {
         try {
-            delay(5000)
+
+            delay(500)
             val result = assayDao.getAssay(id).results
-            val res = result.last()
-            return Resource.Success(res.result)
+            val lastResult =
+                if (dateResult != -1L) {
+                    result.find { it.date == dateResult }
+                } else result.last()
+            return Resource.Success(
+                Pair(
+                    first = lastResult?.result ?: "",
+                    second = lastResult?.shortResult ?: ""
+                )
+            )
         } catch (e: Exception) {
             return Resource.Error(e)
         }

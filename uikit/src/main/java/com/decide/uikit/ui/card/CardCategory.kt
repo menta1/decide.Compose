@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,9 +36,10 @@ fun CardCategory(
     onClickAssay: () -> Unit,
 ) {
     Box(modifier = modifier
-        .padding(4.dp)
-        .size(width = 180.dp, height = 180.dp)
+
+        .defaultMinSize(minWidth = 180.dp, minHeight = 180.dp)
         .clickable { onClickAssay() }
+        .padding(4.dp)
         .clip(RoundedCornerShape(20.dp))
 
         ,

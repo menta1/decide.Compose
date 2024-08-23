@@ -22,28 +22,22 @@ import com.decide.app.navigation.Profile
 
 @Composable
 fun AppHost(
-    navController: NavHostController,
-    startDestination: String,
-    modifier: Modifier
+    navController: NavHostController, startDestination: String, modifier: Modifier
     //authDestination: String?,
 ) {
-    NavHost(navController = navController, startDestination = startDestination) {
+    NavHost(
+        navController = navController, startDestination = startDestination, modifier = modifier
+    ) {
 
         composable(route = Assay.route) {
-            AssayMainScreen(
-                modifier = modifier,
-                onClickAssay = { argument ->
-                    navController.navigate(route = AssayRouteBranch.route + "$argument")
-                }
-            )
+            AssayMainScreen(onClickAssay = { argument ->
+                navController.navigate(route = AssayRouteBranch.route + "$argument")
+            })
         }
         composable(route = Category.route) {
-            CategoryScreen(
-                modifier = modifier,
-                onClickSpecificCategory = { argument ->
-                    navController.navigate(route = CategoriesSpecific.route + argument)
-                }
-            )
+            CategoryScreen(onClickSpecificCategory = { argument ->
+                navController.navigate(route = CategoriesSpecific.route + argument)
+            })
         }
 
         composable(
@@ -52,20 +46,16 @@ fun AppHost(
                 type = NavType.IntType
             })
         ) {
-            CategoriesSpecificScreen(
-                onClickAssay = { argument ->
-                    navController.navigate(route = AssayRouteBranch.route + argument)
+            CategoriesSpecificScreen(onClickAssay = { argument ->
+                navController.navigate(route = AssayRouteBranch.route + argument)
 
-                },
-                onClickBack = {})
+            }, onClickBack = {})
         }
 
         composable(route = Passed.route) {
-            PassedScreen(
-                onClickResult = { id: Int, date: Long ->
-                    navController.navigate(route = "${AssayWithResult.route}?idAssay=$id&dateAssay=$date")
-                }
-            )
+            PassedScreen(onClickResult = { id: Int, date: Long ->
+                navController.navigate(route = "${AssayWithResult.route}?idAssay=$id&dateAssay=$date")
+            })
         }
         composable(route = Profile.route) {
             ProfileScreen()

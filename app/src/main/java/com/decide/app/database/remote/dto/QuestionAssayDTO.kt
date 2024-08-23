@@ -1,5 +1,6 @@
 package com.decide.app.database.remote.assay.dto
 
+import com.decide.app.database.local.dto.QuestionEntity
 import com.decide.app.feature.assay.mainAssay.modals.QuestionAssay
 import kotlinx.serialization.SerialName
 
@@ -18,4 +19,14 @@ fun QuestionAssayDTO.toQuestionAssay(): QuestionAssay {
 
 fun convertToQuestionAssay(questionAssay: List<QuestionAssayDTO>): List<QuestionAssay> {
     return questionAssay.map { it.toQuestionAssay() }
+}
+
+fun QuestionAssayDTO.toQuestionAssayEntity(): QuestionEntity {
+    return QuestionEntity(
+        id, text, convertToAnswerAssayEntity(listAnswers), image
+    )
+}
+
+fun convertToQuestionEntity(questionAssay: List<QuestionAssayDTO>): List<QuestionEntity> {
+    return questionAssay.map { it.toQuestionAssayEntity() }
 }

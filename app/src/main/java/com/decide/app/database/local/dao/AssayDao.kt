@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.decide.app.database.local.dto.AssayEntity
 import com.decide.app.database.local.dto.ResultCompletedAssayEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AssayDao {
@@ -16,6 +17,9 @@ interface AssayDao {
     @Query("SELECT * FROM assay_table WHERE id = :id")
     suspend fun getAssay(id: Int): AssayEntity
 
+    @Query("SELECT * FROM assay_table WHERE id = :id")
+    fun getResultAssay(id: Int): Flow<AssayEntity>
+
     @Query("UPDATE assay_table SET results =:newResult WHERE id = :id")
     suspend fun addNewResult(id: Int, newResult: List<ResultCompletedAssayEntity>): Int
 
@@ -24,4 +28,7 @@ interface AssayDao {
 
     @Query("SELECT * FROM assay_table WHERE results IS NOT NULL AND results != '[]'")
     fun getAssaysWithNonEmptyResults(): List<AssayEntity>
+
+    @Query("SELECT * FROM assay_table")
+    fun getFlowAssays(): Flow<List<AssayEntity>>
 }

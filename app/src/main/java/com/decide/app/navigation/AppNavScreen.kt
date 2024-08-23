@@ -1,7 +1,6 @@
 package com.decide.app.navigation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -16,7 +15,7 @@ import com.decide.uikit.ui.navigation.NavBottomBar
 
 
 @Composable
-fun AppScreen(
+fun AppNavScreen(
     startDestination: String, auth: String? = null
 ) {
     val itemsNavBottomBar = listOf(
@@ -24,30 +23,29 @@ fun AppScreen(
     )
     val navController = rememberNavController()
 
-    val modifier = Modifier
-
-    Scaffold(modifier = modifier
-        .background(DecideTheme.colors.mainBlue)
-        .navigationBarsPadding(),
-        bottomBar = {
-            if (itemsNavBottomBar.contains(
-                    navController.currentBackStackEntryAsState().value?.destination?.route
-                )
-            ) {
-                SetNavBottomBar(navController)
-            }
-        }) { innerPadding ->
-        Modifier.padding(innerPadding)
+    Scaffold(bottomBar = {
+        if (itemsNavBottomBar.contains(
+                navController.currentBackStackEntryAsState().value?.destination?.route
+            )
+        ) {
+            BottomBar(navController)
+        }
+    }, contentColor = DecideTheme.colors.mainBlue) {
 
         AppHost(
-            navController = navController, startDestination = startDestination, modifier = modifier
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier
+                .padding(it)
+                .background(color = DecideTheme.colors.mainBlue)
         )
     }
 }
 
 @Composable
-fun SetNavBottomBar(navController: NavController) {
-    NavBottomBar(routeAssay = Assay.route,
+fun BottomBar(navController: NavController) {
+    NavBottomBar(
+        routeAssay = Assay.route,
         routeCategory = Category.route,
         routePassed = Passed.route,
         routeProfile = Profile.route,

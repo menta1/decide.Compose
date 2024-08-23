@@ -13,6 +13,7 @@ fun Assay.toAssayUI(): AssayUI {
     return AssayUI(
         id = id,
         name = name,
+        idCategory = idCategory,
         nameCategory = nameCategory,
         countQuestions = countQuestions.size.toString(),
         rating = rating,

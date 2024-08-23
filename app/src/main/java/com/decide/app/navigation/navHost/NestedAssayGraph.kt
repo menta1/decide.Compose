@@ -1,5 +1,12 @@
 package com.decide.app.navigation.navHost
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -29,7 +36,25 @@ fun NavGraphBuilder.addNestedAssayGraph(
 
         composable(
             route = AssayDescription.route,
-        ) { entry ->
+            enterTransition = {
+                fadeIn(
+                    animationSpec = tween(
+                        100, easing = LinearEasing
+                    )
+                ) + slideIntoContainer(
+                    animationSpec = tween(200, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Up
+                )
+            }, exitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        100, easing = LinearEasing
+                    )
+                ) + slideOutOfContainer(
+                    animationSpec = tween(200, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Down
+                )
+            }) { entry ->
             val parentEntry = remember(entry) {
                 navController.getBackStackEntry(AssayRouteBranch.route + "{idAssay}")
             }
@@ -51,9 +76,29 @@ fun NavGraphBuilder.addNestedAssayGraph(
 
 
         composable(
-            route = AssayProcess.route + "{idAssay}", arguments = listOf(navArgument("idAssay") {
-                type = NavType.IntType
-            })
+            route = AssayProcess.route + "{idAssay}", arguments = listOf(
+                navArgument("idAssay") {
+                    type = NavType.IntType
+                },
+            ), enterTransition = {
+                fadeIn(
+                    animationSpec = tween(
+                        100, easing = LinearEasing
+                    )
+                ) + slideIntoContainer(
+                    animationSpec = tween(200, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Up
+                )
+            }, exitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        100, easing = LinearEasing
+                    )
+                ) + slideOutOfContainer(
+                    animationSpec = tween(200, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Down
+                )
+            }
         ) { entry ->
             val idAssay = entry.arguments?.getInt("idAssay")
             AssayProcessScreen(
@@ -70,22 +115,41 @@ fun NavGraphBuilder.addNestedAssayGraph(
 
         composable(
             route = "${AssayWithResult.route}?idAssay={idAssay}&dateAssay={dateAssay}",
-            arguments = listOf(
-                navArgument("idAssay") {
-                    type = NavType.IntType
-                }, navArgument("dateAssay") {
-                    type = NavType.StringType
-                    defaultValue = "-1"
-                    nullable = true
-                })
+            arguments = listOf(navArgument("idAssay") {
+                type = NavType.IntType
+            }, navArgument("dateAssay") {
+                type = NavType.StringType
+                defaultValue = "-1"
+                nullable = true
+            }),
+            enterTransition = {
+                fadeIn(
+                    animationSpec = tween(
+                        100, easing = LinearEasing
+                    )
+                ) + slideIntoContainer(
+                    animationSpec = tween(200, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Up
+                )
+            }, exitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        100, easing = LinearEasing
+                    )
+                ) + slideOutOfContainer(
+                    animationSpec = tween(200, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Down
+                )
+            }
         ) {
-            AssayWithResultScreen(onClickExit = {
-                navController.navigate(Assay.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = true
+            AssayWithResultScreen(
+                onClickExit = {
+                    navController.navigate(Assay.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
                     }
-                }
-            })
+                })
         }
     }
 }

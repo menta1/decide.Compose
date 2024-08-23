@@ -1,35 +1,35 @@
 package com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl
 
-import com.decide.app.database.remote.assay.dto.KeyDto
+import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.ui.Answers
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 
-internal fun assay1(answers: List<Answers>, key: KeyDto): ResultCompletedAssay {
-    var points = 0
+internal fun assay1(answers: List<Answers>, key: KeyAssay): ResultCompletedAssay {
+    var points = 0f
     answers.forEach {
         points += it.answerValue
     }
-    val result: Float = points.toFloat() / 20
+    val result: Float = points / 20
 
     return when {
         (result in 0f..1f) -> {
-            getResultCompletedAssay(key = "1", keyDto = key)
+            getResultCompletedAssay(key = "1", keyAssay = key)
         }
 
         (result in 1f..2f) -> {
-            getResultCompletedAssay(key = "2", keyDto = key)
+            getResultCompletedAssay(key = "2", keyAssay = key)
         }
 
         (result in 2f..3f) -> {
-            getResultCompletedAssay(key = "3", keyDto = key)
+            getResultCompletedAssay(key = "3", keyAssay = key)
         }
 
         (result in 3f..3.4f) -> {
-            getResultCompletedAssay(key = "4", keyDto = key)
+            getResultCompletedAssay(key = "4", keyAssay = key)
         }
 
         else -> {
-            getResultCompletedAssay(key = "5", keyDto = key)
+            getResultCompletedAssay(key = "5", keyAssay = key)
         }
     }
 }

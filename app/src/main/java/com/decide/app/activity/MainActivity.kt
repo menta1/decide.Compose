@@ -2,30 +2,37 @@ package com.decide.app.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.decide.app.navigation.AppScreen
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import com.decide.app.navigation.AppNavScreen
 import com.decide.app.navigation.Assay
 import com.decide.uikit.theme.DecideTheme
+import com.decide.uikit.theme.mainColorBlue
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(mainColorBlue.toArgb(), Color.Black.toArgb())
+        )
         setContent {
             DecideTheme {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .systemBarsPadding()
+                        .systemBarsPadding(),
+                    color = DecideTheme.colors.mainBlue
                 ) {
-                    AppScreen(startDestination = Assay.route)
+                    AppNavScreen(startDestination = Assay.route)
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.decide.app.feature.assay.assayProcess.ui.AssaysTypes
+package com.decide.app.feature.assay.assayProcess.ui.assaysTypes
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

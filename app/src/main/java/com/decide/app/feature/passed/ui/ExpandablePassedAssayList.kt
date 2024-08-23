@@ -34,13 +34,13 @@ fun ExpandablePassedAssayList(
                 CardResultAssay(id = assay.id,
                     textCategory = assay.nameCategory,
                     textAssay = assay.name,
-                    textDate = dateFormatter(assay.results.last().date.toString()) ,
+                    textDate = dateFormatter(assay.results.last().date.toString()),
                     onClickResult = { id ->
                         clickedItemId = if (clickedItemId == id) Int.MIN_VALUE
                         else id
                     },
                     listDateResults = assay.results.map { item ->
-                        Pair(first = item.date, second = item.shortResult)
+                        Pair(first = item.date, second = item.shortResults)
                     },
                     expandedItemId = clickedItemId,
                     onShowDetailResult = { date ->
@@ -75,19 +75,25 @@ val mockPassedAssay = listOf(
         rating = "2.3",
         results = listOf(
             ResultCompletedAssay(
-                date = 13287653264, shortResult = "Good", result = "semiprecious"
+                date = 13287653264, shortResults = listOf("Good"), results = listOf("semiprecious")
             ),
             ResultCompletedAssay(
-                date = 1324587653264, shortResult = "Bad", result = "semiprecious"
+                date = 1324587653264, shortResults = listOf("Bad"), results = listOf("semiprecious")
             ),
             ResultCompletedAssay(
-                date = 1328765323264, shortResult = "Nice", result = "semiprecious"
+                date = 1328765323264,
+                shortResults = listOf("Nice"),
+                results = listOf("semiprecious")
             ),
             ResultCompletedAssay(
-                date = 1328765323264, shortResult = "Great", result = "semiprecious"
+                date = 1328765323264,
+                shortResults = listOf("Great"),
+                results = listOf("semiprecious")
             ),
             ResultCompletedAssay(
-                date = 13287653213264, shortResult = "NotBad", result = "semiprecious"
+                date = 13287653213264,
+                shortResults = listOf("NotBad"),
+                results = listOf("semiprecious")
             ),
         )
     )

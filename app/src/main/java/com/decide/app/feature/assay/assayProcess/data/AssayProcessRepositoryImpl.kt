@@ -3,22 +3,23 @@ package com.decide.app.feature.assay.assayProcess.data
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.local.dto.ResultCompletedAssayEntity
 import com.decide.app.database.local.dto.toAssay
+import com.decide.app.database.local.dto.toKeyAssay
 import com.decide.app.database.remote.assay.RemoteAssayStorage
-import com.decide.app.database.remote.assay.dto.KeyDto
+import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.AssayProcessRepository
 import com.decide.app.feature.assay.mainAssay.modals.Assay
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.app.utils.Resource
-import java.util.Date
 import javax.inject.Inject
 
 class AssayProcessRepositoryImpl @Inject constructor(
-    private val localAssayStorage: AppDatabase,
+    private val localStorage: AppDatabase,
     private val remoteAssayStorage: RemoteAssayStorage
 ) : AssayProcessRepository {
 
     override suspend fun getAssay(id: Int): Resource<Assay> {
-        val result = localAssayStorage.assayDao().getAssay(id)
+        remoteAssayStorage.getKey(id.toString())
+        val result = localStorage.assayDao().getAssay(id)
         return if (result != null) {
             Resource.Success(result.toAssay())
         } else {
@@ -27,7 +28,7 @@ class AssayProcessRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveResult(id: Int, result: ResultCompletedAssay) {
-        val results = localAssayStorage.assayDao()
+        val results = localStorage.assayDao()
             .getAssay(id).results.sortedBy { it.date }.toMutableList()
 
         if (results.size > 5) {
@@ -35,52 +36,25 @@ class AssayProcessRepositoryImpl @Inject constructor(
             results.add(
                 ResultCompletedAssayEntity(
                     date = result.date,
-                    shortResult = result.shortResult,
-                    result = result.result,
-                    keyResult = result.keyResult
+                    shortResults = result.shortResults,
+                    results = result.results,
+                    keyResults = result.keyResults
                 )
             )
         } else {
             results.add(
                 ResultCompletedAssayEntity(
                     date = result.date,
-                    shortResult = result.shortResult,
-                    result = result.result,
-                    keyResult = result.keyResult
+                    shortResults = result.shortResults,
+                    results = result.results,
+                    keyResults = result.keyResults
                 )
             )
         }
-        localAssayStorage.assayDao().addNewResult(id, results)
+        localStorage.assayDao().addNewResult(id, results)
     }
 
-    override suspend fun getKeys(id: Int, onResult: (Resource<KeyDto>) -> Unit) {
-        remoteAssayStorage.getKey(id = id.toString(), onResult = onResult)
+    override suspend fun getKeys(id: Int): KeyAssay {
+        return localStorage.keyDao().getAssay(id).toKeyAssay()
     }
-
-//    private suspend fun controlCountResultSave(id: Int, key: String, keyDto: KeyDto) {
-//
-//        val results = localAssayStorage.assayDao()
-//            .getAssay(id).results.toMutableList()
-//
-//        if (results.size > 5) {
-//            results.removeFirst()
-//            results.add(
-//                ResultCompletedAssayEntity(
-//                    date = Date().time,
-//                    shortResult = keyDto.resultShort[key] ?: "-1",
-//                    result = keyDto.result[key] ?: "-1"
-//                )
-//            )
-//        } else {
-//            results.add(
-//                ResultCompletedAssayEntity(
-//                    date = Date().time,
-//                    shortResult = keyDto.resultShort[key] ?: "-1",
-//                    result = keyDto.result[key] ?: "-1"
-//                )
-//            )
-//        }
-//        localAssayStorage.assayDao().addNewResult(id, results)
-//    }
-
 }

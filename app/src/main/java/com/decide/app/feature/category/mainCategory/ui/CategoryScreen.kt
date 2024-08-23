@@ -1,16 +1,14 @@
 package com.decide.app.feature.category.mainCategory.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,20 +16,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.decide.app.R
 import com.decide.app.feature.category.mainCategory.modals.Category
+import com.decide.app.utils.setDrawable
 import com.decide.uikit.theme.DecideTheme
+import com.decide.uikit.ui.ErrorMessage
+import com.decide.uikit.ui.buttons.CircleDecideIndicator
 import com.decide.uikit.ui.card.CardCategory
 
 @Composable
 fun CategoryScreen(
-    modifier: Modifier = Modifier, onClickSpecificCategory: (id: Int) -> Unit
+    onClickSpecificCategory: (id: Int) -> Unit
 ) {
 
     val viewModel: CategoryViewModel = hiltViewModel()
@@ -39,7 +37,7 @@ fun CategoryScreen(
 
 
     CategoryScreen(
-        modifier = modifier, state = state, onClickSpecificCategory = onClickSpecificCategory
+        state = state, onClickSpecificCategory = onClickSpecificCategory
     )
 
 }
@@ -51,9 +49,8 @@ fun CategoryScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DecideTheme.colors.mainBlue)
             .padding(top = 8.dp)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 8.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -71,94 +68,50 @@ fun CategoryScreen(
                 is CategoryState.Success -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = 55.dp)
                     ) {
-                        itemsIndexed(state.categories) { index: Int, item: Category ->
+                        items(state.categories) { item: Category ->
                             /**
                              * Нужно проверить содержит ли категория хотя бы один тест
                              * в противном случае не показывать
                              */
-                            SortingCategories(
-                                item = item,
-                                onClick = { onClickSpecificCategory(item.id) })
+                            CardCategory(
+                                imageId = setDrawable(item.id),
+                                textCategory = item.name,
+                                onClickAssay = {
+                                    onClickSpecificCategory(
+                                        item.id
+                                    )
+                                })
                         }
                     }
                 }
 
-                CategoryState.Default -> {
-
+                CategoryState.Loading -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircleDecideIndicator()
+                    }
                 }
 
 
                 is CategoryState.Error -> {
-
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        ErrorMessage()
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-private fun SortingCategories(item: Category, onClick: () -> Unit) {
-    var painter: Painter = painterResource(id = R.drawable.category1)
-    when (item.id) {
-        1 -> {
-            painter = painterResource(id = R.drawable.category1)
-        }
-
-        2 -> {
-            painter = painterResource(id = R.drawable.category2)
-        }
-
-        3 -> {
-            painter = painterResource(id = R.drawable.category3)
-        }
-
-        4 -> {
-            painter = painterResource(id = R.drawable.category4)
-        }
-
-        5 -> {
-            painter = painterResource(id = R.drawable.category5)
-        }
-
-        6 -> {
-            painter = painterResource(id = R.drawable.category6)
-        }
-
-        7 -> {
-            painter = painterResource(id = R.drawable.category7)
-        }
-
-        8 -> {
-            painter = painterResource(id = R.drawable.category8)
-        }
-
-        9 -> {
-            painter = painterResource(id = R.drawable.category9)
-        }
-
-        10 -> {
-            painter = painterResource(id = R.drawable.category10)
-        }
-
-        11 -> {
-            painter = painterResource(id = R.drawable.category11)
-        }
-
-        else -> {
-
-        }
-    }
-
-    return CardCategory(
-        image = painter,
-        textCategory = item.name,
-    ) { onClick() }
-}
-
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewCategoryScreen() {
     val state: CategoryState by remember {
@@ -170,79 +123,92 @@ fun PreviewCategoryScreen() {
                         name = "Психическое состояние",
                         nameEng = "Mental condition",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 2,
                         name = "Свойства личности",
                         nameEng = "Personality properties",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     ), Category(
                         id = 3,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
-                        description = ""
+                        description = "",
+                        countAssays = -1
                     )
                 )
             )
@@ -250,5 +216,21 @@ fun PreviewCategoryScreen() {
     }
     DecideTheme {
         CategoryScreen(onClickSpecificCategory = {}, state = state)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewLoadingCategoryScreen() {
+    DecideTheme {
+        CategoryScreen(onClickSpecificCategory = {}, state = CategoryState.Initial)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewErrorCategoryScreen() {
+    DecideTheme {
+        CategoryScreen(onClickSpecificCategory = {}, state = CategoryState.Error(""))
     }
 }

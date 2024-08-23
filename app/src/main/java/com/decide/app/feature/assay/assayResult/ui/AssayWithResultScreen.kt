@@ -1,6 +1,6 @@
 package com.decide.app.feature.assay.assayResult.ui
 
-import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,60 +24,105 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.uikit.theme.DecideTheme
+import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonMain
+import com.decide.uikit.ui.buttons.CircleDecideIndicator
 
 @Composable
 fun AssayWithResultScreen(
-    modifier: Modifier = Modifier, onClickExit: () -> Unit
+    onClickExit: () -> Unit
 ) {
 
     val viewModel: AssayWithResultViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     AssayWithResultScreen(
-        modifier = modifier, onClickExit = onClickExit, state = state
+        onClickExit = onClickExit, state = state
     )
+
+    BackHandler {
+        onClickExit()
+    }
 }
 
 
 @Composable
 fun AssayWithResultScreen(
-    modifier: Modifier = Modifier, onClickExit: () -> Unit, state: AssayWithResultState
+    onClickExit: () -> Unit, state: AssayWithResultState
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(DecideTheme.colors.mainBlue)
             .verticalScroll(rememberScrollState())
-            .padding(top = 8.dp)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         when (state) {
-            AssayWithResultState.Default -> {}
-            AssayWithResultState.Error -> {}
             is AssayWithResultState.Loaded -> {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
 
-                Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+                    if (state.result.results.size > 1) {
                         Text(
-                            text = "Результат: " + state.shortResult,
-                            style = DecideTheme.typography.searchText,
+                            text = "Ваш результат:",
+                            style = DecideTheme.typography.titleScreen,
                             color = DecideTheme.colors.inputBlack,
-                            textAlign = TextAlign.Start
+                        )
+                    } else {
+                        Text(
+                            text = "Ваши результаты:",
+                            style = DecideTheme.typography.titleScreen,
+                            color = DecideTheme.colors.inputBlack,
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    state.result.results.forEachIndexed { index, s ->
+                        Spacer(modifier = Modifier.height(4.dp))
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = DecideTheme.colors.gray
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+
+                            ) {
+                            Text(
+                                text = "Результат: ",
+                                style = DecideTheme.typography.headingDesc2,
+                                color = DecideTheme.colors.inputBlack,
+                            )
+                            Text(
+                                text = state.result.shortResults[index],
+                                style = DecideTheme.typography.headingDesc,
+                                color = DecideTheme.colors.inputBlack,
+                                textAlign = TextAlign.End
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Описание",
+                            style = DecideTheme.typography.searchText,
+                            color = DecideTheme.colors.inputBlack,
+                        )
+                        Text(
+                            text = s,
+                            style = DecideTheme.typography.bodyText,
+                            color = DecideTheme.colors.inputBlack,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = state.result,
-                        style = DecideTheme.typography.cardAccent,
-                        color = DecideTheme.colors.inputBlack,
+                        text = "**Однако важно помнить, что результаты теста не могут заменить профессиональную консультацию специалиста. Если у вас есть какие-либо вопросы или сомнения относительно своего эмоционального состояния, рекомендуется обратиться к психологу или психотерапевту. Они помогут вам разобраться в своих чувствах и при необходимости предложат способы улучшения вашего самочувствия.",
+                        style = DecideTheme.typography.bodyClarification,
+                        color = DecideTheme.colors.mainGreen40,
                     )
                 }
 
@@ -99,11 +144,18 @@ fun AssayWithResultScreen(
                         color = DecideTheme.colors.inputBlack,
                     )
                     Spacer(modifier = Modifier.height(84.dp))
-                    CircularProgressIndicator(
-                        color = DecideTheme.colors.accentYellow
-                    )
+                    CircleDecideIndicator()
                 }
+            }
 
+            AssayWithResultState.Error -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    ErrorMessage()
+                }
             }
         }
     }
@@ -118,8 +170,12 @@ fun PreviewAssayWithResultScreenLoaded() {
     val state: AssayWithResultState by remember {
         mutableStateOf(
             AssayWithResultState.Loaded(
-                result = "ОченwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwОченwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwь высокий уровень фрустрированности указывает на наличие серьезных эмоциональных проблем и неудовлетворенности, которые сильно влияют на качество жизни. Из этого может вытекать сильное напряжение, депрессия, агрессия, проблемы в отношениях, а также ухудшение физического и психического здоровья. Обсуждение результатов теста с опытным специалистом и поиск подходящей поддержки могут помочь разобраться в источнике фрустрации и разработать стратегии по ее преодолению.",
-                shortResult = "Short result"
+                ResultCompletedAssay(
+                    date = 123123123,
+                    shortResults = listOf("Short resulwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwt"),
+                    results = listOf("Result"),
+                    keyResults = listOf(1)
+                )
             )
         )
     }
@@ -136,12 +192,22 @@ fun PreviewAssayWithResultScreenLoaded() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewAssayWithResultScreenLoading() {
-    val state: AssayWithResultState by remember {
-        mutableStateOf(AssayWithResultState.Loading)
-    }
     DecideTheme {
         Column {
-            AssayWithResultScreen(state = state, onClickExit = {})
+            AssayWithResultScreen(state = AssayWithResultState.Loading, onClickExit = {})
+        }
+    }
+}
+
+/**
+ * AssayWithResultState.Loading
+ */
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewAssayWithResultScreenError() {
+    DecideTheme {
+        Column {
+            AssayWithResultScreen(state = AssayWithResultState.Error, onClickExit = {})
         }
     }
 }

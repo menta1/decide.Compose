@@ -1,13 +1,15 @@
 package com.decide.app.feature.assay.mainAssay.data
 
 import com.decide.app.database.local.AppDatabase
+import com.decide.app.database.local.dto.toAssay
 import com.decide.app.database.remote.assay.RemoteAssayStorage
-import com.decide.app.database.remote.assay.dto.toAssay
 import com.decide.app.feature.assay.mainAssay.modals.Assay
 import com.decide.app.utils.Resource
-import com.decide.app.utils.toAssayEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,33 +18,19 @@ import javax.inject.Inject
  */
 class AssayMainRepositoryImpl @Inject constructor(
     private val remoteAssayStorage: RemoteAssayStorage,
-    private val localAssayStorage: AppDatabase,
+    private val localStorage: AppDatabase,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) : AssayMainRepository {
 
-    override suspend fun getAssays(
-        onSuccess: (List<Assay>) -> Unit,
-        onError: (message: String) -> Unit
-    ) {
-        remoteAssayStorage.getAssays {
-            when (it) {
-                is Resource.Error -> {
-                    onError(it.exception.toString())
-                }
 
-                is Resource.Success -> {
+    override fun getAssays(): Flow<Resource<List<Assay>>> {
 
-                    coroutineScope.launch {
-                        localAssayStorage.assayDao().insert(it.data.map { assayDTO ->
-                            assayDTO.toAssay().toAssayEntity()
-                        })
-                    }
+        coroutineScope.launch { remoteAssayStorage.getAssays() }
 
-                    onSuccess(it.data.map { assayDTO ->
-                        assayDTO.toAssay()
-                    })
-                }
+        return localStorage.assayDao()::getFlowAssays.invoke()
+            .map { result ->
+                Resource.Success(result.map { it.toAssay() })
             }
-        }
+            .catch { Resource.Error(it) }
     }
 }

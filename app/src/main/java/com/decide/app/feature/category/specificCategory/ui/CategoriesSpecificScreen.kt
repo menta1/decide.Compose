@@ -1,6 +1,7 @@
 package com.decide.app.feature.category.specificCategory.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.feature.assay.mainAssay.ui.AssayUI
 import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme
+import com.decide.uikit.ui.ErrorMessage
+import com.decide.uikit.ui.buttons.CircleDecideIndicator
 import com.decide.uikit.ui.card.CardAssay
 
 @Composable
@@ -64,7 +67,12 @@ fun CategoriesSpecificScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClickBack() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_back_arrow),
                 contentDescription = ""
@@ -77,13 +85,14 @@ fun CategoriesSpecificScreen(
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Right there immediately, literally in the palm of your hand, just no matter where you are on earth right now",
-            style = DecideTheme.typography.cardLarge,
-            color = DecideTheme.colors.inputBlack,
-        )
+
         when (state) {
-            is CategoriesSpecificState.Success -> {
+            is CategoriesSpecificState.Loaded -> {
+                Text(
+                    text = state.description,
+                    style = DecideTheme.typography.cardLarge,
+                    color = DecideTheme.colors.inputBlack,
+                )
                 LazyColumn {
                     itemsIndexed(state.assays) { index, assay ->
                         Spacer(modifier = Modifier.height(16.dp))
@@ -98,15 +107,32 @@ fun CategoriesSpecificScreen(
 
                             },
                             onClickAssay = {
-                                onClickAssay(index+1)
+                                onClickAssay(index + 1)
                             }
                         )
                     }
                 }
             }
 
-            CategoriesSpecificState.Default -> {}
-            is CategoriesSpecificState.Error -> {}
+            CategoriesSpecificState.Loading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircleDecideIndicator()
+                }
+            }
+
+            is CategoriesSpecificState.Error -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    ErrorMessage()
+                }
+            }
 
         }
     }
@@ -118,12 +144,13 @@ fun CategoriesSpecificScreen(
 fun PreviewCategoriesSpecificScreen() {
     val state: CategoriesSpecificState by remember {
         mutableStateOf(
-            CategoriesSpecificState.Success(
-                listOf(
+            CategoriesSpecificState.Loaded(
+                assays = listOf(
                     AssayUI(
                         id = 1,
                         name = "Оценка социальной неудовлетворенности",
                         nameCategory = "Психическое состояние",
+                        idCategory = 1,
                         countQuestions = "44",
                         rating = "2.3"
                     ),
@@ -131,6 +158,7 @@ fun PreviewCategoriesSpecificScreen() {
                         id = 2,
                         name = "Методика диагностики самооценки психических состояний",
                         nameCategory = "Психическое состояние",
+                        idCategory = 2,
                         countQuestions = "423",
                         rating = "4.3"
                     ),
@@ -138,10 +166,12 @@ fun PreviewCategoriesSpecificScreen() {
                         id = 3,
                         name = "Торонтская алекситимическая шкала",
                         nameCategory = "Свойства личности",
+                        idCategory = 3,
                         countQuestions = "144",
                         rating = "2.33"
                     ),
-                )
+                ),
+                description = ""
             )
         )
     }
@@ -151,3 +181,30 @@ fun PreviewCategoriesSpecificScreen() {
         }
     }
 }
+
+@Preview
+@Composable
+fun PreviewErrorCategoriesSpecificScreen() {
+    DecideTheme {
+        Column(modifier = Modifier.fillMaxSize()) {
+            CategoriesSpecificScreen(
+                state = CategoriesSpecificState.Error(""),
+                onClickAssay = {},
+                onClickBack = {})
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewLoadingCategoriesSpecificScreen() {
+    DecideTheme {
+        Column(modifier = Modifier.fillMaxSize()) {
+            CategoriesSpecificScreen(
+                state = CategoriesSpecificState.Loading,
+                onClickAssay = {},
+                onClickBack = {})
+        }
+    }
+}
+

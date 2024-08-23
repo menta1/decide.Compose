@@ -30,7 +30,7 @@ class AssayProcessViewModel @Inject constructor(
     }
 
     private val _state: MutableStateFlow<AssayProcessState> =
-        MutableStateFlow(AssayProcessState.Default)
+        MutableStateFlow(AssayProcessState.Loading)
     val state: StateFlow<AssayProcessState> = _state.asStateFlow()
 
     private val listAnswers: MutableList<Answers> = mutableListOf()

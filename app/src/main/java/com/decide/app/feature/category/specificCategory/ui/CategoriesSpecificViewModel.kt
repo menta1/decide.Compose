@@ -19,19 +19,30 @@ class CategoriesSpecificViewModel @Inject constructor(
     private val repository: CategoriesSpecificRepository
 ) : ViewModel() {
 
-    private val categoryId: Int = checkNotNull(savedStateHandle["idCategory"])
+    private val categoryId: Int = savedStateHandle["idCategory"] ?: EMPTY_CATEGORY_ID
 
     private val _state = MutableStateFlow(CategoriesSpecificState.Initial)
     val state: StateFlow<CategoriesSpecificState> = _state
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update {
-                CategoriesSpecificState.Success(repository.fetchAssaysByIdCategory(categoryId).map {
+            if (categoryId != EMPTY_CATEGORY_ID) {
+                val assays = repository.fetchAssaysByIdCategory(categoryId).map {
                     it.toAssayUI()
-                })
-
+                }
+                val description = repository.getCategoryDescription(categoryId)
+                _state.update {
+                    CategoriesSpecificState.Loaded(assays, description)
+                }
+            } else {
+                _state.update {
+                    CategoriesSpecificState.Error("")
+                }
             }
         }
+    }
+
+    companion object {
+        const val EMPTY_CATEGORY_ID = -1
     }
 }

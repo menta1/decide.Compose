@@ -1,9 +1,6 @@
 package com.decide.uikit.ui.navigation
 
-import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,7 +66,8 @@ fun NavBottomBar(
         BottomBarItem(
             selected = routeAssay == currentRoute,
             onClick = {
-                itemClickAssay.invoke()
+                if (routeAssay != currentRoute)
+                    itemClickAssay.invoke()
             },
             text = assayItemText,
             painter = assayItemImage,
@@ -76,7 +75,8 @@ fun NavBottomBar(
         BottomBarItem(
             selected = routeCategory == currentRoute,
             onClick = {
-                itemClickCategory.invoke()
+                if (routeCategory != currentRoute)
+                    itemClickCategory.invoke()
             },
             text = categoryItemText,
             painter = categoryItemImage,
@@ -85,7 +85,7 @@ fun NavBottomBar(
             selected = routePassed == currentRoute,
             onClick = {
                 if (routePassed != currentRoute)
-                itemClickPassed.invoke()
+                    itemClickPassed.invoke()
             },
             text = passedItemText,
             painter = passedItemImage,
@@ -93,7 +93,8 @@ fun NavBottomBar(
         BottomBarItem(
             selected = routeProfile == currentRoute,
             onClick = {
-                itemClickProfile.invoke()
+                if (routeProfile != currentRoute)
+                    itemClickProfile.invoke()
             },
             text = profileItemText,
             painter = profileItemImage,
@@ -114,7 +115,10 @@ fun BottomBarItem(
             .width(75.dp)
             .height(56.dp)
             .clickable(
-                indication = null,
+                indication = rememberRipple(
+                    radius = 35.dp,
+                    color = DecideTheme.colors.inputBlack
+                ),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
                     onClick.invoke()

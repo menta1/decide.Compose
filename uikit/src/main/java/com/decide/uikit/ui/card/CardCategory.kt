@@ -1,12 +1,10 @@
 package com.decide.uikit.ui.card
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,19 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme
 
 @Composable
 fun CardCategory(
     modifier: Modifier = Modifier,
-    image: Painter,
+    imageId: Int,
     textCategory: String,
     textColorCategory: Color = DecideTheme.colors.inputWhite,
     textStyleCategory: TextStyle = DecideTheme.typography.cardAccent,
@@ -36,20 +31,17 @@ fun CardCategory(
     onClickAssay: () -> Unit,
 ) {
     Box(modifier = modifier
-
         .defaultMinSize(minWidth = 180.dp, minHeight = 180.dp)
         .clickable { onClickAssay() }
         .padding(4.dp)
-        .clip(RoundedCornerShape(20.dp))
-
-        ,
+        .clip(RoundedCornerShape(20.dp)),
         contentAlignment = Alignment.BottomCenter) {
         Image(
             modifier = Modifier.drawWithContent {
                 drawContent()
                 drawRect(color = overlayColor.copy(alpha = overlayAlpha))
             },
-            painter = image,
+            painter = painterResource(id = imageId),
             contentDescription = ""
         )
         Text(
@@ -63,15 +55,15 @@ fun CardCategory(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewCardCategory() {
-    DecideTheme {
-        CardCategory(
-            image = painterResource(id = R.drawable.category_capabilities),
-            textCategory = "Способносrwerwer werwerwsdf sdf"
-        ) {
-
-        }
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewCardCategory() {
+//    DecideTheme {
+//        CardCategory(
+//            imageId = painterResource(id = R.drawable.category_capabilities),
+//            textCategory = "Способносrwerwer werwerwsdf sdf"
+//        ) {
+//
+//        }
+//    }
+//}

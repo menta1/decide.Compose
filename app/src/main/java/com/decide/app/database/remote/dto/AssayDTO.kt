@@ -1,5 +1,6 @@
 package com.decide.app.database.remote.assay.dto
 
+import com.decide.app.database.local.dto.AssayEntity
 import com.decide.app.feature.assay.mainAssay.modals.Assay
 import kotlinx.serialization.SerialName
 
@@ -26,10 +27,15 @@ fun AssayDTO.toAssay() = Assay(
     rating,
     type
 )
-//fun Assay.toAssayUI() = AssayUI(
-//    id = id,
-//    name = name,
-//    nameCategory = nameCategory,
-//    countQuestions = countQuestions.size.toString(),
-//    rating = rating
-//)
+
+fun AssayDTO.toAssayEntity() = AssayEntity(
+    id = id,
+    idCategory = idCategory,
+    name = name,
+    description = description,
+    nameCategory = nameCategory,
+    convertToQuestionEntity(questions),
+    dateCreation = dateCreation,
+    rating = rating,
+    type = type,
+)

@@ -1,6 +1,6 @@
 package com.decide.app.feature.assay.assayDescription.ui
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,6 +11,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,63 +20,119 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.uikit.theme.DecideTheme
+import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 import com.decide.uikit.ui.buttons.ButtonMain
+import com.decide.uikit.ui.buttons.CircleDecideIndicator
 
 @Composable
 fun AssayDescriptionScreen(
-    modifier: Modifier = Modifier,
     idAssay: Int?,
     viewModel: AssayDescriptionViewModel = hiltViewModel(),
     onClickStart: (argument: Int) -> Unit,
     onClickBack: () -> Unit
 ) {
-    viewModel.getId(idAssay ?: -1)
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    AssayDescriptionScreen(
+        state = state,
+        onClickStart = { onClickStart(idAssay ?: -1) },
+        onClickBack = onClickBack
+    )
+}
+
+@Composable
+fun AssayDescriptionScreen(
+    state: AssayDescriptionState,
+    onClickStart: () -> Unit,
+    onClickBack: () -> Unit
+) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 15.dp)
-            .background(DecideTheme.colors.mainBlue),
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp),
     ) {
         ButtonBackArrow(text = "Назад", onClick = { onClickBack() })
 
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(top = 8.dp)
-        ) {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Text(
-                    modifier = Modifier.fillMaxHeight(),
-                    text =
-                    when (state) {
-                        AssayDescriptionState.Default -> "Пустое описание"
-                        is AssayDescriptionState.Success -> (state as AssayDescriptionState.Success).data.description
-                        AssayDescriptionState.Error -> {
-                            "Ничего не найдено"
-                        }
-                    },
-                    style = DecideTheme.typography.searchText,
-                    color = DecideTheme.colors.inputBlack,
-                )
+        when (state) {
+            is AssayDescriptionState.Success -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(top = 8.dp)
+                ) {
+                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                        Text(
+                            modifier = Modifier.fillMaxHeight(),
+                            text = state.data,
+                            style = DecideTheme.typography.bodyText,
+                            color = DecideTheme.colors.inputBlack,
+                        )
 
+                    }
+                    ButtonMain(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 10.dp),
+                        text = "Начать"
+                    ) {
+                        onClickStart()
+                    }
+                }
             }
-            ButtonMain(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 10.dp),
-                text = "Начать"
-            ) {
-                onClickStart(idAssay ?: -1)
+
+            AssayDescriptionState.Loading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircleDecideIndicator()
+                }
+            }
+
+            AssayDescriptionState.Error -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    ErrorMessage()
+                }
             }
         }
+
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewAssayDescriptionScreen() {
-    AssayDescriptionScreen(idAssay = null, onClickBack = {}, onClickStart = {})
+    val state by remember {
+        mutableStateOf(
+            AssayDescriptionState.Success(
+                "Цель: выявить состояние тревожности и депрессии, обусловленное неуравновешенностью нервных процессов."
+            )
+        )
+    }
+    AssayDescriptionScreen(state = state, onClickBack = {}, onClickStart = {})
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewLoadingAssayDescriptionScreen() {
+    AssayDescriptionScreen(
+        state = AssayDescriptionState.Initial,
+        onClickBack = {},
+        onClickStart = {})
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewErrorAssayDescriptionScreen() {
+    AssayDescriptionScreen(
+        state = AssayDescriptionState.Error,
+        onClickBack = {},
+        onClickStart = {})
 }

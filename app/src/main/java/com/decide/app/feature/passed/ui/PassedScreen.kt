@@ -1,6 +1,5 @@
 package com.decide.app.feature.passed.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,10 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.uikit.theme.DecideTheme
+import com.decide.uikit.ui.ErrorMessage
+import com.decide.uikit.ui.buttons.CircleDecideIndicator
 
 @Composable
 fun PassedScreen(
-    modifier: Modifier = Modifier,
     onClickResult: (id: Int, date: Long) -> Unit,
 ) {
 
@@ -30,7 +30,6 @@ fun PassedScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     PassedScreen(
-        modifier = modifier,
         onClickResult = onClickResult,
         state = state,
         onEvent = viewModel::onEvent
@@ -47,9 +46,8 @@ fun PassedScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DecideTheme.colors.mainBlue)
-            .padding(top = 8.dp)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -71,7 +69,7 @@ fun PassedScreen(
                         })
                 }
 
-                PassedScreenState.Default -> {
+                PassedScreenState.Empty -> {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,7 +91,23 @@ fun PassedScreen(
 
 
                 is PassedScreenState.Error -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        ErrorMessage()
+                    }
+                }
 
+                PassedScreenState.Loading -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircleDecideIndicator()
+                    }
                 }
             }
         }

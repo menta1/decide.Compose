@@ -1,6 +1,5 @@
-package com.decide.app.feature.assay.assayProcess.ui.AssaysTypes
+package com.decide.app.feature.assay.assayProcess.ui.assaysTypes
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +34,6 @@ import com.decide.uikit.ui.card.CardQuestion
 @Composable
 fun AssayWithText(
     state: AssayProcessState,
-    modifier: Modifier,
     questionAssay: QuestionAssay,
     progress: Float,
     onClickBack: () -> Unit,
@@ -52,10 +50,10 @@ fun AssayWithText(
     val onChangeState: (Int) -> Unit = { selectedValue = it }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 15.dp)
-            .background(DecideTheme.colors.mainBlue),
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp),
     ) {
         ButtonBackArrow(text = "Назад", onClick = { onClickBack() })
 
@@ -119,7 +117,7 @@ fun AssayWithText(
                             idQuestion = questionAssay.id,
                             idAnswer = answer,
                             answerValue = questionAssay.listAnswers.find { it.id == answer }?.value
-                                ?: -1
+                                ?: -1f
                         )
                     )
                     answer = -1

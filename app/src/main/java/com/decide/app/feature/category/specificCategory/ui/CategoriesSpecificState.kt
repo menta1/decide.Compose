@@ -2,14 +2,15 @@ package com.decide.app.feature.category.specificCategory.ui
 
 import com.decide.app.feature.assay.mainAssay.ui.AssayUI
 
-sealed class CategoriesSpecificState {
-    data class Success(val assays: List<AssayUI>) : CategoriesSpecificState()
+sealed interface CategoriesSpecificState {
 
-    data object Default : CategoriesSpecificState()
+    data class Loaded(val assays: List<AssayUI>, val description: String) : CategoriesSpecificState
 
-    class Error(val message: String) : CategoriesSpecificState()
+    data object Loading : CategoriesSpecificState
+
+    class Error(val message: String) : CategoriesSpecificState
 
     companion object {
-        val Initial: CategoriesSpecificState = Default
+        val Initial: CategoriesSpecificState = Loading
     }
 }

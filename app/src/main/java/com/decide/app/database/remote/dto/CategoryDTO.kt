@@ -1,6 +1,6 @@
-package com.decide.app.database.remote.assay.dto
+package com.decide.app.database.remote.dto
 
-import com.decide.app.feature.category.mainCategory.modals.Category
+import com.decide.app.database.local.dto.CategoryEntity
 import kotlinx.serialization.SerialName
 
 data class CategoryDTO(
@@ -8,13 +8,17 @@ data class CategoryDTO(
     @SerialName("name") val name: String = "",
     @SerialName("nameEng") val nameEng: String = "",
     @SerialName("colorBackground") val colorBackground: String = "",
-    @SerialName("description") val description: String = ""
-)
+    @SerialName("description") val description: String = "",
+    @SerialName("countAssays") val countAssays: Int = -1,
 
-fun CategoryDTO.toCategory() = Category(
+    )
+
+fun CategoryDTO.toCategoryEntity() = CategoryEntity(
     id = id,
     name = name,
     nameEng = nameEng,
     colorBackground = colorBackground,
-    description = description
+    description = description,
+    countAssays = countAssays
 )
+

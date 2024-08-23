@@ -7,14 +7,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ResultCompletedAssayEntity(
     @PrimaryKey val date: Long,
-    val shortResult: String,
-    val result: String,
-    val keyResult: List<Int>
+    val shortResults: List<String>,
+    val results: List<String>,
+    val keyResults: List<Int>
 )
 
 fun ResultCompletedAssayEntity.toResultCompletedAssay() = ResultCompletedAssay(
     date = date,
-    shortResult = shortResult,
-    result = result,
-    keyResult = keyResult
+    shortResults = shortResults,
+    results = results,
+    keyResults = keyResults
 )

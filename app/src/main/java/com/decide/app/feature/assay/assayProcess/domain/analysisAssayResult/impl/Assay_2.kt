@@ -1,16 +1,21 @@
 package com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl
 
-import com.decide.app.database.remote.assay.dto.KeyDto
+import com.decide.app.feature.assay.assayProcess.KeyAssay
+import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl.AnalysisKeyAssayImpl.Companion.NO_KEY_FOR_ASSAY
 import com.decide.app.feature.assay.assayProcess.ui.Answers
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import java.util.Date
 
-internal fun assay2(answers: List<Answers>, key: KeyDto): ResultCompletedAssay {
+internal fun assay2(answers: List<Answers>, key: KeyAssay): ResultCompletedAssay {
 
-    var pointsAnxiety = 0
-    var pointsFrustration = 0
-    var pointsAggressiveness = 0
-    var pointsRigidity = 0
+    var pointsAnxiety = 0f
+    var pointsFrustration = 0f
+    var pointsAggressiveness = 0f
+    var pointsRigidity = 0f
+
+    val shortResults = mutableListOf<String>()
+    val results = mutableListOf<String>()
+    val keyResults = mutableListOf<Int>()
 
     answers.forEach { answer ->
         when {
@@ -32,102 +37,90 @@ internal fun assay2(answers: List<Answers>, key: KeyDto): ResultCompletedAssay {
         }
     }
 
-    var shortResultAnxiety = "Тревожность: "
-    var shortResultFrustration = "Фрустрация: "
-    var shortResultAggressiveness = "Агрессивность: "
-    var shortResultRigidity = "Ригидность: "
-
-    val keys: MutableList<Int> = mutableListOf()
-
-    var resultAnxiety = "Тревожность: "
-    var resultFrustration = "Фрустрация: "
-    var resultAggressiveness = "Агрессивность: "
-    var resultRigidity = "Ригидность: "
-
     when {
-        (pointsAnxiety in 0..7) -> {
-            shortResultAnxiety += key.resultShort.getValue("1")
-            resultAnxiety += key.result.getValue("1")
-            keys.add(1)
+        (pointsAnxiety in 0f..7f) -> {
+            results.add(key.result["1"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["1"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(1)
         }
 
-        (pointsAnxiety in 8..14) -> {
-            shortResultAnxiety += key.resultShort.getValue("2")
-            resultAnxiety += key.result.getValue("2")
-            keys.add(2)
+        (pointsAnxiety in 8f..14f) -> {
+            results.add(key.result["2"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["2"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(2)
         }
 
         else -> {
-            shortResultAnxiety += key.resultShort.getValue("3")
-            resultAnxiety += key.result.getValue("3")
-            keys.add(3)
+            results.add(key.result["3"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["3"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(3)
         }
     }
 
     when {
-        (pointsFrustration in 0..7) -> {
-            shortResultFrustration += key.resultShort.getValue("4")
-            resultFrustration += key.result.getValue("4")
-            keys.add(4)
+        (pointsFrustration in 0f..7f) -> {
+            results.add(key.result["4"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["4"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(4)
         }
 
-        (pointsFrustration in 8..14) -> {
-            shortResultFrustration += key.resultShort.getValue("5")
-            resultFrustration += key.result.getValue("5")
-            keys.add(5)
+        (pointsFrustration in 8f..14f) -> {
+            results.add(key.result["5"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["5"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(5)
         }
 
         else -> {
-            shortResultFrustration += key.resultShort.getValue("6")
-            resultFrustration += key.result.getValue("6")
-            keys.add(6)
+            results.add(key.result["6"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["6"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(6)
         }
     }
 
     when {
-        (pointsAggressiveness in 0..7) -> {
-            shortResultAggressiveness += key.resultShort.getValue("7")
-            resultAggressiveness  += key.result.getValue("7")
-            keys.add(7)
+        (pointsAggressiveness in 0f..7f) -> {
+            results.add(key.result["7"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["7"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(7)
         }
 
-        (pointsAggressiveness in 8..14) -> {
-            shortResultAggressiveness += key.resultShort.getValue("8")
-            resultAggressiveness  += key.result.getValue("8")
-            keys.add(8)
+        (pointsAggressiveness in 8f..14f) -> {
+            results.add(key.result["8"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["8"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(8)
         }
 
         else -> {
-            shortResultAggressiveness += key.resultShort.getValue("9")
-            resultAggressiveness  += key.result.getValue("9")
-            keys.add(9)
+            results.add(key.result["9"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["9"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(9)
         }
     }
 
     when {
-        (pointsRigidity in 0..7) -> {
-            shortResultRigidity +=  key.resultShort.getValue("10")
-            resultRigidity+=  key.result.getValue("10")
-            keys.add(10)
+        (pointsRigidity in 0f..7f) -> {
+            results.add(key.result["10"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["10"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(10)
         }
 
-        (pointsRigidity in 8..14) -> {
-            shortResultRigidity +=  key.resultShort.getValue("11")
-            resultRigidity+=  key.result.getValue("11")
-            keys.add(11)
+        (pointsRigidity in 8f..14f) -> {
+            results.add(key.result["11"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["11"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(11)
         }
 
         else -> {
-            shortResultRigidity +=  key.resultShort.getValue("12")
-            resultRigidity+=  key.result.getValue("12")
-            keys.add(12)
+            results.add(key.result["12"] ?: NO_KEY_FOR_ASSAY)
+            shortResults.add(key.resultShort["12"] ?: NO_KEY_FOR_ASSAY)
+            keyResults.add(12)
         }
     }
 
     return ResultCompletedAssay(
         date = Date().time,
-        shortResult = "$shortResultAnxiety, $shortResultFrustration, $shortResultAggressiveness, $shortResultRigidity",
-        result = "$resultAnxiety \n\n$resultFrustration \n\n$resultAggressiveness \n\n$resultRigidity",
-        keyResult = keys
+        shortResults = shortResults,
+        results = results,
+        keyResults = keyResults
     )
 }

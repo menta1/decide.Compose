@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,7 +48,7 @@ fun CardResultAssay(
     textColorAssay: Color = DecideTheme.colors.inputBlack,
     textStyleAssay: TextStyle = DecideTheme.typography.cardLarge,
     textDate: String,
-    listDateResults: List<Pair<Long, String>>,
+    listDateResults: List<Pair<Long, List<String>>>,
     textColorDate: Color = DecideTheme.colors.inputBlack,
     textStyleDate: TextStyle = DecideTheme.typography.tabBarSelected,
     onClickResult: (id: Int) -> Unit,
@@ -130,9 +129,8 @@ fun CardResultAssay(
                     .padding(vertical = 8.dp)
             ) {
                 listDateResults
-                    .sortedBy { it.first }
                     .asReversed()
-                    .forEach { item ->
+                    .forEachIndexed { index, item ->
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -140,7 +138,8 @@ fun CardResultAssay(
                                 .clickable { onShowDetailResult(item.first) },
                             shape = RoundedCornerShape(4.dp),
                             border = BorderStroke(1.dp, Color.Gray),
-                            colors = CardDefaults.cardColors().copy(containerColor = backgroundColor)
+                            colors = CardDefaults.cardColors()
+                                .copy(containerColor = backgroundColor)
                         ) {
                             Column(
                                 modifier = Modifier
@@ -155,7 +154,7 @@ fun CardResultAssay(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
-                                        text = item.second,
+                                        text = item.second[index],
                                         color = textColorDate,
                                         style = textStyleDate,
                                         softWrap = true,
@@ -205,7 +204,7 @@ fun PreviewCardResultAssay() {
                 listDateResults = listOf(
                     Pair(
                         123123132123,
-                        "Result"
+                        listOf("Result")
                     )
                 ),
                 textAssay = "Graphic Design Advanced",

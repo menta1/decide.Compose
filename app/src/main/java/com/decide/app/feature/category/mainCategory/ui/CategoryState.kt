@@ -2,15 +2,15 @@ package com.decide.app.feature.category.mainCategory.ui
 
 import com.decide.app.feature.category.mainCategory.modals.Category
 
-sealed class CategoryState {
+sealed interface CategoryState {
 
-    data class Success(val categories: List<Category>): CategoryState()
+    data class Success(val categories: List<Category>) : CategoryState
 
-    data object Default: CategoryState()
+    data object Loading : CategoryState
 
-    class Error(val message: String): CategoryState()
+    class Error(val message: String) : CategoryState
 
-    companion object{
-        val Initial: CategoryState = Default
+    companion object {
+        val Initial: CategoryState = Loading
     }
 }

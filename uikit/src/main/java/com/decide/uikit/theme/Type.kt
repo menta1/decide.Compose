@@ -24,6 +24,44 @@ val jostSemiBold = FontFamily(Font(R.font.jost_semi_bold))
 @Immutable
 data class DecideTypography(
     //Fira Sans
+    val body: TextStyle = TextStyle(
+        fontFamily = firaSansRegular,
+        fontWeight = FontWeight.Normal,
+        fontSize = 15.sp,
+        lineHeight = 20.sp,
+    ),
+    val heading: TextStyle = TextStyle(
+        fontFamily = firaSansRegular,
+        fontWeight = FontWeight.Normal,
+        fontSize = 17.sp,
+        lineHeight = 20.sp,
+    ),
+    val headingDesc: TextStyle = TextStyle(
+        fontFamily = firaSansSemiBold,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 17.sp,
+        lineHeight = 22.sp,
+    ),
+    val headingDesc2: TextStyle = TextStyle(
+        fontFamily = firaSansSemiBold,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp,
+        lineHeight = 25.sp,
+    ),
+    val bodyText: TextStyle = TextStyle(
+        fontFamily = firaSansLight,
+        fontWeight = FontWeight.Light,
+        fontSize = 17.sp,
+        lineHeight = 22.sp,
+    ),
+    val bodyClarification: TextStyle = TextStyle(
+        fontFamily = firaSansLight,
+        fontWeight = FontWeight.Light,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+    ),
+
+
     val titleAccent: TextStyle = TextStyle(
         fontFamily = firaSansBold,
         fontWeight = FontWeight.Normal,
@@ -106,122 +144,4 @@ data class DecideTypography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 21.sp,
     ),
-//    val titleSmall: TextStyle = TextStyle(
-//        fontFamily = itimRegular,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 22.sp,
-//        lineHeight = 21.sp,
-//        letterSpacing = (-0.32).sp,
-//    ),
-//    val subTitle: TextStyle = TextStyle(
-//        fontFamily = itimRegular,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 16.sp,
-//        lineHeight = 21.sp,
-//        letterSpacing = (-0.32).sp,
-//    ),
-//    val bodyRegular: TextStyle = TextStyle(
-//        fontFamily = ralewayRegular,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 15.sp,
-//        lineHeight = 21.sp,
-//    ),
-//    val bodySemibold: TextStyle = TextStyle(
-//        fontFamily = ralewaySemiBold,
-//        fontWeight = FontWeight.SemiBold,
-//        fontSize = 15.sp,
-//        lineHeight = 21.sp,
-//    ),
-//    val bodyBold: TextStyle = TextStyle(
-//        fontFamily = ralewayBold,
-//        fontWeight = FontWeight.Bold,
-//        fontSize = 15.sp,
-//        lineHeight = 21.sp,
-//    ),
-//    val caption1Regular: TextStyle = TextStyle(
-//        fontFamily = ralewayRegular,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 13.sp,
-//        lineHeight = (15.5).sp,
-//    ),
-//    val caption1Semibold: TextStyle = TextStyle(
-//        fontFamily = ralewaySemiBold,
-//        fontWeight = FontWeight.SemiBold,
-//        fontSize = 13.sp,
-//        lineHeight = (15.5).sp,
-//    ),
-//    val caption1Bold: TextStyle = TextStyle(
-//        fontFamily = ralewayBold,
-//        fontWeight = FontWeight.Bold,
-//        fontSize = 13.sp,
-//        lineHeight = (15.5).sp,
-//    ),
-//    val caption2Regular: TextStyle = TextStyle(
-//        fontFamily = ralewayRegular,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 12.sp,
-//        lineHeight = (15.5).sp,
-//    ),
-//    val caption2Semibold: TextStyle = TextStyle(
-//        fontFamily = ralewaySemiBold,
-//        fontWeight = FontWeight.SemiBold,
-//        fontSize = 12.sp,
-//        lineHeight = (15.5).sp,
-//    ),
-//    val caption2Bold: TextStyle = TextStyle(
-//        fontFamily = ralewayBold,
-//        fontWeight = FontWeight.Bold,
-//        fontSize = 12.sp,
-//        lineHeight = (15.5).sp,
-//    ),
-//    val filtersRegular: TextStyle = TextStyle(
-//        fontFamily = ralewayRegular,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 15.sp,
-//        lineHeight = 20.sp,
-//    ),
-//    val filtersSemibold: TextStyle = TextStyle(
-//        fontFamily = ralewaySemiBold,
-//        fontWeight = FontWeight.SemiBold,
-//        fontSize = 15.sp,
-//        lineHeight = 20.sp,
-//    ),
-//    val filtersBold: TextStyle = TextStyle(
-//        fontFamily = ralewayBold,
-//        fontWeight = FontWeight.Bold,
-//        fontSize = 15.sp,
-//        lineHeight = 20.sp,
-//    ),
-//    val tabBar: TextStyle = TextStyle(
-//        fontFamily = ralewayRegular,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 10.sp,
-//        lineHeight = 12.sp,
-//    ),
 )
-
-// Set of Material typography styles to start with
-//val Typography = Typography(
-//    bodyLarge = TextStyle(
-//        fontFamily = FontFamily.Default,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 16.sp,
-//        lineHeight = 24.sp,
-//        letterSpacing = 0.5.sp
-//    ),
-//    titleLarge = TextStyle(
-//        fontFamily = FontFamily.Default,
-//        fontWeight = FontWeight.Normal,
-//        fontSize = 22.sp,
-//        lineHeight = 28.sp,
-//        letterSpacing = 0.sp
-//    ),
-//    labelSmall = TextStyle(
-//        fontFamily = FontFamily.Default,
-//        fontWeight = FontWeight.Medium,
-//        fontSize = 11.sp,
-//        lineHeight = 16.sp,
-//        letterSpacing = 0.5.sp
-//    )
-//
-//)

@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PassedScreenViewModel @Inject constructor(
     private val repository: PassedScreenRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(PassedScreenState.Initial)
     var state: StateFlow<PassedScreenState> = _state
@@ -22,20 +22,20 @@ class PassedScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val allAssaysWithResults = repository.fetchAllResults()
-            if (allAssaysWithResults.isNotEmpty()){
+            if (allAssaysWithResults.isNotEmpty()) {
                 _state.update {
                     PassedScreenState.Success(allAssaysWithResults)
                     //Отфильтровать и получить последнюю дату результат
                 }
-            }else{
+            } else {
                 _state.update {
-                    PassedScreenState.Default
+                    PassedScreenState.Empty
                 }
             }
         }
     }
 
-    fun onEvent(){
+    fun onEvent() {
 
     }
 }

@@ -11,8 +11,13 @@ class CategoriesSpecificRepositoryImpl @Inject constructor(
     private val localAssayStorage: AppDatabase,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) : CategoriesSpecificRepository {
+
     override suspend fun fetchAssaysByIdCategory(idCategory: Int): List<Assay> {
         return localAssayStorage.assayDao().fetchAllAssaysByIdCategory(idCategory)
             .map { it.toAssay() }
+    }
+
+    override suspend fun getCategoryDescription(idCategory: Int): String {
+        return localAssayStorage.categoryDao().getCategory(idCategory).description
     }
 }

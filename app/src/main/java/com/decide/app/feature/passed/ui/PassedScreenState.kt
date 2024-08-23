@@ -2,15 +2,16 @@ package com.decide.app.feature.passed.ui
 
 import com.decide.app.feature.passed.models.PassedAssay
 
-sealed class PassedScreenState {
+sealed interface PassedScreenState {
 
-    data class Success(val assays: List<PassedAssay>) : PassedScreenState()
+    data class Success(val assays: List<PassedAssay>) : PassedScreenState
 
-    data object Default : PassedScreenState()
+    data object Empty : PassedScreenState
+    data object Loading : PassedScreenState
 
-    class Error(val message: String) : PassedScreenState()
+    class Error(val message: String) : PassedScreenState
 
     companion object {
-        val Initial: PassedScreenState = Default
+        val Initial: PassedScreenState = Loading
     }
 }

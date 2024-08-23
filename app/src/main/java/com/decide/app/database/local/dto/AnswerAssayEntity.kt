@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class AnswerAssayEntity(
     val id: Int,
     val text: String,
-    val value: Int
+    val value: Float
 )
 
 fun AnswerAssayEntity.toAnswerAssay(): AnswerAssay {

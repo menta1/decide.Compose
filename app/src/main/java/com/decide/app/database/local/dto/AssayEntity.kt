@@ -16,7 +16,7 @@ data class AssayEntity(
     val dateCreation: String,
     val rating: String,
     val type: Int,
-    val results: List<ResultCompletedAssayEntity>
+    val results: List<ResultCompletedAssayEntity> = listOf()
 )
 
 fun AssayEntity.toAssay(): Assay {

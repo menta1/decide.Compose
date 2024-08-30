@@ -25,10 +25,13 @@ class AssayMainRepositoryImpl @Inject constructor(
 
     override fun getAssays(): Flow<Resource<List<Assay>>> {
 
-        coroutineScope.launch { remoteAssayStorage.getAssays() }
+      //  coroutineScope.launch { remoteAssayStorage.getAssays() }
 
         return localStorage.assayDao()::getFlowAssays.invoke()
             .map { result ->
+                if (result.isEmpty()){
+                    getAssays()
+                }
                 Resource.Success(result.map { it.toAssay() })
             }
             .catch { Resource.Error(it) }

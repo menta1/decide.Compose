@@ -2,6 +2,7 @@ package com.decide.app.feature.assay.assayProcess
 
 data class KeyAssay(
     val id: Int,
+    val idCategory: Int,
     val name: String,
     val titleCategoryEng: String,
     val result: Map<String, String>,

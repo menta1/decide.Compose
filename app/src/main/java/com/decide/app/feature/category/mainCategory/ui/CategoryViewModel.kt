@@ -30,7 +30,7 @@ class CategoryViewModel @Inject constructor(
             }
 
             is Resource.Success -> {
-                CategoryState.Success(result.data.toImmutableList())
+                CategoryState.Loaded(result.data.toImmutableList())
             }
         }
     }

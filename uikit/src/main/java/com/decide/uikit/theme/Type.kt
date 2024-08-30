@@ -1,5 +1,6 @@
 package com.decide.uikit.theme
 
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -9,6 +10,128 @@ import androidx.compose.ui.unit.sp
 import com.decide.uikit.R
 
 //Fira Sans
+private val FiraSans = FontFamily(
+    Font(R.font.fira_sans_light),
+    Font(R.font.fira_sans_regular),
+    Font(R.font.fira_sans_semi_bold),
+    Font(R.font.fira_sans_bold)
+)
+
+private val Mulish = FontFamily(
+    Font(R.font.mulish_bold),
+    Font(R.font.mulish_extra_bold),
+    Font(R.font.mulish_regular)
+)
+
+val DecideTypography = Typography(
+    displayLarge = TextStyle(
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.Light,
+        fontSize = 57.sp,
+        lineHeight = 64.sp,
+        letterSpacing = 0.sp
+    ),
+    displayMedium = TextStyle(
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.Light,
+        fontSize = 45.sp,
+        lineHeight = 52.sp,
+        letterSpacing = 0.sp
+    ),
+    displaySmall = TextStyle(
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.Normal,
+        fontSize = 36.sp,
+        lineHeight = 44.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 32.sp,
+        lineHeight = 40.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 28.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp,
+        lineHeight = 32.sp,
+        letterSpacing = 0.sp
+    ),
+    titleLarge = TextStyle(//titleScreen//buttonLarge
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(//heading//cardAccent//searchText
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.15.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = Mulish,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    bodyLarge = TextStyle(//defaultTextEmpty//body
+        fontFamily = Mulish,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.15.sp
+    ),
+    bodyMedium = TextStyle(//assay
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.25.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = Mulish,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.4.sp
+    ),
+    labelLarge = TextStyle(//cardLarge
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    labelMedium = TextStyle(//tabBar
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    ),
+    labelSmall = TextStyle(//tabBarSelected
+        fontFamily = FiraSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    )
+)
+
+
 val firaSansRegular = FontFamily(Font(R.font.fira_sans_regular))
 val firaSansBold = FontFamily(Font(R.font.fira_sans_bold))
 val firaSansSemiBold = FontFamily(Font(R.font.fira_sans_semi_bold))
@@ -22,7 +145,7 @@ val mulishExtraBold = FontFamily(Font(R.font.mulish_extra_bold))
 val jostSemiBold = FontFamily(Font(R.font.jost_semi_bold))
 
 @Immutable
-data class DecideTypography(
+data class DecideeTypography(
     //Fira Sans
     val body: TextStyle = TextStyle(
         fontFamily = firaSansRegular,
@@ -122,7 +245,7 @@ data class DecideTypography(
         fontFamily = mulishExtraBold,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 12.sp,
+        lineHeight = 14.sp,
     ),
     val titleMedium: TextStyle = TextStyle(
         fontFamily = mulishBold,

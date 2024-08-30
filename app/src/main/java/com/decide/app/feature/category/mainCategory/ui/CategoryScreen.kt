@@ -56,7 +56,7 @@ fun CategoryScreen(
     ) {
         Text(
             text = "Категории",
-            style = DecideTheme.typography.titleScreen,
+            style = DecideTheme.typography.titleLarge,
             color = DecideTheme.colors.inputBlack
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -65,11 +65,11 @@ fun CategoryScreen(
             modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (state) {
-                is CategoryState.Success -> {
+                is CategoryState.Loaded -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                     ) {
-                        items(state.categories) { item: Category ->
+                        items(state.categories, key = {item -> item.id}) { item: Category ->
                             /**
                              * Нужно проверить содержит ли категория хотя бы один тест
                              * в противном случае не показывать
@@ -116,7 +116,7 @@ fun CategoryScreen(
 fun PreviewCategoryScreen() {
     val state: CategoryState by remember {
         mutableStateOf(
-            CategoryState.Success(
+            CategoryState.Loaded(
                 listOf(
                     Category(
                         id = 1,

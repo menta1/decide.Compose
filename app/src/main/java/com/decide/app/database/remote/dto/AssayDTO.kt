@@ -1,7 +1,6 @@
-package com.decide.app.database.remote.assay.dto
+package com.decide.app.database.remote.dto
 
 import com.decide.app.database.local.dto.AssayEntity
-import com.decide.app.feature.assay.mainAssay.modals.Assay
 import kotlinx.serialization.SerialName
 
 data class AssayDTO(
@@ -12,21 +11,25 @@ data class AssayDTO(
     @SerialName("nameCategory") val nameCategory: String = "",
     @SerialName("questions") val questions: List<QuestionAssayDTO> = emptyList(),
     @SerialName("dateCreation") val dateCreation: String = "",
+    @SerialName("type") val type: Int = -1,
+    @SerialName("timeForTest") val timeForTest: Long = -1,
+    @SerialName("timeForQuestions") val timeForQuestions: Long = -1,
     @SerialName("rating") val rating: String = "",
-    @SerialName("type") val type: Int = -1
 )
 
-fun AssayDTO.toAssay() = Assay(
-    id,
-    idCategory,
-    name,
-    description,
-    nameCategory,
-    convertToQuestionAssay(questions),
-    dateCreation,
-    rating,
-    type
-)
+//fun AssayDTO.toAssay() = Assay(
+//    id,
+//    idCategory,
+//    name,
+//    description,
+//    nameCategory,
+//    convertToQuestionAssay(questions),
+//    dateCreation,
+//    type,
+//    timeForTest,
+//    timeForQuestions,
+//    rating
+//)
 
 fun AssayDTO.toAssayEntity() = AssayEntity(
     id = id,
@@ -38,4 +41,6 @@ fun AssayDTO.toAssayEntity() = AssayEntity(
     dateCreation = dateCreation,
     rating = rating,
     type = type,
+    timeForQuestions = timeForQuestions,
+    timeForTest = timeForTest
 )

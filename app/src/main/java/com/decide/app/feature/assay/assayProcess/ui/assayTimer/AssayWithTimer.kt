@@ -1,4 +1,4 @@
-package com.decide.app.feature.assay.assayProcess.ui.assaysTypes
+package com.decide.app.feature.assay.assayProcess.ui.assayTimer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -60,7 +60,7 @@ fun AssayWithTimer() {
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = "Назад",
-                style = DecideTheme.typography.titleScreen,
+                style = DecideTheme.typography.titleLarge,
                 color = DecideTheme.colors.inputBlack,
             )
         }
@@ -82,7 +82,7 @@ fun AssayWithTimer() {
 
             Text(
                 text = "03:23",
-                style = DecideTheme.typography.titleScreen,
+                style = DecideTheme.typography.titleLarge,
                 color = DecideTheme.colors.inputBlack,
             )
 

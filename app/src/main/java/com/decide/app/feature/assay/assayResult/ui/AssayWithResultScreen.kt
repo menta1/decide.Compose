@@ -71,13 +71,13 @@ fun AssayWithResultScreen(
                     if (state.result.results.size > 1) {
                         Text(
                             text = "Ваш результат:",
-                            style = DecideTheme.typography.titleScreen,
+                            style = DecideTheme.typography.titleLarge,
                             color = DecideTheme.colors.inputBlack,
                         )
                     } else {
                         Text(
                             text = "Ваши результаты:",
-                            style = DecideTheme.typography.titleScreen,
+                            style = DecideTheme.typography.titleLarge,
                             color = DecideTheme.colors.inputBlack,
                         )
                     }
@@ -95,35 +95,36 @@ fun AssayWithResultScreen(
                             ) {
                             Text(
                                 text = "Результат: ",
-                                style = DecideTheme.typography.headingDesc2,
+                                style = DecideTheme.typography.titleLarge,
                                 color = DecideTheme.colors.inputBlack,
                             )
                             Text(
                                 text = state.result.shortResults[index],
-                                style = DecideTheme.typography.headingDesc,
+                                style = DecideTheme.typography.titleMedium,
                                 color = DecideTheme.colors.inputBlack,
                                 textAlign = TextAlign.End
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Описание",
-                            style = DecideTheme.typography.searchText,
-                            color = DecideTheme.colors.inputBlack,
-                        )
-                        Text(
                             text = s,
-                            style = DecideTheme.typography.bodyText,
+                            style = DecideTheme.typography.bodyLarge,
                             color = DecideTheme.colors.inputBlack,
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "**Однако важно помнить, что результаты теста не могут заменить профессиональную консультацию специалиста. Если у вас есть какие-либо вопросы или сомнения относительно своего эмоционального состояния, рекомендуется обратиться к психологу или психотерапевту. Они помогут вам разобраться в своих чувствах и при необходимости предложат способы улучшения вашего самочувствия.",
-                        style = DecideTheme.typography.bodyClarification,
-                        color = DecideTheme.colors.mainGreen40,
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "**Однако важно помнить, что результаты теста не могут заменить профессиональную консультацию специалиста. Если у вас есть какие-либо вопросы или сомнения относительно своего эмоционального состояния, рекомендуется обратиться к психологу или психотерапевту. Они помогут вам разобраться в своих чувствах и при необходимости предложат способы улучшения вашего самочувствия.",
+                            style = DecideTheme.typography.bodySmall,
+                            color = DecideTheme.colors.mainGreen40,
+                        )
+                    }
+
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -140,7 +141,7 @@ fun AssayWithResultScreen(
                     Text(
                         modifier = Modifier.padding(top = 60.dp),
                         text = "Анализируем...",
-                        style = DecideTheme.typography.searchText,
+                        style = DecideTheme.typography.titleSmall,
                         color = DecideTheme.colors.inputBlack,
                     )
                     Spacer(modifier = Modifier.height(84.dp))

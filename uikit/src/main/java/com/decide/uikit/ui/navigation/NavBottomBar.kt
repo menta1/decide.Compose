@@ -136,7 +136,7 @@ fun BottomBarItem(
         Text(
             text = text,
             color = DecideTheme.colors.inputBlack,
-            style = if (selected) DecideTheme.typography.tabBarSelected else DecideTheme.typography.tabBar,
+            style = if (selected) DecideTheme.typography.labelSmall else DecideTheme.typography.labelMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

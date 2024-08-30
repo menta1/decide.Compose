@@ -4,10 +4,10 @@ import android.annotation.SuppressLint
 import android.util.Log
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.remote.assay.RemoteAssayStorage
-import com.decide.app.database.remote.assay.dto.AssayDTO
-import com.decide.app.database.remote.assay.dto.KeyDto
-import com.decide.app.database.remote.assay.dto.toAssayEntity
-import com.decide.app.database.remote.assay.dto.toKeyEntity
+import com.decide.app.database.remote.dto.AssayDTO
+import com.decide.app.database.remote.dto.KeyDto
+import com.decide.app.database.remote.dto.toAssayEntity
+import com.decide.app.database.remote.dto.toKeyEntity
 import com.decide.app.database.remote.dto.CategoryDTO
 import com.decide.app.database.remote.dto.toCategoryEntity
 import com.decide.app.utils.NetworkChecker
@@ -79,16 +79,21 @@ class RemoteAssayStorageImpl @Inject constructor(
     }
 
     override suspend fun getKey(id: String) {
-        firebaseFireStore.collection(KEYS).document(id).get()
-            .addOnCompleteListener { task: Task<DocumentSnapshot> ->
-                coroutineScope.launch {
-                    task.result.toObject(KeyDto::class.java)
-                        ?.let { localStorage.keyDao().insert(it.toKeyEntity()) }
+        try {
+            firebaseFireStore.collection(KEYS).document(id).get()
+                .addOnCompleteListener { task: Task<DocumentSnapshot> ->
+                    coroutineScope.launch {
+                        task.result.toObject(KeyDto::class.java)
+                            ?.let { localStorage.keyDao().insert(it.toKeyEntity()) }
+                    }
                 }
-            }
-            .addOnFailureListener {
-                Log.d("FIREBASE", "FIREBASE ERRORS = $it")
-            }
+                .addOnFailureListener {
+                    Log.d("FIREBASE", "FIREBASE ERRORS = $it")
+                }
+        }catch (e: Exception){
+            Log.d("FIREBASE", "FIREBASE ERRORS = $e")
+        }
+
     }
 
     companion object {

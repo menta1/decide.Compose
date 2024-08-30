@@ -30,14 +30,14 @@ fun AppNavScreen(
         ) {
             BottomBar(navController)
         }
-    }, contentColor = DecideTheme.colors.mainBlue) {
+    }, contentColor = DecideTheme.colors.background) {
 
         AppHost(
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier
                 .padding(it)
-                .background(color = DecideTheme.colors.mainBlue)
+                .background(color = DecideTheme.colors.background)
         )
     }
 }

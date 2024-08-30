@@ -22,13 +22,13 @@ fun ErrorMessage() {
     ) {
         Text(
             text = "Произошла ошибка!",
-            style = DecideTheme.typography.searchText,
+            style = DecideTheme.typography.headlineSmall,
             color = DecideTheme.colors.inputBlack,
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Попробуйте перезапустить приложение",
-            style = DecideTheme.typography.searchText,
+            text = "Попробуйте позже",
+            style = DecideTheme.typography.titleLarge,
             color = DecideTheme.colors.inputBlack,
         )
     }

@@ -1,4 +1,4 @@
-package com.decide.app.database.remote.assay.dto
+package com.decide.app.database.remote.dto
 
 import com.decide.app.utils.Response
 

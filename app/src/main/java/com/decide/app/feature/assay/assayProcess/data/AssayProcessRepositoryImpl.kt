@@ -6,7 +6,7 @@ import com.decide.app.database.local.dto.toAssay
 import com.decide.app.database.local.dto.toKeyAssay
 import com.decide.app.database.remote.assay.RemoteAssayStorage
 import com.decide.app.feature.assay.assayProcess.KeyAssay
-import com.decide.app.feature.assay.assayProcess.domain.AssayProcessRepository
+import com.decide.app.feature.assay.assayProcess.domain.useCase.AssayProcessRepository
 import com.decide.app.feature.assay.mainAssay.modals.Assay
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.app.utils.Resource

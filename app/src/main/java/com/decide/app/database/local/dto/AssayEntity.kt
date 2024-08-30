@@ -14,27 +14,32 @@ data class AssayEntity(
     val nameCategory: String,
     val questions: List<QuestionEntity>,
     val dateCreation: String,
-    val rating: String,
     val type: Int,
+    val timeForTest: Long,
+    val timeForQuestions: Long,
+    val rating: String,
     val results: List<ResultCompletedAssayEntity> = listOf()
 )
 
-fun AssayEntity.toAssay(): Assay {
-    return Assay(
-        id,
-        idCategory,
-        name,
-        description,
-        nameCategory,
-        convertToQuestionAssay(questions),
-        dateCreation,
-        rating,
-        type
-    )
-}
+fun AssayEntity.toAssay() = Assay(
+    id = id,
+    idCategory = idCategory,
+    name = name,
+    description = description,
+    nameCategory = nameCategory,
+    questions = convertToQuestionAssay(questions),
+    dateCreation = dateCreation,
+    type = type,
+    timeForTest = timeForTest,
+    timeForQuestions = timeForQuestions,
+    rating = rating
+)
 
-fun AssayEntity.toPassedAssay(): PassedAssay {
-    return PassedAssay(
-        id, idCategory, name, nameCategory, rating, results.map { it.toResultCompletedAssay() }
-    )
-}
+fun AssayEntity.toPassedAssay() = PassedAssay(
+    id = id,
+    idCategory = idCategory,
+    name = name,
+    nameCategory = nameCategory,
+    rating = rating,
+    results = results.map { it.toResultCompletedAssay() }
+)

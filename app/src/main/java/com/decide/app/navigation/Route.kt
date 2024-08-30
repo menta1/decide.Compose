@@ -40,9 +40,19 @@ object AssayCheckStarted : DecideDestination {
         get() = "CHECK_STARTED_ASSAY"
 }
 
-object AssayProcess : DecideDestination {
+object AssayText : DecideDestination {
     override val route: String
-        get() = "ASSAY_PROCESS"
+        get() = "ASSAY_TEXT"
+}
+
+object AssayTimer : DecideDestination {
+    override val route: String
+        get() = "ASSAY_TIMER"
+}
+
+object AssayImage : DecideDestination {
+    override val route: String
+        get() = "ASSAY_IMAGE"
 }
 
 object AssayWithResult : DecideDestination {

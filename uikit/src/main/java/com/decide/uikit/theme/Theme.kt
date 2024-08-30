@@ -1,8 +1,67 @@
 package com.decide.uikit.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+
+
+private val LightColorPalette = DecideColors(
+    background = uiBackground,
+    mainGreen40 = mainColorGreen40,
+    accentYellow = accentColorYellow,
+    accentGreen = accentColorGreen,
+    accentPink = accentColorPink,
+    buttonPrimary = buttonColorPrimary,
+    unableElementLight = unableElementsColorLight,
+    inputWhite = inputColorWhite,
+    inputBlack = inputColorBlack,
+    gray = unselectedColor,
+    textHelp = mainColorGreen40,
+    textLink = mainColorGreen40,
+    error = functionalRed,
+    isDark = false
+)
+
+private val DarkColorPalette = DecideColors(
+    background = uiBackground,
+    mainGreen40 = mainColorGreen40,
+    accentYellow = accentColorYellow,
+    accentGreen = accentColorGreen,
+    accentPink = accentColorPink,
+    buttonPrimary = buttonColorPrimary,
+    unableElementLight = unableElementsColorLight,
+    inputWhite = inputColorWhite,
+    inputBlack = inputColorBlack,
+    gray = unselectedColor,
+    textHelp = mainColorGreen40,
+    textLink = mainColorGreen40,
+    error = functionalRedDark,
+    isDark = true
+)
+
+
+@Immutable
+data class DecideColors(
+    val background: Color = Color.Unspecified,
+    val mainGreen40: Color = Color.Unspecified,
+    val accentYellow: Color = Color.Unspecified,
+    val accentGreen: Color = Color.Unspecified,
+    val accentPink: Color = Color.Unspecified,
+    val buttonPrimary: Color = Color.Unspecified,
+    val unableElementLight: Color = Color.Unspecified,
+    val inputWhite: Color = Color.Unspecified,
+    val inputBlack: Color = Color.Unspecified,
+    val gray: Color = Color.Unspecified,
+    val textHelp: Color = Color.Unspecified,
+    val textLink: Color = Color.Unspecified,
+    val error: Color = Color.Unspecified,
+    val notificationBadge: Color = error,
+    val isDark: Boolean = false
+)
 
 
 val LocalDecideColors = staticCompositionLocalOf {
@@ -10,12 +69,12 @@ val LocalDecideColors = staticCompositionLocalOf {
 }
 
 val LocalInTouchTypography = staticCompositionLocalOf {
-    DecideTypography()
+    DecideTypography
 }
 
 
 object DecideTheme {
-    val typography: DecideTypography
+    val typography: Typography
         @Composable get() = LocalInTouchTypography.current
     val colors: DecideColors
         @Composable get() = LocalDecideColors.current
@@ -23,59 +82,15 @@ object DecideTheme {
 
 @Composable
 fun DecideTheme(
-    typography: DecideTypography = DecideTheme.typography,
-    colors: DecideColors = DecideTheme.colors,
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    typography: Typography = DecideTheme.typography,
     content: @Composable () -> Unit
 ) {
+    val color = if (darkTheme) DarkColorPalette else LightColorPalette
+
     CompositionLocalProvider(
-        LocalDecideColors provides colors,
+        LocalDecideColors provides color,
         LocalInTouchTypography provides typography,
         content = content
     )
 }
-
-//private val DarkColorScheme = darkColorScheme(
-//    primary = Purple80,
-//    secondary = PurpleGrey80,
-//    tertiary = Pink80
-//)
-//
-//private val LightColorScheme = lightColorScheme(
-//    primary = Purple40,
-//    secondary = PurpleGrey40,
-//    tertiary = Pink40
-
-/* Other default colors to override
-background = Color(0xFFFFFBFE),
-surface = Color(0xFFFFFBFE),
-onPrimary = Color.White,
-onSecondary = Color.White,
-onTertiary = Color.White,
-onBackground = Color(0xFF1C1B1F),
-onSurface = Color(0xFF1C1B1F),
-*/
-
-//
-//@Composable
-//fun DecideTheme(
-//    darkTheme: Boolean = isSystemInDarkTheme(),
-//    // Dynamic color is available on Android 12+
-//    dynamicColor: Boolean = true,
-//    content: @Composable () -> Unit
-//) {
-//    val colorScheme = when {
-//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-//            val context = LocalContext.current
-//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-//        }
-//
-//        darkTheme -> DarkColorScheme
-//        else -> LightColorScheme
-//    }
-//
-//    MaterialTheme(
-//        colorScheme = colorScheme,
-//        typography = Typography,
-//        content = content
-//    )
-//}

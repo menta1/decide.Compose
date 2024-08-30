@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme
 
@@ -34,7 +35,7 @@ fun ButtonVariant(
     background: Color = DecideTheme.colors.inputWhite,
     text: String,
     textColor: Color = DecideTheme.colors.inputBlack,
-    textStyle: TextStyle = DecideTheme.typography.assay,
+    textStyle: TextStyle = DecideTheme.typography.bodyMedium,
     selected: Boolean = false,
     iconSelected: Painter = painterResource(id = R.drawable.ic_checkbox_selected),
     tintIconSelected: Color = DecideTheme.colors.accentGreen,
@@ -59,10 +60,10 @@ fun ButtonVariant(
             tint = if (selected) tintIconSelected else tintIconUnselected
         )
         Text(
-            modifier = Modifier.padding(end = 20.dp),
+            modifier = Modifier.padding(end = 20.dp).padding(vertical = 4.dp),
             text = text,
             color = textColor,
-            style = textStyle
+            style = if(selected) textStyle.copy(fontSize = 15.sp) else textStyle
         )
     }
 }
@@ -92,10 +93,11 @@ fun PreviewButtonVariantSelected() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.Gray)
             .padding(horizontal = 39.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        ButtonVariant(text = "Начатьasssssssssssssssssssssasassa", selected = selected) {
+        ButtonVariant(text = "НачатьasssssssНачатьasssssssssssssssssssssasassaНачатьasssssssssssssssssssssasassaНачатьasssssssssssssssssssssasassaНачатьasssssssssssssssssssssasassassssssssssssssasassa", selected = selected) {
             selected = !selected
         }
     }

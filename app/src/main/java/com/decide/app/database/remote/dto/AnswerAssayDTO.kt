@@ -1,4 +1,4 @@
-package com.decide.app.database.remote.assay.dto
+package com.decide.app.database.remote.dto
 
 import com.decide.app.database.local.dto.AnswerAssayEntity
 import com.decide.app.feature.assay.mainAssay.modals.AnswerAssay
@@ -10,22 +10,21 @@ data class AnswerAssayDTO(
     @SerialName("value") val value: Float = 0f
 )
 
-fun AnswerAssayDTO.toAnswerAssay(): AnswerAssay {
-    return AnswerAssay(
-        id, text, value
-    )
-}
-
+fun AnswerAssayDTO.toAnswerAssay() = AnswerAssay(
+    id = id,
+    text = text,
+    value = value
+)
 
 fun convertToAnswerAssay(answerAssay: List<AnswerAssayDTO>): List<AnswerAssay> {
     return answerAssay.map { it.toAnswerAssay() }
 }
 
-fun AnswerAssayDTO.toAnswerAssayEntity(): AnswerAssayEntity {
-    return AnswerAssayEntity(
-        id, text, value
-    )
-}
+fun AnswerAssayDTO.toAnswerAssayEntity() = AnswerAssayEntity(
+    id = id,
+    text = text,
+    value = value
+)
 
 fun convertToAnswerAssayEntity(answerAssay: List<AnswerAssayDTO>): List<AnswerAssayEntity> {
     return answerAssay.map { it.toAnswerAssayEntity() }

@@ -29,7 +29,7 @@ fun ButtonMain(
     isActive: Boolean = true,
     text: String,
     textColor: Color = DecideTheme.colors.inputWhite,
-    textStyle: TextStyle = DecideTheme.typography.buttonLarge,
+    textStyle: TextStyle = DecideTheme.typography.titleMedium,
     onClick: () -> Unit
 ) {
 

@@ -20,7 +20,7 @@ class CategoryRepositoryImpl @Inject constructor(
 ) : CategoryRepository {
 
     override fun getCategories(): Flow<Resource<List<Category>>> {
-        coroutineScope.launch { remoteAssayStorage.getCategories() }
+       // coroutineScope.launch { remoteAssayStorage.getCategories() }
 
         return localStorage.categoryDao()::getFlowCategory.invoke()
             .map { result ->

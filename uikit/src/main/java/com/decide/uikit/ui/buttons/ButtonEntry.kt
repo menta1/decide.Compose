@@ -30,7 +30,7 @@ fun ButtonEntry(
     background: Color = DecideTheme.colors.buttonPrimary,
     text: String,
     textColor: Color = DecideTheme.colors.inputWhite,
-    textStyle: TextStyle = DecideTheme.typography.buttonLarge,
+    textStyle: TextStyle = DecideTheme.typography.titleLarge,
     onClick: () -> Unit
 ) {
     Row(

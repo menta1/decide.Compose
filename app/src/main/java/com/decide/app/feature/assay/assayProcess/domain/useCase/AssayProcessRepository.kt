@@ -1,4 +1,4 @@
-package com.decide.app.feature.assay.assayProcess.domain
+package com.decide.app.feature.assay.assayProcess.domain.useCase
 
 import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.mainAssay.modals.Assay

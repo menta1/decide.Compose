@@ -41,7 +41,10 @@ class AssayDescriptionViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _state.update {
-                        AssayDescriptionState.Success(assay.data.description)
+                        AssayDescriptionState.Loaded(
+                            description = assay.data.description,
+                            typeAssay = assay.data.type
+                        )
                     }
                 }
             }

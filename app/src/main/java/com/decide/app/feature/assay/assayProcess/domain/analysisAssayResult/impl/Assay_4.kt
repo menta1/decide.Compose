@@ -2,11 +2,11 @@ package com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.imp
 
 import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl.AnalysisKeyAssayImpl.Companion.NO_KEY_FOR_ASSAY
-import com.decide.app.feature.assay.assayProcess.ui.Answers
+import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import java.util.Date
 
-internal fun assay4(answers: List<Answers>, key: KeyAssay): ResultCompletedAssay {
+internal fun assay4(answers: List<Answer>, key: KeyAssay): ResultCompletedAssay {
     var sincerity = 0f
     val listSincerity = listOf(6, 24, 36, 12, 18, 30, 42, 48, 54)
 

@@ -50,7 +50,7 @@ fun SearchBarDecide(
                     Text(
                         text = hint,
                         maxLines = 1,
-                        style = DecideTheme.typography.searchText.copy(
+                        style = DecideTheme.typography.titleMedium.copy(
                             color = DecideTheme.colors.gray
                         )
                     )
@@ -58,7 +58,7 @@ fun SearchBarDecide(
                 }
                 innerTextField()
             },
-            textStyle = DecideTheme.typography.searchText.copy(
+            textStyle = DecideTheme.typography.titleMedium.copy(
                 color = DecideTheme.colors.inputBlack
             ),
             singleLine = true,

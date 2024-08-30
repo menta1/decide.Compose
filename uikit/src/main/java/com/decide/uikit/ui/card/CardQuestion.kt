@@ -20,7 +20,7 @@ import com.decide.uikit.theme.DecideTheme
 fun CardQuestion(
     modifier: Modifier = Modifier,
     text: String = "",
-    textStyle: TextStyle = DecideTheme.typography.cardAccent,
+    textStyle: TextStyle = DecideTheme.typography.titleMedium,
     textColor: Color = DecideTheme.colors.inputBlack,
     background: Color = DecideTheme.colors.inputWhite,
 

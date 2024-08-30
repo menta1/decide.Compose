@@ -29,19 +29,19 @@ fun AppHost(
         navController = navController, startDestination = startDestination, modifier = modifier
     ) {
 
-        composable(route = Assay.route) {
+        composable(route = Assay.route, enterTransition = null, exitTransition = null) {
             AssayMainScreen(onClickAssay = { argument ->
                 navController.navigate(route = AssayRouteBranch.route + "$argument")
             })
         }
-        composable(route = Category.route) {
+        composable(route = Category.route, enterTransition = null, exitTransition = null) {
             CategoryScreen(onClickSpecificCategory = { argument ->
                 navController.navigate(route = CategoriesSpecific.route + argument)
             })
         }
 
         composable(
-            route = CategoriesSpecific.route + "{idCategory}",
+            route = CategoriesSpecific.route + "{idCategory}", enterTransition = null, exitTransition = null,
             arguments = listOf(navArgument("idCategory") {
                 type = NavType.IntType
             })
@@ -52,7 +52,7 @@ fun AppHost(
             }, onClickBack = {})
         }
 
-        composable(route = Passed.route) {
+        composable(route = Passed.route, enterTransition = null, exitTransition = null) {
             PassedScreen(onClickResult = { id: Int, date: Long ->
                 navController.navigate(route = "${AssayWithResult.route}?idAssay=$id&dateAssay=$date")
             })

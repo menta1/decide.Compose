@@ -10,12 +10,11 @@ data class AnswerAssayEntity(
     val value: Float
 )
 
-fun AnswerAssayEntity.toAnswerAssay(): AnswerAssay {
-    return AnswerAssay(
-        id, text, value
-    )
-}
-
+fun AnswerAssayEntity.toAnswerAssay() = AnswerAssay(
+    id = id,
+    text = text,
+    value = value
+)
 
 fun convertToAnswerAssay(answerAssay: List<AnswerAssayEntity>): List<AnswerAssay> {
     return answerAssay.map { it.toAnswerAssay() }

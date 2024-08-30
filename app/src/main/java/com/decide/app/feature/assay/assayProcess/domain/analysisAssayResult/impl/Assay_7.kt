@@ -1,10 +1,10 @@
 package com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl
 
 import com.decide.app.feature.assay.assayProcess.KeyAssay
-import com.decide.app.feature.assay.assayProcess.ui.Answers
+import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 
-internal fun assay7(answers: List<Answers>, key: KeyAssay): ResultCompletedAssay {
+internal fun assay7(answers: List<Answer>, key: KeyAssay): ResultCompletedAssay {
     var iam = 0f
     var communication = 0f
     var business = 0f

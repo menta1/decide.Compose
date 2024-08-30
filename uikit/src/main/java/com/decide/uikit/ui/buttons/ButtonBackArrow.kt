@@ -23,7 +23,7 @@ fun ButtonBackArrow(
     modifier: Modifier = Modifier,
     text: String,
     textColor: Color = DecideTheme.colors.inputBlack,
-    textStyle: TextStyle = DecideTheme.typography.titleScreen,
+    textStyle: TextStyle = DecideTheme.typography.headlineMedium,
     icon: Painter = painterResource(id = R.drawable.ic_back_arrow),
     tintIcon: Color = DecideTheme.colors.inputBlack,
     onClick: () -> Unit

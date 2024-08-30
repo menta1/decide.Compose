@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.rememberAsyncImagePainter
 import com.decide.app.R
 import com.decide.app.utils.setDrawable
 import com.decide.uikit.theme.DecideTheme
@@ -69,7 +70,7 @@ fun AssayMainScreen(
     ) {
         Text(
             text = "Психологические тесты",
-            style = DecideTheme.typography.titleScreen,
+            style = DecideTheme.typography.titleLarge,
             color = DecideTheme.colors.inputBlack
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -81,8 +82,8 @@ fun AssayMainScreen(
             state,
             transitionSpec = {
                 fadeIn(
-                    animationSpec = tween(3000)
-                ) togetherWith fadeOut(animationSpec = tween(3000))
+                    animationSpec = tween(500)
+                ) togetherWith fadeOut(animationSpec = tween(300))
             },
             label = "Animated Content"
         ) { targetState ->
@@ -107,7 +108,7 @@ internal fun Loaded(
     onClickAssay: (argument: Int) -> Unit,
 ) {
     LazyColumn {
-        items(assays) { assay ->
+        items(assays, key = { item -> item.id }) { assay ->
             Spacer(modifier = Modifier.height(16.dp))
             CardAssay(
                 image = painterResource(id = setDrawable(assay.idCategory)),

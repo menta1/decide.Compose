@@ -29,14 +29,16 @@ import com.decide.uikit.ui.buttons.CircleDecideIndicator
 fun AssayDescriptionScreen(
     idAssay: Int?,
     viewModel: AssayDescriptionViewModel = hiltViewModel(),
-    onClickStart: (argument: Int) -> Unit,
+    onStartAssayText: (argument: Int) -> Unit,
+    onStartAssayTimer: (argument: Int) -> Unit,
     onClickBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     AssayDescriptionScreen(
         state = state,
-        onClickStart = { onClickStart(idAssay ?: -1) },
+        onStartAssayText = { onStartAssayText(idAssay ?: -1) },
+        onStartAssayTimer = { onStartAssayTimer(idAssay ?: -1) },
         onClickBack = onClickBack
     )
 }
@@ -44,7 +46,8 @@ fun AssayDescriptionScreen(
 @Composable
 fun AssayDescriptionScreen(
     state: AssayDescriptionState,
-    onClickStart: () -> Unit,
+    onStartAssayText: () -> Unit,
+    onStartAssayTimer: () -> Unit,
     onClickBack: () -> Unit
 ) {
     Column(
@@ -56,17 +59,21 @@ fun AssayDescriptionScreen(
         ButtonBackArrow(text = "Назад", onClick = { onClickBack() })
 
         when (state) {
-            is AssayDescriptionState.Success -> {
+            is AssayDescriptionState.Loaded -> {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(top = 8.dp)
                 ) {
-                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                            .padding(bottom = 60.dp)
+                    ) {
                         Text(
                             modifier = Modifier.fillMaxHeight(),
-                            text = state.data,
-                            style = DecideTheme.typography.bodyText,
+                            text = state.description,
+                            style = DecideTheme.typography.bodyLarge,
                             color = DecideTheme.colors.inputBlack,
                         )
 
@@ -77,7 +84,16 @@ fun AssayDescriptionScreen(
                             .padding(bottom = 10.dp),
                         text = "Начать"
                     ) {
-                        onClickStart()
+                        when (state.typeAssay) {
+                            1 -> {
+                                onStartAssayText()
+                            }
+
+                            2 -> {
+                                onStartAssayTimer()
+                            }
+                        }
+
                     }
                 }
             }
@@ -111,28 +127,31 @@ fun AssayDescriptionScreen(
 fun PreviewAssayDescriptionScreen() {
     val state by remember {
         mutableStateOf(
-            AssayDescriptionState.Success(
-                "Цель: выявить состояние тревожности и депрессии, обусловленное неуравновешенностью нервных процессов."
+            AssayDescriptionState.Loaded(
+                "Цель: выявить состояwwwwwwwwwwwwwЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнwwwwwwwние тревожности и депрессии, обусловленное неуравновешенностью нервных процессов.",
+                1
             )
         )
     }
-    AssayDescriptionScreen(state = state, onClickBack = {}, onClickStart = {})
+    AssayDescriptionScreen(
+        state = state,
+        onClickBack = {},
+        onStartAssayText = {},
+        onStartAssayTimer = {})
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewLoadingAssayDescriptionScreen() {
-    AssayDescriptionScreen(
-        state = AssayDescriptionState.Initial,
+    AssayDescriptionScreen(state = AssayDescriptionState.Initial,
         onClickBack = {},
-        onClickStart = {})
+        onStartAssayText = {}, onStartAssayTimer = {})
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewErrorAssayDescriptionScreen() {
-    AssayDescriptionScreen(
-        state = AssayDescriptionState.Error,
+    AssayDescriptionScreen(state = AssayDescriptionState.Error,
         onClickBack = {},
-        onClickStart = {})
+        onStartAssayText = {}, onStartAssayTimer = {})
 }

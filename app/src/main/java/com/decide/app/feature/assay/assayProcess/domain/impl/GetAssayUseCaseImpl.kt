@@ -1,6 +1,6 @@
 package com.decide.app.feature.assay.assayProcess.domain.impl
 
-import com.decide.app.feature.assay.assayProcess.domain.AssayProcessRepository
+import com.decide.app.feature.assay.assayProcess.domain.useCase.AssayProcessRepository
 import com.decide.app.feature.assay.assayProcess.domain.useCase.GetAssayUseCase
 import com.decide.app.feature.assay.mainAssay.modals.Assay
 import com.decide.app.utils.Resource

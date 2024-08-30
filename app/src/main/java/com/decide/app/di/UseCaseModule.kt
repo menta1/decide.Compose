@@ -1,5 +1,7 @@
 package com.decide.app.di
 
+import com.decide.app.activity.domain.InitApp
+import com.decide.app.activity.domain.InitAppImpl
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.AnalysisKeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl.AnalysisKeyAssayImpl
 import com.decide.app.feature.assay.assayProcess.domain.impl.GetAssayUseCaseImpl
@@ -23,5 +25,8 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindAnalysisKeyAssay(assayAnalysisKeyAssayImpl: AnalysisKeyAssayImpl): AnalysisKeyAssay
+
+    @Binds
+    abstract fun bindInitApp(initAppImpl: InitAppImpl): InitApp
 
 }

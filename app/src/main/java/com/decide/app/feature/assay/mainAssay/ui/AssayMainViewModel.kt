@@ -36,7 +36,11 @@ class AssayMainViewModel @Inject constructor(
             }
 
             is Resource.Success -> {
-                StateAssay.Loaded(result.data.map { it.toAssayUI() }.toImmutableList())
+                if (result.data.isEmpty()) {
+                    StateAssay.Loading
+                } else {
+                    StateAssay.Loaded(result.data.map { it.toAssayUI() }.toImmutableList())
+                }
             }
         }
     }

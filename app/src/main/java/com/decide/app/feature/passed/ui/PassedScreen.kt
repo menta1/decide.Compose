@@ -53,7 +53,7 @@ fun PassedScreen(
     ) {
         Text(
             text = "Завершенные",
-            style = DecideTheme.typography.titleScreen,
+            style = DecideTheme.typography.titleLarge,
             color = DecideTheme.colors.inputBlack
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -77,13 +77,13 @@ fun PassedScreen(
                     ) {
                         Text(
                             text = "Ничего нет",
-                            style = DecideTheme.typography.defaultTextEmpty,
+                            style = DecideTheme.typography.bodyLarge,
                             color = DecideTheme.colors.inputBlack
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Пройдите хотя бы один тест",
-                            style = DecideTheme.typography.defaultTextEmpty,
+                            style = DecideTheme.typography.bodyLarge,
                             color = DecideTheme.colors.inputBlack
                         )
                     }

@@ -43,14 +43,14 @@ fun CardResultAssay(
     backgroundColor: Color = DecideTheme.colors.inputWhite,
     textCategory: String,
     textColorCategory: Color = DecideTheme.colors.inputBlack,
-    textStyleCategory: TextStyle = DecideTheme.typography.tabBar,
+    textStyleCategory: TextStyle = DecideTheme.typography.labelMedium,
     textAssay: String,
     textColorAssay: Color = DecideTheme.colors.inputBlack,
-    textStyleAssay: TextStyle = DecideTheme.typography.cardLarge,
+    textStyleAssay: TextStyle = DecideTheme.typography.labelLarge,
     textDate: String,
     listDateResults: List<Pair<Long, List<String>>>,
     textColorDate: Color = DecideTheme.colors.inputBlack,
-    textStyleDate: TextStyle = DecideTheme.typography.tabBarSelected,
+    textStyleDate: TextStyle = DecideTheme.typography.labelSmall,
     onClickResult: (id: Int) -> Unit,
     onShowDetailResult: (date: Long) -> Unit
 ) {
@@ -128,59 +128,58 @@ fun CardResultAssay(
                     .padding(horizontal = 14.dp)
                     .padding(vertical = 8.dp)
             ) {
-                listDateResults
-                    .asReversed()
-                    .forEachIndexed { index, item ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 2.dp)
-                                .clickable { onShowDetailResult(item.first) },
-                            shape = RoundedCornerShape(4.dp),
-                            border = BorderStroke(1.dp, Color.Gray),
-                            colors = CardDefaults.cardColors()
-                                .copy(containerColor = backgroundColor)
+                listDateResults.asReversed().forEachIndexed { index, item ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 2.dp)
+                            .clickable { onShowDetailResult(item.first) },
+                        shape = RoundedCornerShape(4.dp),
+                        border = BorderStroke(1.dp, Color.Gray),
+                        colors = CardDefaults.cardColors()
+                            .copy(containerColor = backgroundColor)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(4.dp)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .padding(4.dp)
-                            ) {
-                                Row {
+                            Row {
+                                Text(
+                                    text = "Результат: ",
+                                    color = textColorDate,
+                                    style = textStyleDate,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                item.second.forEach {
                                     Text(
-                                        text = "Результат: ",
-                                        color = textColorDate,
-                                        style = textStyleDate,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = item.second[index],
+                                        text = it,
                                         color = textColorDate,
                                         style = textStyleDate,
                                         softWrap = true,
                                         overflow = TextOverflow.Clip
                                     )
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Row {
-                                    Text(
-                                        text = "Дата прохождения: ",
-                                        color = textColorDate,
-                                        style = textStyleDate,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = dateFormatter(item.first),
-                                        color = textColorDate,
-                                        style = textStyleDate,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Row {
+                                Text(
+                                    text = "Дата прохождения: ",
+                                    color = textColorDate,
+                                    style = textStyleDate,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = dateFormatter(item.first),
+                                    color = textColorDate,
+                                    style = textStyleDate,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                             }
                         }
                     }
+                }
             }
         }
     }
@@ -197,21 +196,18 @@ private fun dateFormatter(date: Long): String {
 fun PreviewCardResultAssay() {
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
-            CardResultAssay(
-                textCategory = "Graphic Design",
+            CardResultAssay(textCategory = "Graphic Design",
                 id = 1,
                 expandedItemId = 1,
                 listDateResults = listOf(
                     Pair(
-                        123123132123,
-                        listOf("Result")
+                        123123132123, listOf("Result")
                     )
                 ),
                 textAssay = "Graphic Design Advanced",
                 textDate = "14.07.2024",
                 onClickResult = {},
-                onShowDetailResult = {}
-            )
+                onShowDetailResult = {})
         }
     }
 }

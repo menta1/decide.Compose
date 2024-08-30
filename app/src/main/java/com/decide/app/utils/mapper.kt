@@ -15,7 +15,7 @@ fun Assay.toAssayUI(): AssayUI {
         name = name,
         idCategory = idCategory,
         nameCategory = nameCategory,
-        countQuestions = countQuestions.size.toString(),
+        countQuestions = questions.size.toString(),
         rating = rating,
     )
 }
@@ -27,11 +27,13 @@ fun Assay.toAssayEntity(): AssayEntity {
         name = name,
         description = description,
         nameCategory = nameCategory,
-        questions = convertToQuestionAssayEntity(countQuestions),
+        questions = convertToQuestionAssayEntity(questions),
         dateCreation = dateCreation,
         rating = rating,
         type = type,
-        results = emptyList()
+        results = emptyList(),
+        timeForQuestions = timeForQuestions,
+        timeForTest = timeForTest
     )
 }
 
@@ -40,7 +42,8 @@ fun QuestionAssay.toQuestionAssayEntity(): QuestionEntity {
         id = id,
         text = text,
         listAnswers = convertToAnswerAssayEntity(listAnswers),
-        image = image
+        image = image,
+        countResponses = countResponses
     )
 }
 

@@ -1,11 +1,13 @@
 package com.decide.app.di
 
+import com.decide.app.activity.repository.MainRepository
+import com.decide.app.activity.repository.MainRepositoryImpl
 import com.decide.app.database.remote.RemoteAssayStorageImpl
 import com.decide.app.database.remote.assay.RemoteAssayStorage
 import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepository
 import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepositoryImpl
 import com.decide.app.feature.assay.assayProcess.data.AssayProcessRepositoryImpl
-import com.decide.app.feature.assay.assayProcess.domain.AssayProcessRepository
+import com.decide.app.feature.assay.assayProcess.domain.useCase.AssayProcessRepository
 import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepository
 import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepositoryImpl
 import com.decide.app.feature.assay.mainAssay.data.AssayMainRepository
@@ -48,4 +50,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindPassedScreenRepository(passedScreenRepositoryImpl: PassedScreenRepositoryImpl): PassedScreenRepository
+
+    @Binds
+    abstract fun bindMainRepository(mainRepositoryImpl: MainRepositoryImpl): MainRepository
 }

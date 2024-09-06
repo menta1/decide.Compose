@@ -1,7 +1,7 @@
 package com.decide.app.database.remote.dto
 
-import com.decide.app.database.local.dto.AnswerAssayEntity
-import com.decide.app.feature.assay.mainAssay.modals.AnswerAssay
+import com.decide.app.database.local.entities.AnswerAssayEntity
+import com.decide.app.feature.assay.assayMain.modals.AnswerAssay
 import kotlinx.serialization.SerialName
 
 data class AnswerAssayDTO(

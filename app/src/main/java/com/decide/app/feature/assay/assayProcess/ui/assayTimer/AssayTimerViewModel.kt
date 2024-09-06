@@ -5,11 +5,11 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import com.decide.app.feature.assay.assayProcess.domain.useCase.GetAssayUseCase
 import com.decide.app.feature.assay.assayProcess.domain.useCase.SaveResultUseCase
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.assay.assayProcess.ui.Answers
-import com.decide.app.feature.assay.mainAssay.modals.QuestionAssay
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

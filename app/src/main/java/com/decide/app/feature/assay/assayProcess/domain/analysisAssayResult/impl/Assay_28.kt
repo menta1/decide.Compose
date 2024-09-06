@@ -4,7 +4,10 @@ import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 
-internal fun assay28(answers: List<Answer>, key: KeyAssay): ResultCompletedAssay {
+internal fun assay28(
+    answers: List<Answer>,
+    key: KeyAssay
+): ResultCompletedAssay {
     var acceptance = 0f
     var cooperation = 0f
     var symbiosis = 0f

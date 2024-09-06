@@ -25,11 +25,11 @@ private val Mulish = FontFamily(
 
 val DecideTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = FiraSans,
-        fontWeight = FontWeight.Light,
+        fontFamily = Mulish,
+        fontWeight = FontWeight.Normal,
         fontSize = 57.sp,
         lineHeight = 64.sp,
-        letterSpacing = 0.sp
+        letterSpacing = 0.15.sp
     ),
     displayMedium = TextStyle(
         fontFamily = FiraSans,
@@ -39,7 +39,7 @@ val DecideTypography = Typography(
         letterSpacing = 0.sp
     ),
     displaySmall = TextStyle(
-        fontFamily = FiraSans,
+        fontFamily = Mulish,
         fontWeight = FontWeight.Normal,
         fontSize = 36.sp,
         lineHeight = 44.sp,

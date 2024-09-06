@@ -44,7 +44,9 @@ fun CategoryScreen(
 
 @Composable
 fun CategoryScreen(
-    modifier: Modifier = Modifier, state: CategoryState, onClickSpecificCategory: (id: Int) -> Unit
+    modifier: Modifier = Modifier,
+    state: CategoryState,
+    onClickSpecificCategory: (id: Int) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -69,7 +71,7 @@ fun CategoryScreen(
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                     ) {
-                        items(state.categories, key = {item -> item.id}) { item: Category ->
+                        items(state.categories, key = { item -> item.id }) { item: Category ->
                             /**
                              * Нужно проверить содержит ли категория хотя бы один тест
                              * в противном случае не показывать
@@ -105,6 +107,10 @@ fun CategoryScreen(
                     ) {
                         ErrorMessage()
                     }
+                }
+
+                CategoryState.Empty -> {
+
                 }
             }
         }

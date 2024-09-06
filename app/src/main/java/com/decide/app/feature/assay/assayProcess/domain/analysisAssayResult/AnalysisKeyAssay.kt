@@ -12,5 +12,5 @@ interface AnalysisKeyAssay {
         answer: List<Answer>,
         answers: List<Answers>,
         key: KeyAssay
-    ): Resource<ResultCompletedAssay>
+    ): Resource<ResultCompletedAssay, Exception>
 }

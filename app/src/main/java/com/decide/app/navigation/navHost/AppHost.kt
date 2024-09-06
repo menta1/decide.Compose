@@ -7,22 +7,27 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.decide.app.feature.assay.mainAssay.ui.AssayMainScreen
+import com.decide.app.feature.assay.assayMain.ui.AssayMainScreen
 import com.decide.app.feature.category.mainCategory.ui.CategoryScreen
 import com.decide.app.feature.category.specificCategory.ui.CategoriesSpecificScreen
 import com.decide.app.feature.passed.ui.PassedScreen
-import com.decide.app.feature.profile.profileMain.ProfileScreen
+import com.decide.app.feature.profile.profileMain.ui.ProfileScreen
 import com.decide.app.navigation.Assay
 import com.decide.app.navigation.AssayRouteBranch
 import com.decide.app.navigation.AssayWithResult
+import com.decide.app.navigation.Authentication
 import com.decide.app.navigation.CategoriesSpecific
 import com.decide.app.navigation.Category
 import com.decide.app.navigation.Passed
 import com.decide.app.navigation.Profile
+import com.decide.app.navigation.Registration
+import com.decide.app.navigation.Settings
 
 @Composable
 fun AppHost(
-    navController: NavHostController, startDestination: String, modifier: Modifier
+    navController: NavHostController,
+    startDestination: String,
+    modifier: Modifier
     //authDestination: String?,
 ) {
     NavHost(
@@ -41,7 +46,9 @@ fun AppHost(
         }
 
         composable(
-            route = CategoriesSpecific.route + "{idCategory}", enterTransition = null, exitTransition = null,
+            route = CategoriesSpecific.route + "{idCategory}",
+            enterTransition = null,
+            exitTransition = null,
             arguments = listOf(navArgument("idCategory") {
                 type = NavType.IntType
             })
@@ -58,9 +65,20 @@ fun AppHost(
             })
         }
         composable(route = Profile.route) {
-            ProfileScreen()
+            ProfileScreen(
+                onClickSetting = {
+                    navController.navigate(route = Settings.route)
+                },
+                onClickLogin = {
+                    navController.navigate(route = Authentication.route)
+                },
+                onClickRegistration = {
+                    navController.navigate(route = Registration.route)
+                },
+            )
         }
         addNestedAssayGraph(navController = navController)
         addNestedProfileGraph(navController = navController)
+        addNestedAuthenticationGraph(navController = navController)
     }
 }

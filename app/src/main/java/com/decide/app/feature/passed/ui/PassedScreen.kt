@@ -115,7 +115,7 @@ fun PassedScreen(
 
 }
 
-@Preview
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreviewPassedScreen() {
     val state by remember {

@@ -16,7 +16,8 @@ import com.decide.uikit.ui.navigation.NavBottomBar
 
 @Composable
 fun AppNavScreen(
-    startDestination: String, auth: String? = null
+    startDestination: String,
+    auth: String? = null
 ) {
     val itemsNavBottomBar = listOf(
         Assay.route, Category.route, Passed.route, Profile.route

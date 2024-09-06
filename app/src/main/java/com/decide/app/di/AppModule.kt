@@ -2,6 +2,10 @@ package com.decide.app.di
 
 import android.content.Context
 import android.net.ConnectivityManager
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.local.dao.AssayDao
@@ -22,6 +26,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    private const val PREFERENCES_STORE_NAME = "user_datastore"
 
     @Provides
     @Singleton
@@ -60,4 +66,13 @@ object AppModule {
     @Provides
     @Singleton
     fun coroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    @Provides
+    @Singleton
+    fun providePreferencesDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> =
+        PreferenceDataStoreFactory.create(
+            produceFile = {
+                appContext.preferencesDataStoreFile(PREFERENCES_STORE_NAME)
+            }
+        )
 }

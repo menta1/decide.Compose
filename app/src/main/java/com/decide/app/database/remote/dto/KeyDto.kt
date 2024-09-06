@@ -1,6 +1,6 @@
 package com.decide.app.database.remote.dto
 
-import com.decide.app.database.local.dto.KeyEntity
+import com.decide.app.database.local.entities.KeyEntity
 import kotlinx.serialization.SerialName
 
 data class KeyDto(

@@ -1,8 +1,8 @@
 package com.decide.app.feature.category.specificCategory.data
 
 import com.decide.app.database.local.AppDatabase
-import com.decide.app.database.local.dto.toAssay
-import com.decide.app.feature.assay.mainAssay.modals.Assay
+import com.decide.app.database.local.entities.toAssay
+import com.decide.app.feature.assay.assayMain.modals.Assay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject

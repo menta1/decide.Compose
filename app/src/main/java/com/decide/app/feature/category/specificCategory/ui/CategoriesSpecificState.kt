@@ -1,10 +1,13 @@
 package com.decide.app.feature.category.specificCategory.ui
 
-import com.decide.app.feature.assay.mainAssay.ui.AssayUI
+import com.decide.app.feature.assay.assayMain.ui.AssayUI
 
 sealed interface CategoriesSpecificState {
 
-    data class Loaded(val assays: List<AssayUI>, val description: String) : CategoriesSpecificState
+    data class Loaded(
+        val assays: List<AssayUI>,
+        val description: String
+    ) : CategoriesSpecificState
 
     data object Loading : CategoriesSpecificState
 

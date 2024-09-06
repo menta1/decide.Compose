@@ -1,12 +1,12 @@
 package com.decide.app.utils
 
-import com.decide.app.database.local.dto.AnswerAssayEntity
-import com.decide.app.database.local.dto.AssayEntity
-import com.decide.app.database.local.dto.QuestionEntity
-import com.decide.app.feature.assay.mainAssay.modals.AnswerAssay
-import com.decide.app.feature.assay.mainAssay.modals.Assay
-import com.decide.app.feature.assay.mainAssay.modals.QuestionAssay
-import com.decide.app.feature.assay.mainAssay.ui.AssayUI
+import com.decide.app.database.local.entities.AnswerAssayEntity
+import com.decide.app.database.local.entities.AssayEntity
+import com.decide.app.database.local.entities.QuestionEntity
+import com.decide.app.feature.assay.assayMain.modals.AnswerAssay
+import com.decide.app.feature.assay.assayMain.modals.Assay
+import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
+import com.decide.app.feature.assay.assayMain.ui.AssayUI
 
 
 fun Assay.toAssayUI(): AssayUI {

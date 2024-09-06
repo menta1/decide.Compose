@@ -7,7 +7,10 @@ import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import java.util.Date
 
-internal fun assay5(answers: List<Answer>, key: KeyAssay): ResultCompletedAssay {
+internal fun assay5(
+    answers: List<Answer>,
+    key: KeyAssay
+): ResultCompletedAssay {
 
     var anxiety = 0f
     var depression = 0f

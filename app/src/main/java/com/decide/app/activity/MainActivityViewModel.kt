@@ -12,7 +12,7 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     private val initApp: InitApp
 ) : ViewModel() {
-    fun initApp(){
+    fun initApp() {
         viewModelScope.launch(Dispatchers.IO) {
             initApp.initApp()
         }

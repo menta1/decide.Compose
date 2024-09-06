@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.feature.category.mainCategory.data.CategoryRepository
 import com.decide.app.feature.category.mainCategory.modals.Category
+import com.decide.app.utils.DecideException
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
@@ -23,14 +24,23 @@ class CategoryViewModel @Inject constructor(
     val state: StateFlow<CategoryState> = _state
 
 
-    private fun separationState(result: Resource<List<Category>>): CategoryState {
+    private fun separationState(result: Resource<List<Category>, DecideException>): CategoryState {
         return when (result) {
-            is Resource.Error -> {
-                CategoryState.Error(result.exception?.message ?: "")
-            }
-
             is Resource.Success -> {
                 CategoryState.Loaded(result.data.toImmutableList())
+            }
+
+            is Resource.Error -> {
+                when (result.error) {
+                    is DecideException.NoFindElementDB -> {
+                        CategoryState.Empty
+                    }
+
+                    else -> {
+                        CategoryState.Error(result.error.messageLog)
+                    }
+                }
+
             }
         }
     }

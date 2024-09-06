@@ -9,6 +9,7 @@ sealed interface CategoryState {
     data class Loaded(val categories: List<Category>) : CategoryState
 
     data object Loading : CategoryState
+    data object Empty : CategoryState
 
     class Error(val message: String) : CategoryState
 

@@ -1,10 +1,7 @@
 package com.decide.app.activity.repository
 
 import com.decide.app.database.local.AppDatabase
-import com.decide.app.database.local.dao.AssayDao
-import com.decide.app.database.local.dao.CategoryDao
-import com.decide.app.database.local.dao.KeyDao
-import com.decide.app.database.remote.assay.RemoteAssayStorage
+import com.decide.app.database.remote.RemoteAssayStorage
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(

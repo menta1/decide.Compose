@@ -93,11 +93,10 @@ fun PreviewButtonVariantSelected() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Gray)
             .padding(horizontal = 39.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        ButtonVariant(text = "НачатьasssssssНачатьasssssssssssssssssssssasassaНачатьasssssssssssssssssssssasassaНачатьasssssssssssssssssssssasassaНачатьasssssssssssssssssssssasassassssssssssssssasassa", selected = selected) {
+        ButtonVariant(text = "категорически не согласна с тем, что он делает и говорит в данной ситуации; активно выражаю несогласие и настаиваю на своем", selected = selected) {
             selected = !selected
         }
     }

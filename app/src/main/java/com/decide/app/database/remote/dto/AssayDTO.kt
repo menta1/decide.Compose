@@ -1,6 +1,6 @@
 package com.decide.app.database.remote.dto
 
-import com.decide.app.database.local.dto.AssayEntity
+import com.decide.app.database.local.entities.AssayEntity
 import kotlinx.serialization.SerialName
 
 data class AssayDTO(
@@ -16,20 +16,6 @@ data class AssayDTO(
     @SerialName("timeForQuestions") val timeForQuestions: Long = -1,
     @SerialName("rating") val rating: String = "",
 )
-
-//fun AssayDTO.toAssay() = Assay(
-//    id,
-//    idCategory,
-//    name,
-//    description,
-//    nameCategory,
-//    convertToQuestionAssay(questions),
-//    dateCreation,
-//    type,
-//    timeForTest,
-//    timeForQuestions,
-//    rating
-//)
 
 fun AssayDTO.toAssayEntity() = AssayEntity(
     id = id,

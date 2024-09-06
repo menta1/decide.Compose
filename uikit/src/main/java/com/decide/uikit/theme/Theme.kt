@@ -65,7 +65,8 @@ data class DecideColors(
 
 
 val LocalDecideColors = staticCompositionLocalOf {
-    DecideColors()
+//    DecideColors()
+    LightColorPalette
 }
 
 val LocalInTouchTypography = staticCompositionLocalOf {
@@ -86,10 +87,11 @@ fun DecideTheme(
     typography: Typography = DecideTheme.typography,
     content: @Composable () -> Unit
 ) {
-    val color = if (darkTheme) DarkColorPalette else LightColorPalette
+//    val color = if (darkTheme) DarkColorPalette else LightColorPalette
+    val color = LightColorPalette
 
     CompositionLocalProvider(
-        LocalDecideColors provides color,
+        LocalDecideColors provides color,//color
         LocalInTouchTypography provides typography,
         content = content
     )

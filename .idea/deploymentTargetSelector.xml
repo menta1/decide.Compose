@@ -4,10 +4,21 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-08-22T18:11:25.975892100Z">
+        <DropdownSelection timestamp="2024-09-02T20:31:39.908836500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="Default" identifier="serial=192.168.18.101:5555;connection=84387fdf" />
+              <DeviceId pluginId="Default" identifier="serial=192.168.18.101:5555;connection=186c46d4" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="PreviewRegistration">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2024-09-01T00:14:38.794102400Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=f0011df8" />
             </handle>
           </Target>
         </DropdownSelection>

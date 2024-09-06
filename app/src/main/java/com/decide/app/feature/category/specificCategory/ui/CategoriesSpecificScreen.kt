@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.decide.app.feature.assay.mainAssay.ui.AssayUI
+import com.decide.app.feature.assay.assayMain.ui.AssayUI
 import com.decide.app.utils.setDrawable
 import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme

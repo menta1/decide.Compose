@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.decide.app.feature.assay.mainAssay.modals.AnswerAssay
-import com.decide.app.feature.assay.mainAssay.modals.QuestionAssay
+import com.decide.app.feature.assay.assayMain.modals.AnswerAssay
+import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonBackArrow
@@ -41,7 +41,8 @@ import java.util.Locale
 
 @Composable
 fun AssayTimerScreen(
-    onClickDone: (argument: Int) -> Unit, onClickBack: () -> Unit
+    onClickDone: (argument: Int) -> Unit,
+    onClickBack: () -> Unit
 ) {
     val viewModel: AssayTimerViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()

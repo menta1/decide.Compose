@@ -4,7 +4,10 @@ import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.ui.Answers
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 
-internal fun assay14(answers: List<Answers>, key: KeyAssay): ResultCompletedAssay {
+internal fun assay14(
+    answers: List<Answers>,
+    key: KeyAssay
+): ResultCompletedAssay {
     var points = 0f
 
     answers.forEach { answer ->

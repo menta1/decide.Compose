@@ -1,7 +1,7 @@
 package com.decide.app.feature.assay.assayProcess.domain.impl
 
-import com.decide.app.feature.assay.assayProcess.domain.useCase.AssayProcessRepository
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.AnalysisKeyAssay
+import com.decide.app.feature.assay.assayProcess.domain.useCase.AssayProcessRepository
 import com.decide.app.feature.assay.assayProcess.domain.useCase.SaveResultUseCase
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.assay.assayProcess.ui.Answers
@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SaveResultUseCaseImpl @Inject constructor(
-    private val repository: AssayProcessRepository, private val analysisKeys: AnalysisKeyAssay
+    private val repository: AssayProcessRepository,
+    private val analysisKeys: AnalysisKeyAssay
 ) : SaveResultUseCase {
 
     override suspend fun invoke(

@@ -1,13 +1,13 @@
 package com.decide.app.feature.assay.assayProcess.data
 
 import com.decide.app.database.local.AppDatabase
-import com.decide.app.database.local.dto.ResultCompletedAssayEntity
-import com.decide.app.database.local.dto.toAssay
-import com.decide.app.database.local.dto.toKeyAssay
-import com.decide.app.database.remote.assay.RemoteAssayStorage
+import com.decide.app.database.local.entities.ResultCompletedAssayEntity
+import com.decide.app.database.local.entities.toAssay
+import com.decide.app.database.local.entities.toKeyAssay
+import com.decide.app.database.remote.RemoteAssayStorage
+import com.decide.app.feature.assay.assayMain.modals.Assay
 import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.useCase.AssayProcessRepository
-import com.decide.app.feature.assay.mainAssay.modals.Assay
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.app.utils.Resource
 import javax.inject.Inject
@@ -17,17 +17,16 @@ class AssayProcessRepositoryImpl @Inject constructor(
     private val remoteAssayStorage: RemoteAssayStorage
 ) : AssayProcessRepository {
 
-    override suspend fun getAssay(id: Int): Resource<Assay> {
+    override suspend fun getAssay(id: Int): Resource<Assay, Exception> {
         remoteAssayStorage.getKey(id.toString())
         val result = localStorage.assayDao().getAssay(id)
-        return if (result != null) {
-            Resource.Success(result.toAssay())
-        } else {
-            Resource.Error(Exception("Ничего не найдено"))
-        }
+        return Resource.Success(result.toAssay())
     }
 
-    override suspend fun saveResult(id: Int, result: ResultCompletedAssay) {
+    override suspend fun saveResult(
+        id: Int,
+        result: ResultCompletedAssay
+    ) {
         val results = localStorage.assayDao()
             .getAssay(id).results.sortedBy { it.date }.toMutableList()
 

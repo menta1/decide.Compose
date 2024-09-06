@@ -4,7 +4,10 @@ import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 
-internal fun assay27(answers: List<Answer>, key: KeyAssay): ResultCompletedAssay {
+internal fun assay27(
+    answers: List<Answer>,
+    key: KeyAssay
+): ResultCompletedAssay {
     var repertoire = 0f
     var sensitivity = 0f
     var control = 0f

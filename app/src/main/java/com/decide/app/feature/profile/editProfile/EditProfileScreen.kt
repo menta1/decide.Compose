@@ -18,3 +18,17 @@ fun EditProfileScreen() {
         Text(text = "EditProfileScreen")
     }
 }
+
+@Composable
+fun EditProfileScreen(
+    modifier: Modifier,
+
+    ) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "EditProfileScreen")
+    }
+}

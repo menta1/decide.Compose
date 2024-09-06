@@ -5,6 +5,9 @@ import com.decide.app.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface AssayWithResultRepository {
-    suspend fun getResult(id: Int): Flow<Resource<ResultCompletedAssay>>
-    suspend fun getResult(id: Int, dateResult: Long): Flow<Resource<ResultCompletedAssay>>
+    suspend fun getResult(id: Int): Flow<Resource<ResultCompletedAssay, Exception>>
+    suspend fun getResult(
+        id: Int,
+        dateResult: Long
+    ): Flow<Resource<ResultCompletedAssay, Exception>>
 }

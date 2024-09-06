@@ -25,7 +25,8 @@ import com.decide.uikit.ui.card.CardResultAssay
 
 @Composable
 fun ExpandablePassedAssayList(
-    list: List<PassedAssay>, onShowDetailResult: (Pair<Int, Long>) -> Unit
+    list: List<PassedAssay>,
+    onShowDetailResult: (Pair<Int, Long>) -> Unit
 ) {
     var clickedItemId by remember { mutableIntStateOf(Int.MIN_VALUE) }
     Box {

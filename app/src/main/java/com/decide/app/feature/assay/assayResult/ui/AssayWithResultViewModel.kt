@@ -56,7 +56,7 @@ class AssayWithResultViewModel @Inject constructor(
         }
     }
 
-    private fun determineState(result: Resource<ResultCompletedAssay>) {
+    private fun determineState(result: Resource<ResultCompletedAssay, Exception>) {
         when (result) {
             is Resource.Success -> {
                 _state.update {
@@ -67,7 +67,6 @@ class AssayWithResultViewModel @Inject constructor(
 
             is Resource.Error -> {
                 _state.update {
-                    Log.d("TAG", "WithResult = ${result.exception?.message}")
                     AssayWithResultState.Error
                 }
             }

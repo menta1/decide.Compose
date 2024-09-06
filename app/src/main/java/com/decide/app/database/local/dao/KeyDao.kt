@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.decide.app.database.local.dto.KeyEntity
+import com.decide.app.database.local.entities.KeyEntity
 
 @Dao
 interface KeyDao {

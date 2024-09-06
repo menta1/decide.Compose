@@ -6,7 +6,10 @@ import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import java.util.Date
 
-internal fun assay2(answers: List<Answer>, key: KeyAssay): ResultCompletedAssay {
+internal fun assay2(
+    answers: List<Answer>,
+    key: KeyAssay
+): ResultCompletedAssay {
 
     var pointsAnxiety = 0f
     var pointsFrustration = 0f

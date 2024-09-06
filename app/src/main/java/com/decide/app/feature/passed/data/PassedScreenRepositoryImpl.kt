@@ -1,7 +1,7 @@
 package com.decide.app.feature.passed.data
 
 import com.decide.app.database.local.AppDatabase
-import com.decide.app.database.local.dto.toPassedAssay
+import com.decide.app.database.local.entities.toPassedAssay
 import com.decide.app.feature.passed.models.PassedAssay
 import javax.inject.Inject
 

@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.decide.app.database.local.dto.AssayEntity
-import com.decide.app.database.local.dto.ResultCompletedAssayEntity
+import com.decide.app.database.local.entities.AssayEntity
+import com.decide.app.database.local.entities.ResultCompletedAssayEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,7 +21,10 @@ interface AssayDao {
     fun getResultAssay(id: Int): Flow<AssayEntity>
 
     @Query("UPDATE assay_table SET results =:newResult WHERE id = :id")
-    suspend fun addNewResult(id: Int, newResult: List<ResultCompletedAssayEntity>): Int
+    suspend fun addNewResult(
+        id: Int,
+        newResult: List<ResultCompletedAssayEntity>
+    ): Int
 
     @Query("SELECT * FROM assay_table WHERE idCategory = :idCategory")
     suspend fun fetchAllAssaysByIdCategory(idCategory: Int): List<AssayEntity>
@@ -31,4 +34,7 @@ interface AssayDao {
 
     @Query("SELECT * FROM assay_table")
     fun getFlowAssays(): Flow<List<AssayEntity>>
+
+    @Query("DELETE FROM assay_table")
+    suspend fun deleteAll()
 }

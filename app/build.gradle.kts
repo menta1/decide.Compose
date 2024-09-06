@@ -100,6 +100,9 @@ dependencies {
     //Coil
     implementation(libs.coil.compose)
 
+    //Datastore
+    implementation(libs.datastore)
+
     //Timber
     implementation(libs.timber)
 

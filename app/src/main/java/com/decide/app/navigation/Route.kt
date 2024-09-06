@@ -119,6 +119,11 @@ object Registration : DecideDestination {
         get() = "REGISTR"
 }
 
+object FillProfile : DecideDestination {
+    override val route: String
+        get() = "FILL_PROFILE"
+}
+
 object RecoveryAccount : DecideDestination {
     override val route: String
         get() = "RECOVERY_ACCOUNT"

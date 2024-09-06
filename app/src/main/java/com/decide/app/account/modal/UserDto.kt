@@ -1,7 +1,7 @@
 package com.decide.app.account.modal
 
 data class UserDto(
-    val id: String?,
-    val email: String?,
+    val id: String? = null,
+    val email: String? = null,
     val name: String? = null
 )

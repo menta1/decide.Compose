@@ -20,7 +20,7 @@ class AnalysisKeyAssayImpl @Inject constructor(
         answer: List<Answer>,
         answers: List<Answers>,
         key: KeyAssay
-    ): Resource<ResultCompletedAssay> {
+    ): Resource<ResultCompletedAssay, Exception> {
         return when (id) {
             1 -> {
                 Resource.Success(assay1(answers = answer, key = key))
@@ -134,6 +134,21 @@ class AnalysisKeyAssayImpl @Inject constructor(
                 Resource.Success(assay28(answers = answer, key = key))
             }
 
+            29 -> {
+                Resource.Success(assay29(answers = answer, key = key))
+            }
+
+            30 -> {
+                Resource.Success(assay30(answers = answer, key = key))
+            }
+
+            31 -> {
+                Resource.Success(assay31(answers = answer, key = key))
+            }
+
+            32 -> {
+                Resource.Success(assay32(answers = answer, key = key))
+            }
 
             else -> {
                 Resource.Error(Exception("Нет такого ключа по id"))

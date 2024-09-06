@@ -4,7 +4,10 @@ import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 
-internal fun assay19(answers: List<Answer>, key: KeyAssay): ResultCompletedAssay {
+internal fun assay19(
+    answers: List<Answer>,
+    key: KeyAssay
+): ResultCompletedAssay {
     var physicalAggression = 0f
     var indirectAggression = 0f
     var irritation = 0f

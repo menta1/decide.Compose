@@ -50,7 +50,8 @@ fun AssayWithResultScreen(
 
 @Composable
 fun AssayWithResultScreen(
-    onClickExit: () -> Unit, state: AssayWithResultState
+    onClickExit: () -> Unit,
+    state: AssayWithResultState
 ) {
     Column(
         modifier = Modifier

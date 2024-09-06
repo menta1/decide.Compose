@@ -26,7 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.decide.app.feature.assay.mainAssay.modals.QuestionAssay
+import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 import com.decide.uikit.ui.buttons.ButtonMain
@@ -36,7 +36,8 @@ import com.decide.uikit.ui.card.CardQuestion
 
 @Composable
 fun AssayTextScreen(
-    onClickDone: (argument: Int) -> Unit, onClickBack: () -> Unit
+    onClickDone: (argument: Int) -> Unit,
+    onClickBack: () -> Unit
 ) {
     val viewModel: AssayTextViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()

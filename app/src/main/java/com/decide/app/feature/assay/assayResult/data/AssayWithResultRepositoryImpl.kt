@@ -1,7 +1,7 @@
 package com.decide.app.feature.assay.assayResult.data
 
 import com.decide.app.database.local.AppDatabase
-import com.decide.app.database.local.entities.toResultCompletedAssay
+import com.decide.app.database.local.entities.assay.toResultCompletedAssay
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.app.utils.DecideException
 import com.decide.app.utils.Resource

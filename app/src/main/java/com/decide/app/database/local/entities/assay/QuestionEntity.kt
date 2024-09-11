@@ -1,4 +1,4 @@
-package com.decide.app.database.local.entities
+package com.decide.app.database.local.entities.assay
 
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import kotlinx.serialization.Serializable

@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -91,7 +95,7 @@ fun FillProfileScreen(
                     text = "Заполните свой профиль",
                     onClick = { onClickBack() })
 
-                Spacer(modifier = Modifier.height(44.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -99,11 +103,14 @@ fun FillProfileScreen(
                     Box(
                         modifier = Modifier.clickable {
                             galleryLauncher.launch("image/*")
-                        }
+
+                        },
+                        contentAlignment = Alignment.BottomEnd
                     ) {
+
                         Image(
                             painter = if (imageUri == null) {
-                                painterResource(id = R.drawable.profile)
+                                painterResource(id = R.drawable.placeholder_fill_profile)
                             } else {
                                 rememberAsyncImagePainter(
                                     model = imageUri
@@ -112,9 +119,24 @@ fun FillProfileScreen(
                             contentDescription = null,
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .size(84.dp)
+                                .size(114.dp),
+                            contentScale = ContentScale.Crop
                         )
+                        if (imageUri == null) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_select_picture),
+                                contentDescription = "select picture",
+                                tint = DecideTheme.colors.accentGreen
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Чем больше информации Вы укажите,\n тем точнее будут результаты",
+                        style = DecideTheme.typography.labelSmall,
+                        textAlign = TextAlign.Center,
+                        color = DecideTheme.colors.inputBlack
+                    )
 
                     EditTextField(
                         value = state.firstName,
@@ -131,6 +153,8 @@ fun FillProfileScreen(
                         labelText = "Фамилия",
                         isFocus = {}
                     )
+
+
                 }
 
                 ButtonEntry(text = "Продолжить") {

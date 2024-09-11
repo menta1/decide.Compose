@@ -14,7 +14,7 @@ import com.decide.app.account.domain.AccountRepository
 import com.decide.app.account.modal.UserAuth
 import com.decide.app.account.modal.UserUpdate
 import com.decide.app.database.local.AppDatabase
-import com.decide.app.database.local.entities.ProfileEntity
+import com.decide.app.database.local.entities.profile.ProfileEntity
 import com.decide.app.database.remote.RemoteAssayStorage
 import com.decide.app.database.remote.dto.AccountDTO
 import com.decide.app.utils.DecideException
@@ -152,6 +152,9 @@ class AccountRepositoryImpl @Inject constructor(
         coroutineScope.launch {
             localStorage.profileDao().deleteUserInfo()
             localStorage.assayDao().deleteAll()
+            dataStore.edit {
+                it.clear()
+            }
             onResult(Resource.Success(true))
             remoteStorage.getAssays()//для оптимизации нужно выставлять какой то индикатор чтобы не загружать часто с БД
         }
@@ -167,7 +170,7 @@ class AccountRepositoryImpl @Inject constructor(
         ) { response ->
             when (response) {
                 is Resource.Success -> {
-                    coroutineScope.launch {
+                    coroutineScope.launch {//Если успешно, то заранее проходим авторизацию
                         authenticationClient.singInUser(user) { responseAuth ->
                             when (responseAuth) {
                                 is Resource.Success -> {
@@ -246,6 +249,8 @@ class AccountRepositoryImpl @Inject constructor(
         email: String,
         onResult: (Resource<Boolean, DecideException>) -> Unit
     ) {
+        Timber.tag("TAG").d("createUserLocalBD id = $id")
+        Timber.tag("TAG").d("createUserLocalBD email = $email")
         coroutineScope.launch {
             dataStore.edit { userSettings ->
                 userSettings[KEY_USER_ID] = id
@@ -263,7 +268,7 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
-    private companion object {
+    companion object {
 
         val KEY_USER_ID = stringPreferencesKey(
             name = "id"

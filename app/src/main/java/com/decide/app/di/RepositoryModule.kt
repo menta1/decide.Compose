@@ -4,8 +4,10 @@ import com.decide.app.account.authenticationClient.AuthenticationClient
 import com.decide.app.account.authenticationClient.AuthenticationClientImpl
 import com.decide.app.account.data.AccountRepositoryImpl
 import com.decide.app.account.domain.AccountRepository
-import com.decide.app.activity.repository.MainRepository
-import com.decide.app.activity.repository.MainRepositoryImpl
+import com.decide.app.account.statisticsClient.StatisticsClient
+import com.decide.app.account.statisticsClient.StatisticsClientImpl
+import com.decide.app.activity.data.MainRepository
+import com.decide.app.activity.data.MainRepositoryImpl
 import com.decide.app.database.remote.RemoteAssayStorage
 import com.decide.app.database.remote.RemoteAssayStorageImpl
 import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepository
@@ -67,6 +69,9 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindNetworkClient(authenticationClientImpl: AuthenticationClientImpl): AuthenticationClient
+
+    @Binds
+    abstract fun bindStatisticsClient(statisticsClientImpl: StatisticsClientImpl): StatisticsClient
 
     @Binds
     abstract fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository

@@ -1,10 +1,10 @@
 package com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl
 
-import android.util.Log
 import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl.AnalysisKeyAssayImpl.Companion.NO_KEY_FOR_ASSAY
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
+import timber.log.Timber
 import java.util.Date
 
 internal fun assay5(
@@ -17,55 +17,55 @@ internal fun assay5(
 
     answers.forEach { answer ->
         when {
-            (answer.idAnswer == 1) -> {
+            (answer.idQuestion == 1) -> {
                 depression += answer.answerValue
             }
 
-            (answer.idAnswer == 2) -> {
+            (answer.idQuestion == 2) -> {
                 anxiety += answer.answerValue
             }
 
-            (answer.idAnswer == 3) -> {
+            (answer.idQuestion == 3) -> {
                 depression += answer.answerValue
             }
 
-            (answer.idAnswer == 4) -> {
+            (answer.idQuestion == 4) -> {
                 anxiety += answer.answerValue
             }
 
-            (answer.idAnswer in 5..7) -> {
+            (answer.idQuestion in 5..7) -> {
                 depression += answer.answerValue
             }
 
-            (answer.idAnswer in 8..11) -> {
+            (answer.idQuestion in 8..11) -> {
                 anxiety += answer.answerValue
             }
 
-            (answer.idAnswer == 12) -> {
+            (answer.idQuestion == 12) -> {
                 depression += answer.answerValue
             }
 
-            (answer.idAnswer in 13..14) -> {
+            (answer.idQuestion in 13..14) -> {
                 anxiety += answer.answerValue
             }
 
-            (answer.idAnswer in 15..16) -> {
+            (answer.idQuestion in 15..16) -> {
                 depression += answer.answerValue
             }
 
-            (answer.idAnswer == 17) -> {
+            (answer.idQuestion == 17) -> {
                 anxiety += answer.answerValue
             }
 
-            (answer.idAnswer == 18) -> {
+            (answer.idQuestion == 18) -> {
                 depression += answer.answerValue
             }
 
-            (answer.idAnswer == 19) -> {
+            (answer.idQuestion == 19) -> {
                 anxiety += answer.answerValue
             }
 
-            (answer.idAnswer == 20) -> {
+            (answer.idQuestion == 20) -> {
                 depression += answer.answerValue
             }
         }
@@ -82,7 +82,7 @@ internal fun assay5(
             keyResults.add(1)
         }
 
-        !(-1.28f..1.28f).contains(anxiety) -> {
+        (-1.27f..1.27f).contains(anxiety) -> {
             results.add(key.result["2"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["2"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(2)
@@ -101,7 +101,7 @@ internal fun assay5(
             keyResults.add(4)
         }
 
-        !(-1.28f..1.28f).contains(depression) -> {
+        (-1.27f..1.27f).contains(depression) -> {
             results.add(key.result["5"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["5"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(5)
@@ -113,11 +113,10 @@ internal fun assay5(
             keyResults.add(6)
         }
     }
-    Log.d("TAG", "depression = $depression anxiety = $anxiety")
-    Log.d(
-        "TAG",
-        "shortResults = ${shortResults.size} results = ${results.size} keyResults = ${keyResults.size}"
-    )
+
+    Timber.tag("TAG").d("depression = $depression")
+    Timber.tag("TAG").d("anxiety = $anxiety")
+
     return ResultCompletedAssay(
         date = Date().time,
         shortResults = shortResults,

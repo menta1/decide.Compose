@@ -1,4 +1,4 @@
-package com.decide.app.database.local.entities
+package com.decide.app.database.local.entities.assay
 
 import androidx.room.PrimaryKey
 import com.decide.app.feature.passed.models.ResultCompletedAssay
@@ -9,12 +9,14 @@ data class ResultCompletedAssayEntity(
     @PrimaryKey val date: Long,
     val shortResults: List<String>,
     val results: List<String>,
-    val keyResults: List<Int>
+    val keyResults: List<Int>,
+    val resultForStatistic: Double = -1.0
 )
 
 fun ResultCompletedAssayEntity.toResultCompletedAssay() = ResultCompletedAssay(
     date = date,
     shortResults = shortResults,
     results = results,
-    keyResults = keyResults
+    keyResults = keyResults,
+    resultForStatistic = resultForStatistic
 )

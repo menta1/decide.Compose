@@ -31,9 +31,9 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateProfile() {
         viewModelScope.launch {
-            when (val profileHeader = isAuthUserUseCase.invoke()) {
+            when (val profileUI = isAuthUserUseCase.invoke()) {
                 is Resource.Error -> {
-                    when (profileHeader.error) {
+                    when (profileUI.error) {
 
                         is DecideException.UserNotAuthorization -> {
                             delay(1000)
@@ -46,12 +46,12 @@ class ProfileViewModel @Inject constructor(
                         else -> {}
 
                     }
-                    Timber.tag("TAG").d(profileHeader.error.messageLog)
+                    Timber.tag("TAG").d(profileUI.error.messageLog)
                 }
 
                 is Resource.Success -> {
                     _state.update {
-                        ProfileState.Loaded(profileHeader.data)
+                        ProfileState.Loaded(profileUI.data)
                     }
                 }
             }

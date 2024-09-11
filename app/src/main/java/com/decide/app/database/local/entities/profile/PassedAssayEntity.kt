@@ -1,6 +1,7 @@
-package com.decide.app.database.local.entities
+package com.decide.app.database.local.entities.profile
 
 import androidx.room.PrimaryKey
+import com.decide.app.database.local.entities.assay.ResultCompletedAssayEntity
 import kotlinx.serialization.Serializable
 
 @Serializable

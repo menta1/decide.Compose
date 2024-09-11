@@ -42,7 +42,7 @@ class AssayTextViewModel @Inject constructor(
 
     fun onEvent(event: EventAssayText) {
         if (event.idAnswer.size == 1) {
-            listAnswer.add(
+            listAnswer.add(//Если возможен один ответ
                 Answer(
                     idQuestion = event.idQuestion,
                     idAnswer = event.idAnswer.first(),
@@ -50,7 +50,7 @@ class AssayTextViewModel @Inject constructor(
                 )
             )
         } else {
-            listAnswers.add(
+            listAnswers.add(//Если возможены несколько ответов
                 Answers(
                     idQuestion = event.idQuestion,
                     idAnswer = event.idAnswer,

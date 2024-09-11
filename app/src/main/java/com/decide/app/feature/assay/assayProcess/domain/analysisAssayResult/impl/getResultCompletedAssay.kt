@@ -7,12 +7,14 @@ import java.util.Date
 
 internal fun getResultCompletedAssay(
     key: String,
-    keyAssay: KeyAssay
+    keyAssay: KeyAssay,
+    resultForStatistic: Double = -1.0
 ) = ResultCompletedAssay(
     date = Date().time,
     shortResults = listOf(keyAssay.resultShort[key] ?: NO_KEY_FOR_ASSAY),
     results = listOf(keyAssay.result[key] ?: NO_KEY_FOR_ASSAY),
-    keyResults = listOf(key.toInt())
+    keyResults = listOf(key.toInt()),
+    resultForStatistic = resultForStatistic
 )
 
 internal fun getResultCompletedAssay(

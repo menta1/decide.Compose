@@ -2,6 +2,7 @@ package com.decide.app.feature.profile.profileMain.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -21,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,11 +33,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.decide.app.R
-import com.decide.app.feature.profile.profileMain.modal.ProfileHeader
+import com.decide.app.feature.profile.profileMain.modal.ProfileUI
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonEntry
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
+import com.decide.uikit.ui.statistic.LineStatistic
+import com.decide.uikit.ui.statistic.PieStatistic
 
 @Composable
 fun ProfileScreen(
@@ -82,7 +88,7 @@ fun ProfileScreen(
             Loaded(
                 modifier = modifier,
                 onClickSetting = onClickSetting,
-                profileHeader = state.profileHeader
+                profileUI = state.profileUI,
             )
         }
     }
@@ -94,11 +100,12 @@ fun ProfileScreen(
 fun Loaded(
     modifier: Modifier = Modifier,
     onClickSetting: () -> Unit = {},
-    profileHeader: ProfileHeader
+    profileUI: ProfileUI,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 14.dp),
     ) {
         Row(
@@ -127,35 +134,101 @@ fun Loaded(
         Spacer(modifier = Modifier.height(16.dp))
         Row {
             Image(
-                painter = if (profileHeader.avatar == null) {
-                    painterResource(id = R.drawable.profile)
+                painter = if (profileUI.avatar == null) {
+                    painterResource(id = R.drawable.placeholder_fill_profile)
                 } else {
                     rememberAsyncImagePainter(
-                        model = profileHeader.avatar
+                        model = profileUI.avatar
                     )
                 }, contentDescription = null, modifier = Modifier
                     .clip(CircleShape)
-                    .size(110.dp)
+                    .size(110.dp),
+                contentScale = ContentScale.Crop
             )
             Text(
                 modifier = Modifier
                     .padding(top = 4.dp)
                     .padding(start = 8.dp),
-                text = profileHeader.firstName + " " + profileHeader.lastName,
+                text = profileUI.firstName + " " + profileUI.lastName,
                 style = DecideTheme.typography.titleLarge,
                 color = DecideTheme.colors.inputBlack
             )
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            modifier = Modifier
+                .padding(top = 4.dp)
+                .padding(start = 8.dp),
+            text = "Ваша статистика",
+            style = DecideTheme.typography.titleLarge,
+            color = DecideTheme.colors.inputBlack
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            modifier = Modifier
+                .padding(top = 4.dp),
+            text = "Темперамент",
+            style = DecideTheme.typography.titleMedium,
+            color = DecideTheme.colors.inputBlack
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        ContentProfile(
+            anxiety = profileUI.anxiety
+        )
 
     }
 }
+
+@Composable
+fun ContentProfile(
+    anxiety: Pair<Float, Float>?,
+) {
+    PieStatistic(
+        delayTime = 500,
+        data = mapOf(
+            "Холерик" to 25,
+            "Сангвиник" to 25,
+            "Флегматик" to 25,
+            "Меланхолик" to 25,
+        )
+    )
+    Spacer(modifier = Modifier.height(32.dp))
+    Text(
+        modifier = Modifier
+            .padding(top = 4.dp),
+        text = "Уровень тревожности",
+        style = DecideTheme.typography.titleMedium,
+        color = DecideTheme.colors.inputBlack
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    if (anxiety != null) {
+        LineStatistic(
+            your = anxiety.first,
+            all = anxiety.second,
+            isHasResult = true,
+            modifier = Modifier
+                .clickable { },
+            delayTime = 1000
+        )
+    }
+
+}
+
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewLoaded() {
     DecideTheme {
         Column {
-            Loaded(profileHeader = ProfileHeader("Ainur", "a;sldajkdjaskd"))
+            ProfileState.Loaded(
+                profileUI = ProfileUI(
+                    firstName = "Ainur",
+                    lastName = "a;sldajkdjaskd",
+                    email = "asdasd@asdasd.eer",
+                    anxiety = Pair(34f, 66f)
+                )
+            )
         }
     }
 }
@@ -196,7 +269,6 @@ fun NotAuthorized(
         ) {
             onClickRegistration()
         }
-
 
     }
 }

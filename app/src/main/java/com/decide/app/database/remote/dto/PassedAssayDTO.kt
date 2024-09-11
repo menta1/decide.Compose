@@ -1,7 +1,7 @@
 package com.decide.app.database.remote.dto
 
-import com.decide.app.database.local.entities.PassedAssayEntity
-import com.decide.app.database.local.entities.ResultCompletedAssayEntity
+import com.decide.app.database.local.entities.profile.PassedAssayEntity
+import com.decide.app.database.local.entities.assay.ResultCompletedAssayEntity
 
 data class PassedAssayDTO(
     val id: Int = -1,

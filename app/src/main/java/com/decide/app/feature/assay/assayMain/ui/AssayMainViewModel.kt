@@ -3,60 +3,82 @@ package com.decide.app.feature.assay.assayMain.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.feature.assay.assayMain.data.AssayMainRepository
-import com.decide.app.feature.assay.assayMain.modals.Assay
-import com.decide.app.utils.DecideException
 import com.decide.app.utils.Resource
 import com.decide.app.utils.toAssayUI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import timber.log.Timber
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AssayMainViewModel @Inject constructor(
-    private val repository: AssayMainRepository
+    repository: AssayMainRepository
 ) : ViewModel() {
 
-    private val _state =
-        repository.getAssays().map(::separationState)
-            .stateIn(viewModelScope, SharingStarted.Lazily, AssayMainState.Loading)
+    private val _state = MutableStateFlow(AssayMainState())
+    val state: StateFlow<AssayMainState> = _state.asStateFlow()
 
+    private val assaysFlow =
+        repository.getAssays().stateIn(
+            viewModelScope, SharingStarted.Lazily, Resource.Success(emptyList())
+        )
 
-    val state: StateFlow<AssayMainState> = _state
+    private var assays = emptyList<AssayUI>()
 
-    fun onEvent() {
-        state.value
-    }
-
-    private fun separationState(result: Resource<List<Assay>, DecideException>): AssayMainState {
-        return when (result) {
-            is Resource.Success -> {
-                if (result.data.isEmpty()) {
-                    AssayMainState.Loading
-                } else {
-                    AssayMainState.Loaded(result.data.map { it.toAssayUI() }.toImmutableList())
-                }
-            }
-
-            is Resource.Error -> {
-                when (result.error) {
-                    is DecideException.NoFindElementDB -> {
-                        Timber.tag("TAG").d(result.error.messageLog)
-                        AssayMainState.Empty
-                    }
-
-                    else -> {
-                        AssayMainState.Error(result.error.messageLog)
-                    }
-                }
-
-            }
-
+    init {
+        viewModelScope.launch {
+            getAssays()
         }
     }
 
+
+    private suspend fun getAssays() {
+        assaysFlow.collect { result ->
+            when (result) {
+                is Resource.Error -> {
+                    _state.update { state ->
+                        state.copy(
+                            uiState = UIState.ERROR,
+                        )
+                    }
+                }
+
+                is Resource.Success -> {
+                    assays = result.data.map { it.toAssayUI() }
+                    _state.update { state ->
+                        state.copy(
+                            uiState = UIState.SUCCESS,
+                            assays = result.data.map { it.toAssayUI() }
+                                .toImmutableList())
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    fun onEvent(event: AssayMainEvent) {
+        when (event) {
+            is AssayMainEvent.SetSearch -> {
+                _state.update { state ->
+                    state.copy(
+                        searchText = event.search,
+                        assays = if (event.search.isBlank()) {
+                            assays.toImmutableList()
+                        } else {
+                            assays.filter { it.name.contains(event.search, ignoreCase = true) }
+                                .toImmutableList()
+                        }
+                    )
+                }
+            }
+        }
+    }
 }

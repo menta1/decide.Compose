@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,14 +43,11 @@ fun AssayMainScreen(
     val viewModel: AssayMainViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = Unit) {
-
-    }
 
     AssayMainScreen(
         state = state,
-        onChangeSearch = {},
-        onClickAssay = onClickAssay
+        onClickAssay = onClickAssay,
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -59,12 +55,9 @@ fun AssayMainScreen(
 fun AssayMainScreen(
     modifier: Modifier = Modifier,
     state: AssayMainState,
-    onChangeSearch: (text: String) -> Unit,
     onClickAssay: (argument: Int) -> Unit,
+    onEvent: (event: AssayMainEvent) -> Unit
 ) {
-    val textSearch by remember {
-        mutableStateOf("")
-    }
 
     Column(
         modifier = modifier
@@ -79,9 +72,9 @@ fun AssayMainScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         SearchBarDecide(
-            value = textSearch,
-            onValueChange = onChangeSearch,
-        )
+            value = state.searchText,
+            onValueChange = { onEvent(AssayMainEvent.SetSearch(it)) },
+            onClickRemoveText = {  })
         AnimatedContent(
             state,
             transitionSpec = {
@@ -91,16 +84,15 @@ fun AssayMainScreen(
             },
             label = "Animated Content"
         ) { targetState ->
-            when (targetState) {
-
-                is AssayMainState.Error -> Error()
-                is AssayMainState.Loaded -> Loaded(
+            when (targetState.uiState) {
+                UIState.LOADING -> Loading()
+                UIState.ERROR -> Error()
+                UIState.NO_INTERNET -> {}
+                UIState.UNKNOWN_ERROR -> Error()
+                UIState.SUCCESS -> Loaded(
                     assays = targetState.assays,
                     onClickAssay = onClickAssay
                 )
-
-                AssayMainState.Loading -> Loading()
-                AssayMainState.Empty -> {}
             }
         }
 
@@ -164,8 +156,8 @@ internal fun Loading() {
 fun PreviewAssayMainScreen() {
     val state: AssayMainState by remember {
         mutableStateOf(
-            AssayMainState.Loaded(
-                listOf(
+            AssayMainState(
+                assays = sequenceOf(
                     AssayUI(
                         id = 1,
                         name = "Оценка социальной неудовлетворенности",
@@ -244,7 +236,7 @@ fun PreviewAssayMainScreen() {
     }
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
-            AssayMainScreen(state = state, onChangeSearch = {}, onClickAssay = {})
+            AssayMainScreen(state = state, onEvent = {}, onClickAssay = {})
         }
     }
 }
@@ -253,11 +245,11 @@ fun PreviewAssayMainScreen() {
 @Composable
 fun PreviewAssayMainScreenLoading() {
     val state: AssayMainState by remember {
-        mutableStateOf(AssayMainState.Loading)
+        mutableStateOf(AssayMainState(uiState = UIState.LOADING))
     }
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
-            AssayMainScreen(state = state, onChangeSearch = {}, onClickAssay = {})
+            AssayMainScreen(state = state, onEvent = {}, onClickAssay = {})
         }
     }
 }

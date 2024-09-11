@@ -1,7 +1,8 @@
-package com.decide.app.database.local.entities
+package com.decide.app.database.local.entities.profile
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.decide.app.database.local.entities.assay.AssayEntity
 
 @Entity(tableName = "profile_table")
 data class ProfileEntity(
@@ -13,5 +14,6 @@ data class ProfileEntity(
     val gender: String = "",
     val city: String = "",
     val dateRegistration: Long,
-    val listAssayPassed: List<PassedAssayEntity> = emptyList()
+    val dateLastAddedResult: Long = -1,
+//    val listAssayPassed: List<AssayEntity> = emptyList()
 )

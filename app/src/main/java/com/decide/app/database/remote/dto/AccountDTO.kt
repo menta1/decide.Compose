@@ -1,7 +1,7 @@
 package com.decide.app.database.remote.dto
 
-import com.decide.app.database.local.entities.PassedAssayEntity
-import com.decide.app.database.local.entities.ProfileEntity
+import com.decide.app.database.local.entities.profile.PassedAssayEntity
+import com.decide.app.database.local.entities.profile.ProfileEntity
 
 data class AccountDTO(
     val id: String = "",
@@ -12,7 +12,7 @@ data class AccountDTO(
     val gender: String = "",
     val city: String = "",
     val dateRegistration: Long = -1,
-    val listAssayPassed: List<PassedAssayDTO> = emptyList()
+//    val listAssayPassed: List<PassedAssayDTO> = emptyList()
 )
 
 fun AccountDTO.toProfileEntity() = ProfileEntity(
@@ -24,7 +24,7 @@ fun AccountDTO.toProfileEntity() = ProfileEntity(
     gender = gender,
     city = city,
     dateRegistration = dateRegistration,
-    listAssayPassed = convertToPassedAssayEntity(listAssayPassed)
+//    listAssayPassed = convertToPassedAssayEntity(listAssayPassed)
 )
 
 fun convertToPassedAssayEntity(passedAssay: List<PassedAssayDTO>): List<PassedAssayEntity> {

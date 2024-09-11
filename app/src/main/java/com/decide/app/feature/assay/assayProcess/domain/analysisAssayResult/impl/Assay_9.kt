@@ -14,69 +14,70 @@ internal fun assay9(
     answers.forEach {
         when {
 
-            (it.idAnswer == 1) -> {
+            (it.idQuestion == 1) -> {
                 points2 += it.answerValue
             }
 
-            (it.idAnswer in 2..5) -> {
+            (it.idQuestion in 2..5) -> {
                 points1 += it.answerValue
             }
 
-            (it.idAnswer in 6..7) -> {
+            (it.idQuestion in 6..7) -> {
                 points2 += it.answerValue
             }
 
-            (it.idAnswer in 8..9) -> {
+            (it.idQuestion in 8..9) -> {
                 points1 += it.answerValue
             }
 
-            (it.idAnswer == 10) -> {
+            (it.idQuestion == 10) -> {
                 points2 += it.answerValue
             }
 
-            (it.idAnswer in 11..12) -> {
+            (it.idQuestion in 11..12) -> {
                 points1 += it.answerValue
             }
 
-            (it.idAnswer == 13) -> {
+            (it.idQuestion == 13) -> {
                 points2 += it.answerValue
             }
 
-            (it.idAnswer in 14..15) -> {
+            (it.idQuestion in 14..15) -> {
                 points1 += it.answerValue
             }
 
-            (it.idAnswer == 16) -> {
+            (it.idQuestion == 16) -> {
                 points2 += it.answerValue
             }
 
-            (it.idAnswer in 17..18) -> {
+            (it.idQuestion in 17..18) -> {
                 points1 += it.answerValue
             }
 
-            (it.idAnswer == 19) -> {
+            (it.idQuestion == 19) -> {
                 points2 += it.answerValue
             }
 
-            (it.idAnswer == 20) -> {
+            (it.idQuestion == 20) -> {
                 points1 += it.answerValue
             }
         }
     }
 
-    points1 - points2 + 35f
+    val result = points1 - points2 + 35f
+    val forStatistics = 0.6*(result-20)
 
     return when {
-        (points1 <= 30f) -> {
-            getResultCompletedAssay(key = "1", keyAssay = key)
+        (result <= 30f) -> {
+            getResultCompletedAssay(key = "1", keyAssay = key, resultForStatistic = forStatistics)
         }
 
-        (points1 in 31f..45f) -> {
-            getResultCompletedAssay(key = "2", keyAssay = key)
+        (result in 31f..45f) -> {
+            getResultCompletedAssay(key = "2", keyAssay = key, resultForStatistic = forStatistics)
         }
 
         else -> {
-            getResultCompletedAssay(key = "3", keyAssay = key)
+            getResultCompletedAssay(key = "3", keyAssay = key, resultForStatistic = forStatistics)
         }
     }
 }

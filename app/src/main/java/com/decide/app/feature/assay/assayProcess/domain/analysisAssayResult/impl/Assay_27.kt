@@ -13,7 +13,7 @@ internal fun assay27(
     var control = 0f
 
     answers.forEach { answer ->
-        when (answer.idAnswer) {
+        when (answer.idQuestion) {
             1, 5, 8, 12, 15, 17 -> {
                 repertoire += answer.answerValue
             }

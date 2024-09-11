@@ -2,6 +2,7 @@ package com.decide.app.feature.passed.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.decide.app.account.statisticsClient.StatisticsClient
 import com.decide.app.feature.passed.data.PassedScreenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PassedScreenViewModel @Inject constructor(
-    private val repository: PassedScreenRepository
+    private val repository: PassedScreenRepository,
+    private val statisticsClient: StatisticsClient
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PassedScreenState.Initial)
@@ -21,6 +23,7 @@ class PassedScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            statisticsClient.updateStatistic()
             val allAssaysWithResults = repository.fetchAllResults()
             if (allAssaysWithResults.isNotEmpty()) {
                 _state.update {

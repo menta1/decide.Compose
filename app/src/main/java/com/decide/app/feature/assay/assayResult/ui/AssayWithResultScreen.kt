@@ -159,6 +159,7 @@ fun AssayWithResultScreen(
                     ErrorMessage()
                 }
             }
+
         }
     }
 }

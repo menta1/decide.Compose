@@ -16,19 +16,19 @@ internal fun assay15(
 
     return when {
         (points in 0f..14f) -> {
-            getResultCompletedAssay(key = "4", keyAssay = key)
+            getResultCompletedAssay(key = "4", keyAssay = key, resultForStatistic = 0.5 * points)
         }
 
         (points in 15f..24f) -> {
-            getResultCompletedAssay(key = "3", keyAssay = key)
+            getResultCompletedAssay(key = "3", keyAssay = key, resultForStatistic = 0.5 * points)
         }
 
         (points in 25f..40f) -> {
-            getResultCompletedAssay(key = "2", keyAssay = key)
+            getResultCompletedAssay(key = "2", keyAssay = key, resultForStatistic = 0.5 * points)
         }
 
         else -> {
-            getResultCompletedAssay(key = "1", keyAssay = key)
+            getResultCompletedAssay(key = "1", keyAssay = key, resultForStatistic = 0.5 * points)
         }
 
     }

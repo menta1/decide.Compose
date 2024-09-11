@@ -9,8 +9,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.decide.app.account.authenticationClient.exception.DecideAuthException
-import com.decide.app.account.modal.UserDto
+import com.decide.app.account.data.AccountRepositoryImpl.Companion.KEY_USER_EMAIL
+import com.decide.app.account.data.AccountRepositoryImpl.Companion.KEY_USER_ID
 import com.decide.app.account.modal.UserUpdate
+import com.decide.app.account.statisticsClient.StatisticsClient
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.remote.dto.AccountDTO
 import com.decide.app.database.remote.dto.AssayDTO
@@ -38,6 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -55,7 +58,8 @@ class RemoteAssayStorageImpl @Inject constructor(
     private val localStorage: AppDatabase,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     @ApplicationContext private val context: Context,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val statisticsClient: StatisticsClient
 ) : RemoteAssayStorage {
 
     override suspend fun getAssay(id: String): Flow<Result<AssayDTO>> = flow {
@@ -73,16 +77,16 @@ class RemoteAssayStorageImpl @Inject constructor(
 
     @SuppressLint("LogNotTimber")
     override suspend fun getAssays() {
-        remoteDatabase.collection(EXAMS).get()
-            .addOnCompleteListener { task: Task<QuerySnapshot> ->
-                coroutineScope.launch {
-                    localStorage.assayDao().insert(task.result.map {
-                        it.toObject(AssayDTO::class.java).toAssayEntity()
-                    })
-                }
-            }.addOnFailureListener {
-                Log.d("FIREBASE", "FIREBASE ERRORS = $it")
+        remoteDatabase.collection(EXAMS).get().addOnCompleteListener { task: Task<QuerySnapshot> ->
+            coroutineScope.launch {
+                localStorage.assayDao().insert(task.result.map {
+                    it.toObject(AssayDTO::class.java).toAssayEntity()
+                })
+                Log.d("FIREBASE", "FIREBASE SUCCESS = getAssays")
             }
+        }.addOnFailureListener {
+            Log.d("FIREBASE", "FIREBASE ERRORS = $it")
+        }
     }
 
     @SuppressLint("LogNotTimber")
@@ -181,25 +185,70 @@ class RemoteAssayStorageImpl @Inject constructor(
 
     }
 
+    override suspend fun getPassedAssays(id: String) {
+        try {
+            remoteDatabase.collection(USERS).document(id).collection(PASSED_ASSAYS).get()
+                .addOnSuccessListener { documents ->
+                    documents.documents.map { it.toObject(AssayDTO::class.java) }
+                        .forEach { assayDTO ->
+                            if (assayDTO != null) {
+                                coroutineScope.launch {
+                                    localStorage.assayDao().updateAssay(assayDTO.toAssayEntity())
+                                }
+                                Timber.tag("FIREBASE").d("FIREBASE getPassedAssays Success")
+                            }
+                        }
+
+                }.addOnFailureListener {
+                    Timber.tag("FIREBASE").d(it.message ?: "FIREBASE getPassedAssays Fail")
+                }
+        } catch (e: Exception) {
+            Timber.tag("FIREBASE").d(e.message ?: "FIREBASE getPassedAssays catch")
+        }
+
+    }
+
+    override suspend fun putPassedAssays(id: Int) {
+        coroutineScope.launch {
+            try {
+                val userId = dataStore.data.map { it[KEY_USER_ID] }.first()
+                if (userId != null) {
+                    val newPassedAssay = localStorage.assayDao().getAssay(id)
+                    remoteDatabase.collection(USERS).document(userId).collection(PASSED_ASSAYS)
+                        .document(id.toString()).set(newPassedAssay)
+                        .addOnSuccessListener {
+                            Timber.tag("FIREBASE").d("FIREBASE putPassedAssays Success")
+                        }
+                        .addOnFailureListener {
+                            Timber.tag("FIREBASE").d(it.message ?: "FIREBASE putPassedAssays Fail")
+                        }
+                }else{
+                    Timber.tag("FIREBASE").d("FIREBASE putPassedAssays userId != null")
+                }
+
+            } catch (e: Exception) {
+                Timber.tag("FIREBASE").d(e.message ?: "FIREBASE putPassedAssays catch")
+            }
+
+        }
+    }
+
     private fun downloadAvatar(
         id: String,
         onResult: (result: Resource<Boolean, DecideException>) -> Unit
     ) {
-        val file =
-            File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "avatar.jpg")
+        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "avatar.jpg")
         try {
-            storage.reference.child(id).child("avatar.jpg").getFile(file)
-                .addOnSuccessListener {
-                    coroutineScope.launch {
-                        dataStore.edit {
-                            it[KEY_AVATAR] = file.toURI().toString()
-                        }
-                        onResult(Resource.Success(true))
+            storage.reference.child(id).child("avatar.jpg").getFile(file).addOnSuccessListener {
+                coroutineScope.launch {
+                    dataStore.edit {
+                        it[KEY_AVATAR] = file.toURI().toString()
                     }
+                    onResult(Resource.Success(true))
                 }
-                .addOnFailureListener {
-                    onResult(Resource.Error(storageExceptionMapper(it)))
-                }
+            }.addOnFailureListener {
+                onResult(Resource.Error(storageExceptionMapper(it)))
+            }
         } catch (e: Exception) {
             onResult(Resource.Error(storageExceptionMapper(e)))
         }
@@ -213,25 +262,21 @@ class RemoteAssayStorageImpl @Inject constructor(
             try {
                 remoteDatabase.collection(USERS).document(id).get()
                     .addOnSuccessListener { document ->
-                        if (document != null) {
-
+                        val profile = document.toObject(AccountDTO::class.java)
+                        if (profile != null) {
                             coroutineScope.launch {
                                 localStorage.profileDao().insert(
-                                    (document.toObject(AccountDTO::class.java))?.toProfileEntity()
-                                        ?: throw DecideDatabaseException.NotFoundDocument(
-                                            "DecideDatabaseException.NotFoundDocument: Нет данных пользователя в firebase",
-                                            "Нет данных пользователя в firebase"
-                                        )
+                                    profile.toProfileEntity()
                                 )
                                 downloadAvatar(
-                                    id = document.toObject(UserDto::class.java)?.id
-                                        ?: throw DecideDatabaseException.NotFoundDocument(
-                                            "DecideDatabaseException.NotFoundDocument: Нет данных пользователя в firebase",
-                                            "Нет данных пользователя в firebase"
-                                        ),
-                                    onResult = onResult
+                                    id = profile.id, onResult = onResult
                                 )
+                                dataStore.edit { userSettings ->
+                                    userSettings[KEY_USER_ID] = profile.id
+                                    userSettings[KEY_USER_EMAIL] = profile.email
+                                }
                             }
+
                         } else {
                             onResult(
                                 Resource.Error(
@@ -248,6 +293,9 @@ class RemoteAssayStorageImpl @Inject constructor(
                     }.addOnFailureListener {
                         onResult(Resource.Error(firestoreExceptionMapper(it)))
                     }
+
+                statisticsClient.getRemoteStatistic(id)
+
             } catch (e: Exception) {
                 onResult(Resource.Error(firestoreExceptionMapper(e)))
 
@@ -262,6 +310,9 @@ class RemoteAssayStorageImpl @Inject constructor(
         const val CATEGORIES = "CATEGORIES"
         const val KEYS = "KEYS"
         const val USERS = "USERS"
+        const val PASSED_ASSAYS = "PASSED_ASSAYS"
+        const val STATISTICS = "STATISTICS"
+        const val ANXIETY = 1
         val KEY_AVATAR = stringPreferencesKey(
             name = "avatar"
         )

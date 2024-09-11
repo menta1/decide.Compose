@@ -14,6 +14,8 @@ import com.decide.app.account.domain.useCase.LogOutUseCase
 import com.decide.app.account.domain.useCase.SaveAvatarUseCase
 import com.decide.app.account.domain.useCase.SingInUseCase
 import com.decide.app.account.domain.useCase.UpdateUserDataUseCase
+import com.decide.app.activity.domain.CheckForSync
+import com.decide.app.activity.domain.CheckForSyncImpl
 import com.decide.app.activity.domain.InitApp
 import com.decide.app.activity.domain.InitAppImpl
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.AnalysisKeyAssay
@@ -68,4 +70,8 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindLogOutUseCase(logOutUseCaseImpl: LogOutUseCaseImpl): LogOutUseCase
+
+    @Binds
+    abstract fun bindCheckForSync(checkForSyncImpl: CheckForSyncImpl): CheckForSync
+
 }

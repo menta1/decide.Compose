@@ -1,7 +1,7 @@
 package com.decide.app.database.local.convertors
 
 import androidx.room.TypeConverter
-import com.decide.app.database.local.entities.AnswerAssayEntity
+import com.decide.app.database.local.entities.assay.AnswerAssayEntity
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

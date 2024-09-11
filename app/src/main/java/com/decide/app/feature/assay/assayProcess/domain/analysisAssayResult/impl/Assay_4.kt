@@ -74,13 +74,13 @@ internal fun assay4(
     val keyResults = mutableListOf<Int>()
 
     answers.forEach { answer ->
-        if (listSincerity.contains(answer.idAnswer)) {
+        if (listSincerity.contains(answer.idQuestion)) {
             sincerity += answer.answerValue
         }
-        if (listExtraversion.contains(answer.idAnswer)) {
+        if (listExtraversion.contains(answer.idQuestion)) {
             extraversion += answer.answerValue
         }
-        if (listNeuroticism.contains(answer.idAnswer)) {
+        if (listNeuroticism.contains(answer.idQuestion)) {
             neuroticism += answer.answerValue
         }
     }

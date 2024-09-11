@@ -15,19 +15,19 @@ internal fun assay28(
     var loser = 0f
 
     answers.forEach { answer ->
-        when (answer.idAnswer) {
+        when (answer.idQuestion) {
             3, 4, 8, 10, 12, 14, 15, 16, 18, 20, 24, 26, 27, 29, 37, 38, 39, 40, 42, 43, 44, 45, 46, 47, 49, 52, 53, 55, 56, 60 -> {
                 acceptance += answer.answerValue
             }
 
             6, 9, 21, 25, 31, 34, 35, 36 -> {
                 cooperation += answer.answerValue
-                if (answer.idAnswer == 9) loser += answer.answerValue
+                if (answer.idQuestion == 9) loser += answer.answerValue
             }
 
             1, 5, 7, 28, 32, 41, 58 -> {
                 symbiosis += answer.answerValue
-                if (answer.idAnswer == 28) loser += answer.answerValue
+                if (answer.idQuestion == 28) loser += answer.answerValue
             }
 
             2, 19, 30, 48, 50, 57, 59 -> {

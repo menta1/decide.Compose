@@ -13,6 +13,7 @@ interface RemoteAssayStorage {
     suspend fun getAssays()
     suspend fun getCategories()
     suspend fun getKey(id: String)
+
     suspend fun createAccount(
         account: AccountDTO,
         onResult: (result: Resource<Boolean, DecideException>) -> Unit
@@ -28,8 +29,13 @@ interface RemoteAssayStorage {
         id: String
     )
 
+    suspend fun getPassedAssays(id: String)
+
+    suspend fun putPassedAssays(id: Int)
+
     suspend fun getAccountData(
         id: String?,
         onResult: (result: Resource<Boolean, DecideException>) -> Unit
     )
+
 }

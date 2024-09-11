@@ -1,4 +1,4 @@
-package com.decide.app.database.local.entities
+package com.decide.app.database.local.entities.assay
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,8 +1,8 @@
 package com.decide.app.utils
 
-import com.decide.app.database.local.entities.AnswerAssayEntity
-import com.decide.app.database.local.entities.AssayEntity
-import com.decide.app.database.local.entities.QuestionEntity
+import com.decide.app.database.local.entities.assay.AnswerAssayEntity
+import com.decide.app.database.local.entities.assay.AssayEntity
+import com.decide.app.database.local.entities.assay.QuestionEntity
 import com.decide.app.feature.assay.assayMain.modals.AnswerAssay
 import com.decide.app.feature.assay.assayMain.modals.Assay
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay

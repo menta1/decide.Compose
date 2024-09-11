@@ -1,17 +1,18 @@
 package com.decide.app.feature.assay.assayMain.ui
 
-import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
-sealed class AssayMainState {
-    data object Loading : AssayMainState()
-    data object Empty : AssayMainState()
-    class Error(val message: String) : AssayMainState()
+data class AssayMainState(
+    val searchText: String = "",
+    val assays: ImmutableList<AssayUI> = persistentListOf(),
+    val uiState: UIState = UIState.LOADING
+)
 
-    @Immutable
-    class Loaded(val assays: ImmutableList<AssayUI>) : AssayMainState()
-
-    companion object {
-        val Initial: AssayMainState = Loading
-    }
+enum class UIState {
+    LOADING,
+    ERROR,
+    NO_INTERNET,
+    UNKNOWN_ERROR,
+    SUCCESS
 }

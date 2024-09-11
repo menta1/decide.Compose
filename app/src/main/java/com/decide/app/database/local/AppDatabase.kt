@@ -12,10 +12,12 @@ import com.decide.app.database.local.dao.AssayDao
 import com.decide.app.database.local.dao.CategoryDao
 import com.decide.app.database.local.dao.KeyDao
 import com.decide.app.database.local.dao.ProfileDao
-import com.decide.app.database.local.entities.AssayEntity
+import com.decide.app.database.local.dao.StatisticDao
+import com.decide.app.database.local.entities.assay.AssayEntity
 import com.decide.app.database.local.entities.CategoryEntity
 import com.decide.app.database.local.entities.KeyEntity
-import com.decide.app.database.local.entities.ProfileEntity
+import com.decide.app.database.local.entities.profile.ProfileEntity
+import com.decide.app.database.local.entities.StatisticEntity
 
 @Database(
     version = 1,
@@ -23,7 +25,8 @@ import com.decide.app.database.local.entities.ProfileEntity
         AssayEntity::class,
         CategoryEntity::class,
         KeyEntity::class,
-        ProfileEntity::class],
+        ProfileEntity::class,
+        StatisticEntity::class],
     exportSchema = false
 )
 @TypeConverters(
@@ -42,4 +45,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun keyDao(): KeyDao
 
     abstract fun profileDao(): ProfileDao
+
+    abstract fun statisticsDao(): StatisticDao
 }

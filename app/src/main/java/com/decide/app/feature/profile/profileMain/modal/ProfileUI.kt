@@ -2,8 +2,11 @@ package com.decide.app.feature.profile.profileMain.modal
 
 import android.net.Uri
 
-data class ProfileHeader(
+data class ProfileUI(
     val firstName: String,
     val lastName: String?,
-    val avatar: Uri? = null
-)
+    val email: String,
+    val avatar: Uri? = null,
+    val anxiety: Pair<Float, Float>?,
+
+    )

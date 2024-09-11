@@ -13,7 +13,7 @@ internal fun assay16(
 
     answers.forEach { answer ->
 
-        when (answer.idAnswer) {
+        when (answer.idQuestion) {
             16, 20, 27, 29, 41, 51, 59, 2, 10, 55 -> {
                 pointsLie++
             }

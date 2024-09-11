@@ -1,8 +1,14 @@
 package com.decide.app.feature.assay.assayProcess.data
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.decide.app.account.data.AccountRepositoryImpl.Companion.KEY_USER_EMAIL
+import com.decide.app.account.data.AccountRepositoryImpl.Companion.KEY_USER_ID
 import com.decide.app.database.local.AppDatabase
-import com.decide.app.database.local.entities.ResultCompletedAssayEntity
-import com.decide.app.database.local.entities.toAssay
+import com.decide.app.database.local.entities.assay.ResultCompletedAssayEntity
+import com.decide.app.database.local.entities.assay.toAssay
 import com.decide.app.database.local.entities.toKeyAssay
 import com.decide.app.database.remote.RemoteAssayStorage
 import com.decide.app.feature.assay.assayMain.modals.Assay
@@ -14,7 +20,8 @@ import javax.inject.Inject
 
 class AssayProcessRepositoryImpl @Inject constructor(
     private val localStorage: AppDatabase,
-    private val remoteAssayStorage: RemoteAssayStorage
+    private val remoteAssayStorage: RemoteAssayStorage,
+    private val dataStore: DataStore<Preferences>
 ) : AssayProcessRepository {
 
     override suspend fun getAssay(id: Int): Resource<Assay, Exception> {
@@ -27,8 +34,8 @@ class AssayProcessRepositoryImpl @Inject constructor(
         id: Int,
         result: ResultCompletedAssay
     ) {
-        val results = localStorage.assayDao()
-            .getAssay(id).results.sortedBy { it.date }.toMutableList()
+        val results =
+            localStorage.assayDao().getAssay(id).results.sortedBy { it.date }.toMutableList()
 
         if (results.size > 5) {
             results.removeLast()
@@ -37,7 +44,8 @@ class AssayProcessRepositoryImpl @Inject constructor(
                     date = result.date,
                     shortResults = result.shortResults,
                     results = result.results,
-                    keyResults = result.keyResults
+                    keyResults = result.keyResults,
+                    resultForStatistic = result.resultForStatistic
                 )
             )
         } else {
@@ -46,14 +54,18 @@ class AssayProcessRepositoryImpl @Inject constructor(
                     date = result.date,
                     shortResults = result.shortResults,
                     results = result.results,
-                    keyResults = result.keyResults
+                    keyResults = result.keyResults,
+                    resultForStatistic = result.resultForStatistic
                 )
             )
         }
+
         localStorage.assayDao().addNewResult(id, results)
+        remoteAssayStorage.putPassedAssays(id)
     }
 
     override suspend fun getKeys(id: Int): KeyAssay {
         return localStorage.keyDao().getAssay(id).toKeyAssay()
     }
+
 }

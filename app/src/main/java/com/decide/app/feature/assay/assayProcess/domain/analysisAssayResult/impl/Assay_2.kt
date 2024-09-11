@@ -22,19 +22,19 @@ internal fun assay2(
 
     answers.forEach { answer ->
         when {
-            (answer.idAnswer in 0..10) -> {
+            (answer.idQuestion in 0..10) -> {
                 pointsAnxiety += answer.answerValue
             }
 
-            (answer.idAnswer in 11..20) -> {
+            (answer.idQuestion in 11..20) -> {
                 pointsFrustration += answer.answerValue
             }
 
-            (answer.idAnswer in 21..30) -> {
+            (answer.idQuestion in 21..30) -> {
                 pointsAggressiveness += answer.answerValue
             }
 
-            (answer.idAnswer in 31..40) -> {
+            (answer.idQuestion in 31..40) -> {
                 pointsRigidity += answer.answerValue
             }
         }

@@ -1,6 +1,6 @@
 package com.decide.app.activity.domain
 
-import com.decide.app.activity.repository.MainRepository
+import com.decide.app.activity.data.MainRepository
 import javax.inject.Inject
 
 class InitAppImpl @Inject constructor(

@@ -21,7 +21,7 @@ internal fun assay31(
 
     answers.forEach { answer ->
         conflicts += answer.answerValue
-        when (answer.idAnswer) {
+        when (answer.idQuestion) {
             1, 5, 8, 20 -> {
                 relative += answer.answerValue
             }

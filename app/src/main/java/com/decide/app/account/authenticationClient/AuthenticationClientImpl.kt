@@ -24,7 +24,8 @@ class AuthenticationClientImpl @Inject constructor(
                 return if (user != null) {
                     Resource.Success(
                         UserDto(
-                            user.uid, user.email
+                            id = user.uid,
+                            email = user.email
                         )
                     )
                 } else {

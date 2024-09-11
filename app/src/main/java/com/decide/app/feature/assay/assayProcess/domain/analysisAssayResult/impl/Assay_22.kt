@@ -13,23 +13,23 @@ internal fun assay22(
 
     answers.forEach { answer ->
 
-        when (answer.idAnswer) {
+        when (answer.idQuestion) {
             2, 5, 8, 9, 10, 12, 13, 15, 16, 19, 21, 22, 24, 25, 26, 27, 29, 32 -> {
                 points += answer.answerValue
             }
         }
 
-        when (answer.idAnswer) {
+        when (answer.idQuestion) {
             3, 9, 11, 13, 28, 36 -> {
                 if (answer.answerValue == 0f) {
                     lie++
                 }
-                if (answer.idAnswer == 11) {
+                if (answer.idQuestion == 11) {
                     if (answer.answerValue == 5f) {
                         lie++
                     }
                 }
-                if (answer.idAnswer == 13) {
+                if (answer.idQuestion == 13) {
                     if (answer.answerValue == 5f) {
                         lie++
                     }

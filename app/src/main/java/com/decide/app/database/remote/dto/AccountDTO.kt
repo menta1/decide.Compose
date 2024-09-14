@@ -1,8 +1,10 @@
 package com.decide.app.database.remote.dto
 
+import androidx.annotation.Keep
 import com.decide.app.database.local.entities.profile.PassedAssayEntity
 import com.decide.app.database.local.entities.profile.ProfileEntity
 
+@Keep
 data class AccountDTO(
     val id: String = "",
     val firstName: String = "",

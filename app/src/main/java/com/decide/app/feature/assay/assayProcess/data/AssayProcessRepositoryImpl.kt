@@ -2,10 +2,6 @@ package com.decide.app.feature.assay.assayProcess.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import com.decide.app.account.data.AccountRepositoryImpl.Companion.KEY_USER_EMAIL
-import com.decide.app.account.data.AccountRepositoryImpl.Companion.KEY_USER_ID
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.local.entities.assay.ResultCompletedAssayEntity
 import com.decide.app.database.local.entities.assay.toAssay

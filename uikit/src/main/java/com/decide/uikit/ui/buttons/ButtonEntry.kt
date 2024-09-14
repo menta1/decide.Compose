@@ -45,7 +45,7 @@ fun ButtonEntry(
     ) {
         Spacer(modifier = Modifier.size(80.dp))
         Text(text = text, color = textColor, style = textStyle)
-        ButtonCircle() {}
+        ButtonCircle { onClick() }
     }
 }
 

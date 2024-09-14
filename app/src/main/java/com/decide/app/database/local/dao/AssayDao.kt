@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.decide.app.database.local.entities.assay.AssayEntity
 import com.decide.app.database.local.entities.assay.ResultCompletedAssayEntity
 import kotlinx.coroutines.flow.Flow
@@ -15,8 +14,8 @@ interface AssayDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(assays: List<AssayEntity>)
 
-    @Update
-    suspend fun updateAssay(assay : AssayEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateAssay(assay: AssayEntity)
 
     @Query("SELECT * FROM assay_table WHERE id = :id")
     suspend fun getAssay(id: Int): AssayEntity

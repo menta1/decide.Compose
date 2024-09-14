@@ -72,6 +72,13 @@ class FillProfileViewModel @Inject constructor(
                 }
             }
 
+            is FillProfileEvent.SetDateOFBirth -> {
+                _state.update {
+                    it.copy(
+                        dateOFBirth = event.dateOfBirth
+                    )
+                }
+            }
         }
     }
 

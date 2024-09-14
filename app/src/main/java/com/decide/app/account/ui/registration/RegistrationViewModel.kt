@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.decide.app.account.authenticationClient.exception.DecideAuthException
 import com.decide.app.account.domain.useCase.CreateUserUseCase
 import com.decide.app.account.modal.UserAuth
+import com.decide.app.account.ui.validators.ValidationEmail
+import com.decide.app.account.ui.validators.ValidationPassword
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

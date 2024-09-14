@@ -1,13 +1,6 @@
-//package com.decide.app.navigation
-//
-//import androidx.compose.animation.EnterTransition
-//import androidx.compose.animation.ExitTransition
-//import androidx.compose.animation.core.tween
-//import androidx.compose.animation.fadeIn
-//import androidx.compose.animation.fadeOut
-//import androidx.compose.animation.scaleIn
-//import androidx.compose.animation.scaleOut
-//
+package com.decide.app.navigation
+
+
 //fun scaleIntoContainer(
 //    direction: ScaleTransitionDirection = ScaleTransitionDirection.INWARDS,
 //    initialScale: Float = if (direction == ScaleTransitionDirection.OUTWARDS) 0.9f else 1.1f
@@ -29,3 +22,48 @@
 //        ), targetScale = targetScale
 //    ) + fadeOut(tween(delayMillis = 90))
 //}
+//
+//        enterTransition = {
+//            when (initialState.destination.route) {
+//                "details" ->
+//                    slideIntoContainer(
+//                        AnimatedContentTransitionScope.SlideDirection.Left,
+//                        animationSpec = tween(700)
+//                    )
+//
+//                else -> null
+//            }
+//        },
+//        exitTransition = {
+//            when (targetState.destination.route) {
+//                "details" ->
+//                    slideOutOfContainer(
+//                        AnimatedContentTransitionScope.SlideDirection.Left,
+//                        animationSpec = tween(700)
+//                    )
+//
+//                else -> null
+//            }
+//        },
+//        popEnterTransition = {
+//            when (initialState.destination.route) {
+//                "details" ->
+//                    slideIntoContainer(
+//                        AnimatedContentTransitionScope.SlideDirection.Right,
+//                        animationSpec = tween(700)
+//                    )
+//
+//                else -> null
+//            }
+//        },
+//        popExitTransition = {
+//            when (targetState.destination.route) {
+//                "details" ->
+//                    slideOutOfContainer(
+//                        AnimatedContentTransitionScope.SlideDirection.Right,
+//                        animationSpec = tween(700)
+//                    )
+//
+//                else -> null
+//            }
+//        }

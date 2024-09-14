@@ -2,7 +2,6 @@ package com.decide.app.database.local.entities.profile
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.decide.app.database.local.entities.assay.AssayEntity
 
 @Entity(tableName = "profile_table")
 data class ProfileEntity(

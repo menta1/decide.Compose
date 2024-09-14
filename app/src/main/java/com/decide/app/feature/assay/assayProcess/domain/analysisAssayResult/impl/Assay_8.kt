@@ -63,7 +63,7 @@ internal fun assay8(
     }
 
     val result = points1 - points2 + 35f
-    val forStatistics = 0.6*(result-5)
+    val forStatistics = 0.6 * (result - 5)
     Timber.tag("TAG").d("assay 8 = $result")
     return when {
         (result <= 30f) -> {

@@ -1,9 +1,11 @@
 package com.decide.app.database.remote.dto
 
+import androidx.annotation.Keep
 import com.decide.app.database.local.entities.assay.QuestionEntity
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import kotlinx.serialization.SerialName
 
+@Keep
 data class QuestionAssayDTO(
     @SerialName("id") val id: Int = 0,
     @SerialName("text") val text: String = "",

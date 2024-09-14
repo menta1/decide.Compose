@@ -1,8 +1,10 @@
 package com.decide.app.database.remote.dto
 
+import androidx.annotation.Keep
 import com.decide.app.database.local.entities.assay.AssayEntity
 import kotlinx.serialization.SerialName
 
+@Keep
 data class AssayDTO(
     @SerialName("id") val id: Int = -1,
     @SerialName("idCategory") val idCategory: Int = -1,
@@ -15,6 +17,7 @@ data class AssayDTO(
     @SerialName("timeForTest") val timeForTest: Long = -1,
     @SerialName("timeForQuestions") val timeForQuestions: Long = -1,
     @SerialName("rating") val rating: String = "",
+    @SerialName("results") val results: List<ResultCompletedAssayDTO> = listOf()
 )
 
 fun AssayDTO.toAssayEntity() = AssayEntity(
@@ -28,5 +31,6 @@ fun AssayDTO.toAssayEntity() = AssayEntity(
     rating = rating,
     type = type,
     timeForQuestions = timeForQuestions,
-    timeForTest = timeForTest
+    timeForTest = timeForTest,
+    results = convertToResultCompletedAssayEntity(results)
 )

@@ -76,31 +76,38 @@ class RemoteAssayStorageImpl @Inject constructor(
     }
 
     @SuppressLint("LogNotTimber")
-    override suspend fun getAssays() {
+    override suspend fun getAssays(onResult: (result: Resource<Boolean, DecideException>) -> Unit) {
         remoteDatabase.collection(EXAMS).get().addOnCompleteListener { task: Task<QuerySnapshot> ->
             coroutineScope.launch {
                 localStorage.assayDao().insert(task.result.map {
                     it.toObject(AssayDTO::class.java).toAssayEntity()
                 })
+                onResult(Resource.Success(true))
                 Log.d("FIREBASE", "FIREBASE SUCCESS = getAssays")
             }
         }.addOnFailureListener {
+            onResult(Resource.Error(firestoreExceptionMapper(it)))
             Log.d("FIREBASE", "FIREBASE ERRORS = $it")
         }
     }
 
     @SuppressLint("LogNotTimber")
     override suspend fun getCategories() {
-        remoteDatabase.collection(CATEGORIES).get()
-            .addOnCompleteListener { task: Task<QuerySnapshot> ->
-                coroutineScope.launch {
-                    localStorage.categoryDao().insert(task.result.map {
-                        it.toObject(CategoryDTO::class.java).toCategoryEntity()
-                    })
+        try {
+            remoteDatabase.collection(CATEGORIES).get()
+                .addOnSuccessListener { task ->
+                    coroutineScope.launch {
+                        localStorage.categoryDao().insert(task.map {
+                            it.toObject(CategoryDTO::class.java).toCategoryEntity()
+                        })
+                    }
+                }.addOnFailureListener {
+                    Log.d("FIREBASE", "FIREBASE ERRORS = $it")
                 }
-            }.addOnFailureListener {
-                Log.d("FIREBASE", "FIREBASE ERRORS = $it")
-            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE", "FIREBASE ERRORS = ${e.message}")
+        }
+
     }
 
     override suspend fun getKey(id: String) {
@@ -222,7 +229,7 @@ class RemoteAssayStorageImpl @Inject constructor(
                         .addOnFailureListener {
                             Timber.tag("FIREBASE").d(it.message ?: "FIREBASE putPassedAssays Fail")
                         }
-                }else{
+                } else {
                     Timber.tag("FIREBASE").d("FIREBASE putPassedAssays userId != null")
                 }
 
@@ -247,7 +254,7 @@ class RemoteAssayStorageImpl @Inject constructor(
                     onResult(Resource.Success(true))
                 }
             }.addOnFailureListener {
-                onResult(Resource.Error(storageExceptionMapper(it)))
+                onResult(Resource.Success(false))
             }
         } catch (e: Exception) {
             onResult(Resource.Error(storageExceptionMapper(e)))
@@ -264,6 +271,7 @@ class RemoteAssayStorageImpl @Inject constructor(
                     .addOnSuccessListener { document ->
                         val profile = document.toObject(AccountDTO::class.java)
                         if (profile != null) {
+                            Timber.tag("TAG").d("remoteDatabase getAccountData = profile == null")
                             coroutineScope.launch {
                                 localStorage.profileDao().insert(
                                     profile.toProfileEntity()
@@ -275,9 +283,11 @@ class RemoteAssayStorageImpl @Inject constructor(
                                     userSettings[KEY_USER_ID] = profile.id
                                     userSettings[KEY_USER_EMAIL] = profile.email
                                 }
+                                getPassedAssays(profile.id)
                             }
 
                         } else {
+                            Timber.tag("TAG").d("remoteDatabase getAccountData = else")
                             onResult(
                                 Resource.Error(
                                     firestoreExceptionMapper(
@@ -297,6 +307,7 @@ class RemoteAssayStorageImpl @Inject constructor(
                 statisticsClient.getRemoteStatistic(id)
 
             } catch (e: Exception) {
+                Timber.tag("TAG").d("remoteDatabase getAccountData = ${e.message}")
                 onResult(Resource.Error(firestoreExceptionMapper(e)))
 
             }

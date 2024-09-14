@@ -1,11 +1,5 @@
 package com.decide.app.feature.assay.assayMain.ui
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -27,13 +20,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.R
+import com.decide.app.feature.defaultScreens.ErrorScreen
+import com.decide.app.feature.defaultScreens.LoadingScreen
+import com.decide.app.feature.defaultScreens.NetworkErrorScreen
 import com.decide.app.utils.setDrawable
 import com.decide.uikit.theme.DecideTheme
-import com.decide.uikit.ui.ErrorMessage
-import com.decide.uikit.ui.buttons.CircleDecideIndicator
 import com.decide.uikit.ui.card.CardAssay
 import com.decide.uikit.ui.searchBar.SearchBarDecide
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -42,7 +35,6 @@ fun AssayMainScreen(
 ) {
     val viewModel: AssayMainViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
-
 
     AssayMainScreen(
         state = state,
@@ -74,80 +66,54 @@ fun AssayMainScreen(
         SearchBarDecide(
             value = state.searchText,
             onValueChange = { onEvent(AssayMainEvent.SetSearch(it)) },
-            onClickRemoveText = {  })
-        AnimatedContent(
-            state,
-            transitionSpec = {
-                fadeIn(
-                    animationSpec = tween(500)
-                ) togetherWith fadeOut(animationSpec = tween(300))
-            },
-            label = "Animated Content"
-        ) { targetState ->
-            when (targetState.uiState) {
-                UIState.LOADING -> Loading()
-                UIState.ERROR -> Error()
-                UIState.NO_INTERNET -> {}
-                UIState.UNKNOWN_ERROR -> Error()
-                UIState.SUCCESS -> Loaded(
-                    assays = targetState.assays,
-                    onClickAssay = onClickAssay
-                )
+        )
+
+        when (state.uiState) {
+            UIState.LOADING -> LoadingScreen()
+            UIState.ERROR -> ErrorScreen(
+                text = "Попробовать еще раз"
+            ) {
+                onEvent(AssayMainEvent.Update())
             }
-        }
 
-    }
-}
-
-@Composable
-internal fun Loaded(
-    assays: ImmutableList<AssayUI>,
-    onClickAssay: (argument: Int) -> Unit,
-) {
-    LazyColumn {
-        items(assays, key = { item -> item.id }) { assay ->
-            Spacer(modifier = Modifier.height(16.dp))
-            CardAssay(
-                image = painterResource(id = setDrawable(assay.idCategory)),
-                icon = painterResource(id = com.decide.uikit.R.drawable.ic_star_rating),
-                textCategory = assay.nameCategory,
-                textAssay = assay.name,
-                textRating = assay.rating,
-                textQuestion = pluralStringResource(
-                    id = R.plurals.questions,
-                    count = assay.countQuestions.toInt(),
-                    assay.countQuestions.toInt()
-                ),
-                onClickBookmark = {
-
-                },
-                onClickAssay = {
-                    onClickAssay(assay.id)
+            UIState.NO_INTERNET -> {
+                NetworkErrorScreen {
+                    onEvent(AssayMainEvent.Update())
                 }
+            }
+
+            UIState.SUCCESS -> Loaded(
+                assays = state.assays,
+                onClickAssay = onClickAssay
             )
         }
     }
 }
 
 @Composable
-internal fun Error() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        ErrorMessage()
-    }
-}
-
-@Composable
-internal fun Loading() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircleDecideIndicator()
+internal fun Loaded(
+    assays: List<AssayUI>,
+    onClickAssay: (argument: Int) -> Unit,
+) {
+    LazyColumn {
+        items(assays, key = { item -> item.id }) { assay ->
+            Spacer(modifier = Modifier.height(16.dp))
+            CardAssay(
+                image = setDrawable(assay.idCategory),
+                icon = painterResource(id = com.decide.uikit.R.drawable.ic_star_rating),
+                textCategory = assay.nameCategory,
+                textAssay = assay.name,
+                textRating = assay.rating.ifEmpty { "0.0" },
+                textQuestion = pluralStringResource(
+                    id = R.plurals.questions,
+                    count = assay.countQuestions.toInt(),
+                    assay.countQuestions.toInt()
+                ),
+                onClickAssay = {
+                    onClickAssay(assay.id)
+                }
+            )
+        }
     }
 }
 

@@ -156,7 +156,7 @@ class AccountRepositoryImpl @Inject constructor(
                 it.clear()
             }
             onResult(Resource.Success(true))
-            remoteStorage.getAssays()//для оптимизации нужно выставлять какой то индикатор чтобы не загружать часто с БД
+            remoteStorage.getAssays {}//для оптимизации нужно выставлять какой то индикатор чтобы не загружать часто с БД
         }
     }
 
@@ -237,7 +237,8 @@ class AccountRepositoryImpl @Inject constructor(
                 account = AccountDTO(
                     id = id,
                     email = email,
-                    firstName = email
+                    firstName = email,
+                    dateRegistration = Date().time
                 ),
                 onResult = onResult
             )

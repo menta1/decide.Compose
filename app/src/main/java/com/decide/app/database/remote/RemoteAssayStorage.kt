@@ -10,7 +10,7 @@ import java.io.InputStream
 
 interface RemoteAssayStorage {
     suspend fun getAssay(id: String): Flow<Result<AssayDTO>>
-    suspend fun getAssays()
+    suspend fun getAssays(onResult: (result: Resource<Boolean, DecideException>) -> Unit)
     suspend fun getCategories()
     suspend fun getKey(id: String)
 

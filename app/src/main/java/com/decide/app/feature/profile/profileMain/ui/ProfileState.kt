@@ -1,7 +1,6 @@
 package com.decide.app.feature.profile.profileMain.ui
 
 import com.decide.app.feature.profile.profileMain.modal.ProfileUI
-import com.decide.app.feature.profile.profileMain.ui.modal.StatisticUI
 
 sealed interface ProfileState {
 

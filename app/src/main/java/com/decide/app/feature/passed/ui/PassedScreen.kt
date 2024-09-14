@@ -50,8 +50,8 @@ fun PassedScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .padding(top = 12.dp),
+            .padding(horizontal = 14.dp)
+            .padding(top = 8.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {

@@ -35,26 +35,9 @@ fun NavGraphBuilder.addNestedAssayGraph(
         startDestination = AssayDescription.route,
         arguments = listOf(navArgument("idAssay") { type = NavType.IntType })
     ) {
-
-        composable(route = AssayDescription.route, enterTransition = {
-            fadeIn(
-                animationSpec = tween(
-                    100, easing = LinearEasing
-                )
-            ) + slideIntoContainer(
-                animationSpec = tween(200, easing = EaseIn),
-                towards = AnimatedContentTransitionScope.SlideDirection.Up
-            )
-        }, exitTransition = {
-            fadeOut(
-                animationSpec = tween(
-                    100, easing = LinearEasing
-                )
-            ) + slideOutOfContainer(
-                animationSpec = tween(200, easing = EaseOut),
-                towards = AnimatedContentTransitionScope.SlideDirection.Down
-            )
-        }) { entry ->
+        composable(
+            route = AssayDescription.route
+        ) { entry ->
             val parentEntry = remember(entry) {
                 navController.getBackStackEntry(AssayRouteBranch.route + "{idAssay}")
             }

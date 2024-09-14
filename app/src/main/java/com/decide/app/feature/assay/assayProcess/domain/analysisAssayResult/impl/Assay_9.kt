@@ -65,7 +65,7 @@ internal fun assay9(
     }
 
     val result = points1 - points2 + 35f
-    val forStatistics = 0.6*(result-20)
+    val forStatistics = 0.6 * (result - 20)
 
     return when {
         (result <= 30f) -> {

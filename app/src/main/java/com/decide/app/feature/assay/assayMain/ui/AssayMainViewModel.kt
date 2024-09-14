@@ -7,6 +7,7 @@ import com.decide.app.utils.Resource
 import com.decide.app.utils.toAssayUI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,16 +19,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AssayMainViewModel @Inject constructor(
-    repository: AssayMainRepository
+    private val repository: AssayMainRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AssayMainState())
     val state: StateFlow<AssayMainState> = _state.asStateFlow()
 
-    private val assaysFlow =
-        repository.getAssays().stateIn(
-            viewModelScope, SharingStarted.Lazily, Resource.Success(emptyList())
-        )
+    private val assaysFlow = repository.getAssays().stateIn(
+        viewModelScope, SharingStarted.Lazily, Resource.Success(emptyList())
+    )
 
     private var assays = emptyList<AssayUI>()
 
@@ -39,7 +39,7 @@ class AssayMainViewModel @Inject constructor(
 
 
     private suspend fun getAssays() {
-        assaysFlow.collect { result ->
+        repository.getAssays().collect { result ->
             when (result) {
                 is Resource.Error -> {
                     _state.update { state ->
@@ -51,13 +51,18 @@ class AssayMainViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     assays = result.data.map { it.toAssayUI() }
-                    _state.update { state ->
-                        state.copy(
-                            uiState = UIState.SUCCESS,
-                            assays = result.data.map { it.toAssayUI() }
-                                .toImmutableList())
+                    if (assays.isEmpty()) {
+                        _state.update { state ->
+                            state.copy(
+                                uiState = UIState.LOADING
+                            )
+                        }
+                    } else {
+                        _state.update { state ->
+                            state.copy(uiState = UIState.SUCCESS,
+                                assays = result.data.map { it.toAssayUI() })
+                        }
                     }
-
                 }
             }
         }
@@ -68,15 +73,18 @@ class AssayMainViewModel @Inject constructor(
         when (event) {
             is AssayMainEvent.SetSearch -> {
                 _state.update { state ->
-                    state.copy(
-                        searchText = event.search,
-                        assays = if (event.search.isBlank()) {
-                            assays.toImmutableList()
-                        } else {
-                            assays.filter { it.name.contains(event.search, ignoreCase = true) }
-                                .toImmutableList()
-                        }
-                    )
+                    state.copy(searchText = event.search, assays = if (event.search.isBlank()) {
+                        assays.toImmutableList()
+                    } else {
+                        assays.filter { it.name.contains(event.search, ignoreCase = true) }
+                            .toImmutableList()
+                    })
+                }
+            }
+
+            is AssayMainEvent.Update -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    getAssays()
                 }
             }
         }

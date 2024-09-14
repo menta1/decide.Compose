@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,10 +50,6 @@ fun ProfileScreen(
     val viewModel: ProfileViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.onEvent(ProfileScreenEvent.UpdateProfile)
-    }
-
     ProfileScreen(
         state = state,
         onClickSetting = onClickSetting,
@@ -71,7 +66,6 @@ fun ProfileScreen(
     onClickLogin: () -> Unit,
     onClickRegistration: () -> Unit,
 ) {
-
     when (state) {
         ProfileState.Empty -> {}
         is ProfileState.Error -> Error()
@@ -102,6 +96,7 @@ fun Loaded(
     onClickSetting: () -> Unit = {},
     profileUI: ProfileUI,
 ) {
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -145,14 +140,25 @@ fun Loaded(
                     .size(110.dp),
                 contentScale = ContentScale.Crop
             )
-            Text(
-                modifier = Modifier
-                    .padding(top = 4.dp)
-                    .padding(start = 8.dp),
-                text = profileUI.firstName + " " + profileUI.lastName,
-                style = DecideTheme.typography.titleLarge,
-                color = DecideTheme.colors.inputBlack
-            )
+            Column {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .padding(start = 8.dp),
+                    text = profileUI.firstName + " " + profileUI.lastName,
+                    style = DecideTheme.typography.titleLarge,
+                    color = DecideTheme.colors.inputBlack
+                )
+                Text(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .padding(start = 8.dp),
+                    text = profileUI.email,
+                    style = DecideTheme.typography.titleMedium,
+                    color = DecideTheme.colors.gray
+                )
+            }
+
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -221,7 +227,9 @@ fun ContentProfile(
 fun PreviewLoaded() {
     DecideTheme {
         Column {
-            ProfileState.Loaded(
+            Loaded(
+                modifier = Modifier,
+                onClickSetting = {},
                 profileUI = ProfileUI(
                     firstName = "Ainur",
                     lastName = "a;sldajkdjaskd",
@@ -243,8 +251,8 @@ fun NotAuthorized(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .padding(top = 12.dp),
+            .padding(horizontal = 14.dp)
+            .padding(top = 8.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

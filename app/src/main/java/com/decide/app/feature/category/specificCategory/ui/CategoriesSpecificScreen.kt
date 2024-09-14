@@ -1,6 +1,5 @@
 package com.decide.app.feature.category.specificCategory.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -62,9 +61,8 @@ fun CategoriesSpecificScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DecideTheme.colors.background)
-            .padding(top = 36.dp)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 14.dp)
+            .padding(top = 8.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -89,7 +87,7 @@ fun CategoriesSpecificScreen(
                     items(state.assays) { assay ->
                         Spacer(modifier = Modifier.height(16.dp))
                         CardAssay(
-                            image = painterResource(id = setDrawable(assay.idCategory)),
+                            image = setDrawable(assay.idCategory),
                             icon = painterResource(id = R.drawable.ic_star_rating),
                             textCategory = assay.nameCategory,
                             textAssay = assay.name,
@@ -99,9 +97,6 @@ fun CategoriesSpecificScreen(
                                 count = assay.countQuestions.toInt(),
                                 assay.countQuestions.toInt()
                             ),
-                            onClickBookmark = {
-
-                            },
                             onClickAssay = {
                                 onClickAssay(assay.id)
                             }

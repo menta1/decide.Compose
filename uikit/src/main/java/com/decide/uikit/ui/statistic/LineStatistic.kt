@@ -138,7 +138,7 @@ fun LineStatistic(
                         )
                         Text(
                             modifier = Modifier.padding(start = 8.dp),
-                            text = if (isHasResult) "Вы" else "Нет данных",
+                            text = if (isHasResult) "Ваш" else "Нет данных",
                             style = itemsStyle,
                             color = itemsColor
                         )

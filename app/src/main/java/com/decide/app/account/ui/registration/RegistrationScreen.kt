@@ -1,6 +1,6 @@
 package com.decide.app.account.ui.registration
 
-import androidx.compose.foundation.Image
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -33,10 +34,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.decide.app.R
+import com.decide.app.feature.defaultScreens.ErrorScreen
+import com.decide.app.feature.defaultScreens.LoadingScreen
+import com.decide.app.feature.defaultScreens.NetworkErrorScreen
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.buttons.ButtonEntry
-import com.decide.uikit.ui.buttons.CircleDecideIndicator
 
 @Composable
 fun RegistrationScreen(
@@ -53,8 +57,16 @@ fun RegistrationScreen(
         onClickLogin = onClickLogin,
         state = state,
         onEvent = viewModel::updateData,
-        onClickFillProfile = onClickFillProfile
+        onClickFillProfile = onClickFillProfile,
+        onClickMainPage = onClickMainPage
     )
+
+    object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            onClickMainPage()
+        }
+
+    }
 }
 
 @Composable
@@ -64,6 +76,7 @@ fun RegistrationScreen(
     state: RegistrationState,
     onEvent: (event: RegistrationEvent) -> Unit,
     onClickFillProfile: () -> Unit,
+    onClickMainPage: () -> Unit
 ) {
 
     var passwordVisibility by rememberSaveable {
@@ -87,13 +100,7 @@ fun RegistrationScreen(
 
     when (state.uiState) {
         UIState.REGISTRATION -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircleDecideIndicator()
-            }
+            LoadingScreen()
         }
 
         UIState.SUCCESS_REGISTRATION -> {
@@ -111,7 +118,7 @@ fun RegistrationScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier.padding(bottom = 24.dp),
                     text = "decide",
                     style = DecideTheme.typography.displayLarge,
                     color = DecideTheme.colors.inputBlack
@@ -142,6 +149,7 @@ fun RegistrationScreen(
                         onValueChange = { onEvent(RegistrationEvent.SetEmail(it)) },
                         maxLines = 1,
                         isError = state.isErrorEmail.isError,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         supportingText = {
                             Text(
                                 text = state.isErrorEmail.nameError,
@@ -193,9 +201,10 @@ fun RegistrationScreen(
                                 color = DecideTheme.colors.error
                             )
                         })
-                    OutlinedTextField(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
                         value = state.confirmPassword,
                         onValueChange = { onEvent(RegistrationEvent.SetConfirmPassword(it)) },
                         maxLines = 1,
@@ -239,19 +248,20 @@ fun RegistrationScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(bottom = 8.dp),
+                        .padding(26.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Bottom
                 ) {
 
                     Text(
                         text = "продолжить с ",
-                        style = DecideTheme.typography.labelLarge,
+                        style = DecideTheme.typography.titleSmall,
                         color = DecideTheme.colors.inputBlack
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.social_media),
+                    AsyncImage(
+                        modifier = Modifier.size(100.dp),
+                        model = R.drawable.social_media,
                         contentDescription = null
                     )
 
@@ -260,7 +270,7 @@ fun RegistrationScreen(
                     ) {
                         Text(
                             text = "Уже есть профиль?",
-                            style = DecideTheme.typography.labelSmall,
+                            style = DecideTheme.typography.titleSmall,
                             color = DecideTheme.colors.inputBlack
                         )
                         Text(
@@ -269,7 +279,7 @@ fun RegistrationScreen(
                                 .clickable { onClickLogin() },
                             text = "Вход",
                             color = DecideTheme.colors.accentPink,
-                            style = DecideTheme.typography.labelLarge,
+                            style = DecideTheme.typography.titleMedium,
                         )
                     }
 
@@ -277,8 +287,17 @@ fun RegistrationScreen(
             }
         }
 
-        UIState.NO_INTERNET -> TODO()
-        UIState.UNKNOWN_ERROR -> TODO()
+        UIState.NO_INTERNET -> {
+            NetworkErrorScreen {
+                onEvent(RegistrationEvent.TryRegistration)
+            }
+        }
+
+        UIState.UNKNOWN_ERROR -> {
+            ErrorScreen {
+                onClickMainPage()
+            }
+        }
     }
 }
 
@@ -294,7 +313,8 @@ fun PreviewRegistration() {
                 onClickLogin = {},
                 onEvent = {},
                 state = RegistrationState(),
-                onClickFillProfile = {}
+                onClickFillProfile = {},
+                onClickMainPage = {}
             )
         }
     }

@@ -13,11 +13,11 @@ import com.decide.app.database.local.dao.CategoryDao
 import com.decide.app.database.local.dao.KeyDao
 import com.decide.app.database.local.dao.ProfileDao
 import com.decide.app.database.local.dao.StatisticDao
-import com.decide.app.database.local.entities.assay.AssayEntity
 import com.decide.app.database.local.entities.CategoryEntity
 import com.decide.app.database.local.entities.KeyEntity
-import com.decide.app.database.local.entities.profile.ProfileEntity
 import com.decide.app.database.local.entities.StatisticEntity
+import com.decide.app.database.local.entities.assay.AssayEntity
+import com.decide.app.database.local.entities.profile.ProfileEntity
 
 @Database(
     version = 1,

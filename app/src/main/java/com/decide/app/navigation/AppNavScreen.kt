@@ -4,6 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -24,12 +29,16 @@ fun AppNavScreen(
     )
     val navController = rememberNavController()
 
+    var isShowBottomBar by remember { mutableStateOf(false) }
+
     Scaffold(bottomBar = {
         if (itemsNavBottomBar.contains(
                 navController.currentBackStackEntryAsState().value?.destination?.route
             )
         ) {
-            BottomBar(navController)
+            BottomBar(
+                navController, isShowBottomBar
+            )
         }
     }, contentColor = DecideTheme.colors.background) {
 
@@ -40,11 +49,17 @@ fun AppNavScreen(
                 .padding(it)
                 .background(color = DecideTheme.colors.background)
         )
+        LaunchedEffect(key1 = Unit) {
+            isShowBottomBar = true
+        }
     }
 }
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(
+    navController: NavController,
+    isVisible: Boolean
+) {
     NavBottomBar(
         routeAssay = Assay.route,
         routeCategory = Category.route,
@@ -74,5 +89,7 @@ fun BottomBar(navController: NavController) {
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }
-        })
+        },
+        isVisible = isVisible
+    )
 }

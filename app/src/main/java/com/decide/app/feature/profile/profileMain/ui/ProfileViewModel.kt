@@ -1,18 +1,17 @@
 package com.decide.app.feature.profile.profileMain.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.feature.profile.profileMain.domain.IsAuthUserUseCase
 import com.decide.app.utils.DecideException
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,39 +22,39 @@ class ProfileViewModel @Inject constructor(
     private val _state: MutableStateFlow<ProfileState> = MutableStateFlow(ProfileState.Initial)
     val state: StateFlow<ProfileState> = _state.asStateFlow()
 
-    fun onEvent(event: ProfileScreenEvent) {
-        when (event) {
-            ProfileScreenEvent.UpdateProfile -> updateProfile()
-        }
-    }
-
-    private fun updateProfile() {
+    init {
         viewModelScope.launch {
-            when (val profileUI = isAuthUserUseCase.invoke()) {
-                is Resource.Error -> {
-                    when (profileUI.error) {
+            isAuthUserUseCase.invoke().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _state.update {
+                            Log.d("TAG", "Resource.Success _state.update")
+                            ProfileState.Loaded(result.data)
+                        }
+                    }
 
-                        is DecideException.UserNotAuthorization -> {
-                            delay(1000)
-                            if (_state.value != ProfileState.NotAuthorized) {
-                                _state.update { ProfileState.NotAuthorized }
-                                updateProfile()
+                    is Resource.Error -> {
+                        when (result.error) {
+                            is DecideException.UserNotAuthorization -> {
+                                Log.d("TAG", "DecideException.UserNotAuthorization")
+                                _state.update {
+                                    ProfileState.NotAuthorized
+                                }
+                            }
+
+                            else -> {
+                                Log.d("TAG", "else")
+                                _state.update { ProfileState.Error("") }
                             }
                         }
-
-                        else -> {}
-
-                    }
-                    Timber.tag("TAG").d(profileUI.error.messageLog)
-                }
-
-                is Resource.Success -> {
-                    _state.update {
-                        ProfileState.Loaded(profileUI.data)
                     }
                 }
             }
         }
+    }
+
+    fun onEvent(event: ProfileScreenEvent) {
+
     }
 
 

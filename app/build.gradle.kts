@@ -1,27 +1,24 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.kotlin.symbol.processing)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.appdistribution)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
-
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.symbol.processing)
 }
 
 android {
-    signingConfigs {
-        create("release") {
-        }
-    }
     namespace = "com.decide.app"
     compileSdk = 34
 
     defaultConfig {
         applicationId = "com.decide.app"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -33,13 +30,21 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName("release") {
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+        }
+
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
     compileOptions {
@@ -51,9 +56,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
@@ -84,10 +86,9 @@ dependencies {
 
     //Room
     implementation(libs.androidx.room.runtime)
-
-    annotationProcessor(libs.androidx.room.room.compiler)
-    ksp(libs.androidx.room.room.compiler)
     implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.room.compiler)
+
 
     //Hilt
     implementation(libs.androidx.hilt.navigation.compose)
@@ -126,6 +127,9 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     implementation(libs.kotlinx.serialization.json)
+
+    //SplashScreen
+    implementation(libs.splashscreen)
 
     //Testing
     testImplementation(libs.junit)

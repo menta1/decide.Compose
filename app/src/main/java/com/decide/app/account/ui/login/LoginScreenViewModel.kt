@@ -2,10 +2,11 @@ package com.decide.app.account.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.decide.app.account.authenticationClient.exception.DecideAuthException
 import com.decide.app.account.domain.useCase.SingInUseCase
 import com.decide.app.account.modal.UserAuth
-import com.decide.app.account.ui.registration.ValidationEmail
-import com.decide.app.account.ui.registration.ValidationPassword
+import com.decide.app.account.ui.validators.ValidationEmail
+import com.decide.app.account.ui.validators.ValidationPassword
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,7 @@ class LoginScreenViewModel @Inject constructor(
             is LoginScreenEvent.SetEmail -> {
                 _state.update { state ->
                     state.copy(
-                        email = event.email, isErrorPassword = ValidationPassword.NO_ERROR
+                        email = event.email, isErrorEmail = ValidationEmail.NO_ERROR
                     )
                 }
             }
@@ -42,42 +43,91 @@ class LoginScreenViewModel @Inject constructor(
             }
 
             LoginScreenEvent.TryAuth -> {
-                _state.update { state ->
-                    state.copy(
-                        uiState = UIState.PROCESS_AUTH
-                    )
-                }
-                viewModelScope.launch(Dispatchers.IO) {
-                    singInUseCase.invoke(user = UserAuth(
-                        name = "",
-                        password = _state.value.password,
-                        email = _state.value.email,
-                    ), onResult = { response ->
-                        when (response) {
-                            is Resource.Success -> {
-                                when (response.data) {
-                                    true -> {
-                                        _state.update { state ->
-                                            state.copy(
-                                                uiState = UIState.SUCCESS_AUTH
-                                            )
+                if (_state.value.email.isNotEmpty() && _state.value.password.isNotEmpty()) {
+                    _state.update { state ->
+                        state.copy(
+                            uiState = UIState.PROCESS_AUTH
+                        )
+                    }
+                    viewModelScope.launch(Dispatchers.IO) {
+                        singInUseCase.invoke(user = UserAuth(
+                            name = "",
+                            password = _state.value.password,
+                            email = _state.value.email,
+                        ), onResult = { response ->
+
+                            when (response) {
+                                is Resource.Success -> {
+                                    when (response.data) {
+                                        true -> {
+                                            _state.update { state ->
+                                                state.copy(
+                                                    uiState = UIState.SUCCESS_AUTH
+                                                )
+                                            }
+                                        }
+
+                                        false -> {
+                                            _state.update { state ->
+                                                state.copy(
+                                                    uiState = UIState.SUCCESS_AUTH
+                                                )
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                                is Resource.Error -> {
+                                    when (response.error) {
+                                        is DecideAuthException.NoInternet -> {
+                                            _state.update {
+                                                it.copy(
+                                                    uiState = UIState.NETWORK_ERROR
+                                                )
+                                            }
+                                        }
+
+                                        is DecideAuthException.DecideAuthInvalidUser -> {
+                                            _state.update {
+                                                it.copy(
+                                                    email = "",
+                                                    password = "",
+                                                    exceptionAuth = true,
+                                                    uiState = UIState.DATA_ENTRY
+                                                )
+                                            }
+                                        }
+
+                                        else -> {
+                                            _state.update {
+                                                it.copy(
+                                                    uiState = UIState.ERROR
+                                                )
+                                            }
                                         }
                                     }
-
-                                    false -> {
-
-                                    }
-
                                 }
                             }
 
-                            is Resource.Error -> {}
-                        }
+                        })
 
-                    })
-
+                    }
+                    checkEmailError()
+                } else {
+                    _state.update { state ->
+                        state.copy(
+                            uiState = UIState.DATA_ENTRY
+                        )
+                    }
+                    if (_state.value.password.isEmpty()) {
+                        _state.update { it.copy(isErrorPassword = ValidationPassword.INVALID_CHARS) }
+                    }
+                    if (_state.value.email.isEmpty()) {
+                        _state.update { it.copy(isErrorEmail = ValidationEmail.CANT_EMPTY) }
+                    }
                 }
-                checkEmailError()
+
             }
 
             is LoginScreenEvent.EmailFocused -> {

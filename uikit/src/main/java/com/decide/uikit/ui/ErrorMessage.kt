@@ -16,7 +16,7 @@ import com.decide.uikit.theme.DecideTheme
 @Composable
 fun ErrorMessage() {
     Column(
-      //  modifier = Modifier.fillMaxSize(),
+        //  modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

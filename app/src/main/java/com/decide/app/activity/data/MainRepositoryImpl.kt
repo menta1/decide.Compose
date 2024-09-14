@@ -5,23 +5,30 @@ import androidx.datastore.preferences.core.Preferences
 import com.decide.app.account.domain.useCase.IsUserAuthUseCase
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.remote.RemoteAssayStorage
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
     val localStorageStorage: AppDatabase,
     private val remoteStorage: RemoteAssayStorage,
     private val isUserAuthUseCase: IsUserAuthUseCase,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val dataStore: DataStore<Preferences>
 ) : MainRepository {
     override suspend fun initAssays() {
         //checkVersion remote DB тогда обновлять базу//Сделать позже
-        remoteStorage.getAssays()
-        val userAuth = isUserAuthUseCase.invoke()
-        if (userAuth != null) {
-            delay(1000)
-            remoteStorage.getPassedAssays(userAuth)
+        remoteStorage.getAssays {
+            coroutineScope.launch {
+                val userAuth = isUserAuthUseCase.invoke()
+                if (userAuth != null) {
+                    remoteStorage.getPassedAssays(userAuth)
+                }
+            }
+
         }
+
     }
 
     override suspend fun initCategories() {

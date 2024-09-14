@@ -1,6 +1,7 @@
 package com.decide.app.feature.profile.settings.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,17 +78,20 @@ fun SettingsScreen(
                 ) {
                     onClickEditProfile()
                 }
+                Spacer(modifier = Modifier.height(8.dp))
                 ItemSettings(
                     text = "Уведомления",
                     iconItem = painterResource(id = R.drawable.ic_notifications)
                 ) {
                     onClickNotifications()
                 }
+                Spacer(modifier = Modifier.height(8.dp))
                 ItemSettings(
                     text = "Условия", iconItem = painterResource(id = R.drawable.ic_terms)
                 ) {
                     onClickTerms()
                 }
+                Spacer(modifier = Modifier.height(8.dp))
                 ItemSettings(
                     text = "Выйти из профиля",
                     iconItem = painterResource(id = R.drawable.ic_log_out)
@@ -116,7 +121,7 @@ fun SettingsScreen(
 @Composable
 fun PreviewLoaded() {
     DecideTheme {
-        Column {
+        Column(modifier = Modifier.background(Color.Black)) {
             SettingsScreen(
                 modifier = Modifier,
                 onClickEditProfile = {},

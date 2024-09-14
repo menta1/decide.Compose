@@ -9,6 +9,7 @@ import com.decide.app.utils.Resource
 import com.decide.app.utils.Response
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthenticationClientImpl @Inject constructor(
@@ -57,8 +58,9 @@ class AuthenticationClientImpl @Inject constructor(
 
             try {
                 firebaseAuth.signInWithEmailAndPassword(user.email, user.password)
-                    .addOnCompleteListener { task ->
-                        val userData = task.result.user
+                    .addOnSuccessListener { task ->
+                        Timber.tag("TAG").d("signInWithEmailAndPassword addOnSuccessListener")
+                        val userData = task.user
                         onResult(
                             Resource.Success(
                                 UserDto(
@@ -68,6 +70,7 @@ class AuthenticationClientImpl @Inject constructor(
                         )
                     }
                     .addOnFailureListener {
+                        Timber.tag("TAG").d("signInWithEmailAndPassword addOnFailureListener")
                         onResult(
                             Resource.Error(
                                 authExceptionMapper(
@@ -77,6 +80,7 @@ class AuthenticationClientImpl @Inject constructor(
                         )
                     }
             } catch (e: Exception) {
+                Timber.tag("TAG").d("signInWithEmailAndPassword catch ${e.message}")
                 onResult(
                     Resource.Error(
                         authExceptionMapper(

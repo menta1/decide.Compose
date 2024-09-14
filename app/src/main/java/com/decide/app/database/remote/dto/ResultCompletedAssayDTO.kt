@@ -1,7 +1,9 @@
 package com.decide.app.database.remote.dto
 
+import androidx.annotation.Keep
 import com.decide.app.database.local.entities.assay.ResultCompletedAssayEntity
 
+@Keep
 data class ResultCompletedAssayDTO(
     val date: Long = -1,
     val shortResults: List<String> = emptyList(),
@@ -17,3 +19,7 @@ fun ResultCompletedAssayDTO.toResultCompletedAssayEntity() = ResultCompletedAssa
     keyResults = keyResults,
     resultForStatistic = resultForStatistic
 )
+
+fun convertToQuestionEntity(resultCompletedAssay: List<ResultCompletedAssayDTO>): List<ResultCompletedAssayEntity> {
+    return resultCompletedAssay.map { it.toResultCompletedAssayEntity() }
+}

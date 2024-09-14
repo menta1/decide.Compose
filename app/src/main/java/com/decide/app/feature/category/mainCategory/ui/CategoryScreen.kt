@@ -51,8 +51,8 @@ fun CategoryScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 8.dp)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 14.dp)
+            .padding(top = 8.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {

@@ -60,10 +60,12 @@ fun ButtonVariant(
             tint = if (selected) tintIconSelected else tintIconUnselected
         )
         Text(
-            modifier = Modifier.padding(end = 20.dp).padding(vertical = 4.dp),
+            modifier = Modifier
+                .padding(end = 20.dp)
+                .padding(vertical = 4.dp),
             text = text,
             color = textColor,
-            style = if(selected) textStyle.copy(fontSize = 15.sp) else textStyle
+            style = if (selected) textStyle.copy(fontSize = 15.sp) else textStyle
         )
     }
 }
@@ -96,7 +98,10 @@ fun PreviewButtonVariantSelected() {
             .padding(horizontal = 39.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        ButtonVariant(text = "категорически не согласна с тем, что он делает и говорит в данной ситуации; активно выражаю несогласие и настаиваю на своем", selected = selected) {
+        ButtonVariant(
+            text = "категорически не согласна с тем, что он делает и говорит в данной ситуации; активно выражаю несогласие и настаиваю на своем",
+            selected = selected
+        ) {
             selected = !selected
         }
     }

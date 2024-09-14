@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.decide.app.database.local.entities.profile.ProfileEntity
-import com.decide.app.database.local.entities.assay.ResultCompletedAssayEntity
 
 @Dao
 interface ProfileDao {

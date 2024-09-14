@@ -1,8 +1,10 @@
 package com.decide.app.database.remote.dto
 
+import androidx.annotation.Keep
 import com.decide.app.database.local.entities.KeyEntity
 import kotlinx.serialization.SerialName
 
+@Keep
 data class KeyDto(
     @SerialName("id") val id: Int = -1,
     @SerialName("idCategory") val idCategory: Int = -1,

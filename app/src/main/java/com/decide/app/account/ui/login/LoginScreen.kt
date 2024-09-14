@@ -1,6 +1,6 @@
 package com.decide.app.account.ui.login
 
-import androidx.compose.foundation.Image
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -31,7 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.decide.app.R
+import com.decide.app.feature.defaultScreens.ErrorScreen
+import com.decide.app.feature.defaultScreens.NetworkErrorScreen
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.buttons.ButtonEntry
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
@@ -51,8 +57,16 @@ fun LoginScreen(
         state = state,
         onEvent = viewModel::onEvent,
         onClickRegistration = onClickRegistration,
-        onAuth = onAuth
+        onAuth = onAuth,
+        onClickMainPage = onClickMainPage
     )
+
+    object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            onClickMainPage()
+        }
+
+    }
 }
 
 @Composable
@@ -61,7 +75,8 @@ fun LoginScreen(
     state: LoginScreenState,
     onEvent: (event: LoginScreenEvent) -> Unit,
     onClickRegistration: () -> Unit,
-    onAuth: () -> Unit
+    onAuth: () -> Unit,
+    onClickMainPage: () -> Unit
 ) {
 
     when (state.uiState) {
@@ -77,13 +92,14 @@ fun LoginScreen(
             Column(
                 modifier = modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
                     .padding(top = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    modifier = Modifier.padding(44.dp),
+                    modifier = Modifier.padding(bottom = 24.dp),
                     text = "decide",
                     style = DecideTheme.typography.displayLarge,
                     color = DecideTheme.colors.inputBlack
@@ -106,12 +122,30 @@ fun LoginScreen(
                         color = DecideTheme.colors.gray
                     )
 
+                    if (state.exceptionAuth) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Неверный email или пароль",
+                            style = DecideTheme.typography.titleMedium,
+                            color = DecideTheme.colors.error
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(12.dp))
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
                         value = state.email,
                         onValueChange = { onEvent(LoginScreenEvent.SetEmail(it)) },
                         maxLines = 1,
+                        isError = state.isErrorEmail.isError,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        supportingText = {
+                            Text(
+                                text = state.isErrorEmail.nameError,
+                                style = DecideTheme.typography.titleSmall,
+                                color = DecideTheme.colors.error
+                            )
+                        },
                         label = {
                             Text(
                                 text = "email", style = DecideTheme.typography.titleSmall
@@ -133,11 +167,6 @@ fun LoginScreen(
                                 text = "Пароль", style = DecideTheme.typography.titleSmall
                             )
                         },
-                        placeholder = {
-                            Text(
-                                text = "Пароль", style = DecideTheme.typography.titleSmall
-                            )
-                        },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         trailingIcon = {
                             if (state.password.isNotBlank()) IconButton(onClick = {
@@ -152,7 +181,15 @@ fun LoginScreen(
                             focusedLabelColor = DecideTheme.colors.inputBlack,
                             unfocusedLabelColor = DecideTheme.colors.gray,
                             focusedPlaceholderColor = DecideTheme.colors.gray,
-                        )
+                        ),
+                        isError = state.isErrorPassword.isError,
+                        supportingText = {
+                            Text(
+                                text = state.isErrorPassword.nameError,
+                                style = DecideTheme.typography.titleSmall,
+                                color = DecideTheme.colors.error
+                            )
+                        }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     ButtonEntry(text = "Вход") {
@@ -167,20 +204,30 @@ fun LoginScreen(
                         verticalArrangement = Arrangement.Bottom
                     ) {
 
-                        Text(text = "продолжить с ")
+                        Text(
+                            text = "продолжить с ",
+                            style = DecideTheme.typography.titleSmall,
+                            color = DecideTheme.colors.inputBlack
+                        )
                         Spacer(modifier = Modifier.height(12.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.social_media),
+                        AsyncImage(
+                            modifier = Modifier.size(100.dp),
+                            model = R.drawable.social_media,
                             contentDescription = null
                         )
 
                         Row {
-                            Text(text = "У вас нет профиля?")
+                            Text(
+                                text = "У вас нет профиля?",
+                                style = DecideTheme.typography.titleSmall,
+                                color = DecideTheme.colors.inputBlack
+                            )
                             Text(
                                 modifier = Modifier
                                     .padding(start = 4.dp)
                                     .clickable { onClickRegistration() },
                                 text = "Регистрация",
+                                style = DecideTheme.typography.titleMedium,
                                 color = DecideTheme.colors.accentPink
                             )
                         }
@@ -205,6 +252,17 @@ fun LoginScreen(
             onAuth()
         }
 
+        UIState.ERROR -> {
+            ErrorScreen {
+                onClickMainPage()
+            }
+        }
+
+        UIState.NETWORK_ERROR -> {
+            NetworkErrorScreen {
+                onEvent(LoginScreenEvent.TryAuth)
+            }
+        }
     }
 
 }
@@ -219,7 +277,8 @@ fun PreviewLogin() {
                 state = LoginScreenState(),
                 onEvent = {},
                 onClickRegistration = {},
-                onAuth = {}
+                onAuth = {},
+                onClickMainPage = {}
             )
         }
     }

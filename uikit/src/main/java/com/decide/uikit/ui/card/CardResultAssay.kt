@@ -21,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastJoinToString
 import com.decide.uikit.theme.DecideTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -46,16 +46,19 @@ fun CardResultAssay(
     textStyleCategory: TextStyle = DecideTheme.typography.labelMedium,
     textAssay: String,
     textColorAssay: Color = DecideTheme.colors.inputBlack,
-    textStyleAssay: TextStyle = DecideTheme.typography.labelLarge,
+    textStyleAssay: TextStyle = DecideTheme.typography.titleMedium,
     textDate: String,
     listDateResults: List<Pair<Long, List<String>>>,
     textColorDate: Color = DecideTheme.colors.inputBlack,
-    textStyleDate: TextStyle = DecideTheme.typography.labelSmall,
+    textStyleDate: TextStyle = DecideTheme.typography.titleMedium,
     onClickResult: (id: Int) -> Unit,
     onShowDetailResult: (date: Long) -> Unit
 ) {
 
-    val rotation = animateFloatAsState(targetValue = if (id == expandedItemId) 180f else 0f)
+    val rotation = animateFloatAsState(
+        targetValue = if (id == expandedItemId) 180f else 0f,
+        label = ""
+    )
 
     Card(
         modifier = modifier
@@ -87,17 +90,17 @@ fun CardResultAssay(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = CenterVertically
             ) {
 
                 Text(
-                    text = "Последний результат от   ",
+                    text = "Последний результат от ",
                     color = textColorDate,
-                    style = DecideTheme.typography.titleMedium,
+                    style = DecideTheme.typography.labelSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -105,7 +108,7 @@ fun CardResultAssay(
                 Text(
                     text = textDate,
                     color = textColorDate,
-                    style = textStyleDate,
+                    style = DecideTheme.typography.labelSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -142,25 +145,15 @@ fun CardResultAssay(
                         Column(
                             modifier = Modifier.padding(4.dp)
                         ) {
-                            Row {
-                                Text(
-                                    text = "Результат: ",
-                                    color = textColorDate,
-                                    style = textStyleDate,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                item.second.forEach {
-                                    Text(
-                                        text = it,
-                                        color = textColorDate,
-                                        style = textStyleDate,
-                                        softWrap = true,
-                                        overflow = TextOverflow.Clip
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Результат: "
+                                        + item.second.fastJoinToString(),
+                                color = textColorDate,
+                                style = textStyleDate,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
                             Row {
                                 Text(
                                     text = "Дата прохождения: ",
@@ -201,8 +194,27 @@ fun PreviewCardResultAssay() {
                 expandedItemId = 1,
                 listDateResults = listOf(
                     Pair(
+                        123123132123,
+                        listOf(
+                            "Result",
+                            "Result",
+                            "Result",
+                            "Result",
+                            "Result",
+                            "Result",
+                            "Result",
+                            "Result",
+                            "Result",
+                            "Result",
+                            "Result",
+                        )
+                    ),
+                    Pair(
                         123123132123, listOf("Result")
-                    )
+                    ),
+                    Pair(
+                        123123132123, listOf("Result")
+                    ),
                 ),
                 textAssay = "Graphic Design Advanced",
                 textDate = "14.07.2024",

@@ -1,8 +1,10 @@
 package com.decide.app.database.remote.dto
 
-import com.decide.app.database.local.entities.profile.PassedAssayEntity
+import androidx.annotation.Keep
 import com.decide.app.database.local.entities.assay.ResultCompletedAssayEntity
+import com.decide.app.database.local.entities.profile.PassedAssayEntity
 
+@Keep
 data class PassedAssayDTO(
     val id: Int = -1,
     val idCategory: Int = -1,

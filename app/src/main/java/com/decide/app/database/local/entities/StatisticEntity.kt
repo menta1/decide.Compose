@@ -9,7 +9,7 @@ data class StatisticEntity(
     @PrimaryKey val id: Int,//ID статистики
     val result: Double,//результат для статистики. Общее количество баллов всех тестов для статистики,
     val oldResult: Double = 0.0,//результат для статистики. Общее количество баллов всех тестов для статистики,
-    val globalResults: Double = 0.0,
+    val globalResults: Map<String, Double> = emptyMap(),
     val users: Int = 0,
 )
 

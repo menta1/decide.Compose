@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.decide.app.activity.ShowAds
 import com.decide.app.feature.assay.assayMain.modals.AnswerAssay
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import com.decide.uikit.theme.DecideTheme
@@ -38,10 +40,15 @@ import com.decide.uikit.ui.card.CardQuestion
 @Composable
 fun AssayTextScreen(
     onClickDone: (argument: Int) -> Unit,
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    ads: ShowAds,
 ) {
     val viewModel: AssayTextViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.onEvent(EventAssayText.Ad(ads))
+    }
 
     AssayTextScreen(state = state,
         onClickDone = { onClickDone(it) },
@@ -166,9 +173,13 @@ fun AssayWithText(
                 Column {
                     questionAssay.listAnswers.forEach {
                         Spacer(modifier = Modifier.height(12.dp))
-                        ButtonVariant(text = it.text, selected = isSelectedItem(it.id), onClick = {
-                            onChangeState(it.id)
-                        })
+                        ButtonVariant(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = it.text,
+                            selected = isSelectedItem(it.id),
+                            onClick = {
+                                onChangeState(it.id)
+                            })
                     }
                     Spacer(modifier = Modifier.height(84.dp))
                 }
@@ -184,7 +195,7 @@ fun AssayWithText(
             ) {
                 if (selectedValue.size == questionAssay.countResponses) {
                     onEvent(
-                        EventAssayText(
+                        EventAssayText.AssayText(
                             idQuestion = questionAssay.id,
                             idAnswer = selectedValue,
                             answerValue = selectedValue.map { item ->

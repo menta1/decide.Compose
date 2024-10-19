@@ -7,7 +7,8 @@ sealed interface FillProfileEvent {
     class SetFirstName(val firstName: String) : FillProfileEvent
     class SetSecondName(val secondName: String) : FillProfileEvent
     class SetUriAvatar(val uri: Uri) : FillProfileEvent
-    class SetDateOFBirth(val dateOfBirth: String) : FillProfileEvent
-//    class SetConfirmPassword(val password: String) : FillProfileEvent
-//    class EmailFocused(val focus: Boolean) : FillProfileEvent
+    class SetDateOFBirth(val dateOfBirth: Long) : FillProfileEvent
+    class SetGender(val gender: String) : FillProfileEvent
+    class SearchCity(val city: String) : FillProfileEvent
+    class SetCity(val city: String) : FillProfileEvent
 }

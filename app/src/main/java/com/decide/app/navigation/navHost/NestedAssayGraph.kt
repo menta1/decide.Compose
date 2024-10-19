@@ -14,6 +14,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import com.decide.app.activity.ShowAds
 import com.decide.app.feature.assay.assayCheckStarted.AssayCheckStartedScreen
 import com.decide.app.feature.assay.assayDescription.ui.AssayDescriptionScreen
 import com.decide.app.feature.assay.assayProcess.ui.assayText.AssayTextScreen
@@ -28,7 +29,8 @@ import com.decide.app.navigation.AssayTimer
 import com.decide.app.navigation.AssayWithResult
 
 fun NavGraphBuilder.addNestedAssayGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    ads: ShowAds,
 ) {
     navigation(
         route = AssayRouteBranch.route + "{idAssay}",
@@ -65,33 +67,29 @@ fun NavGraphBuilder.addNestedAssayGraph(
                 type = NavType.IntType
             },
         ), enterTransition = {
-            fadeIn(
-                animationSpec = tween(
-                    100, easing = LinearEasing
-                )
-            ) + slideIntoContainer(
-                animationSpec = tween(200, easing = EaseIn),
-                towards = AnimatedContentTransitionScope.SlideDirection.Up
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(500)
             )
         }, exitTransition = {
-            fadeOut(
-                animationSpec = tween(
-                    100, easing = LinearEasing
-                )
-            ) + slideOutOfContainer(
-                animationSpec = tween(200, easing = EaseOut),
-                towards = AnimatedContentTransitionScope.SlideDirection.Down
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(500)
             )
         }) {
-            AssayTextScreen(onClickBack = {
-                navController.navigate(Assay.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = true
+            AssayTextScreen(
+                onClickBack = {
+                    navController.navigate(Assay.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
                     }
-                }
-            }, onClickDone = { id ->
-                navController.navigate("${AssayWithResult.route}?idAssay=$id")
-            })
+                },
+                onClickDone = { id ->
+                    navController.navigate("${AssayWithResult.route}?idAssay=$id")
+                },
+                ads = ads
+            )
         }
 
         composable(route = AssayTimer.route + "{idAssay}", arguments = listOf(
@@ -157,13 +155,15 @@ fun NavGraphBuilder.addNestedAssayGraph(
 //                )
 //            }
         ) {
-            AssayWithResultScreen(onClickExit = {
-                navController.navigate(Assay.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = true
+            AssayWithResultScreen(
+                onClickExit = {
+                    navController.navigate(Assay.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
                     }
-                }
-            })
+                },
+            )
         }
     }
 }

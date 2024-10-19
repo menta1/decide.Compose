@@ -1,4 +1,4 @@
-package com.decide.app.feature.passed.ui
+package com.decide.app.feature.passed.ui.passedMain
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

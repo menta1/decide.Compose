@@ -4,7 +4,6 @@ import com.decide.app.account.authenticationClient.exception.DecideAuthException
 import com.decide.app.account.modal.UserAuth
 import com.decide.app.account.modal.UserDto
 import com.decide.app.utils.Resource
-import com.decide.app.utils.Response
 
 interface AuthenticationClient {
     suspend fun isUserAuth(): Resource<UserDto, DecideAuthException>
@@ -18,7 +17,11 @@ interface AuthenticationClient {
         onResult: (response: Resource<UserDto, DecideAuthException>) -> Unit
     )
 
-    suspend fun passwordReset(): Response
+    suspend fun passwordReset(
+        email: String,
+        onResult: (response: Resource<Boolean, DecideAuthException>) -> Unit
+    )
+
     suspend fun getUser()
     suspend fun logOutUser()
 }

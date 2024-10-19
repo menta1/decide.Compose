@@ -1,6 +1,6 @@
 package com.decide.app.account.ui.registration
 
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -52,6 +52,7 @@ fun RegistrationScreen(
 
     val viewModel: RegistrationViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     RegistrationScreen(
         modifier = Modifier,
         onClickLogin = onClickLogin,
@@ -61,11 +62,8 @@ fun RegistrationScreen(
         onClickMainPage = onClickMainPage
     )
 
-    object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            onClickMainPage()
-        }
-
+    BackHandler {
+        onClickMainPage()
     }
 }
 

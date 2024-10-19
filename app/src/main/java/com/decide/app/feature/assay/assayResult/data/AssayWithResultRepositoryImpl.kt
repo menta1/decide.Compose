@@ -1,7 +1,9 @@
 package com.decide.app.feature.assay.assayResult.data
 
 import com.decide.app.database.local.AppDatabase
+import com.decide.app.database.local.entities.assay.toAssay
 import com.decide.app.database.local.entities.assay.toResultCompletedAssay
+import com.decide.app.feature.assay.assayMain.modals.Assay
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.app.utils.DecideException
 import com.decide.app.utils.Resource
@@ -40,5 +42,16 @@ class AssayWithResultRepositoryImpl @Inject constructor(
                 )
             )
         }
+    }
+
+    override suspend fun getAssay(id: Int): Assay {
+        return localStorage.assayDao().getAssay(id).toAssay()
+    }
+
+    override suspend fun setRating(
+        id: Int,
+        star: String
+    ) {
+        localStorage.assayDao().setRating(id = id, star = star)
     }
 }

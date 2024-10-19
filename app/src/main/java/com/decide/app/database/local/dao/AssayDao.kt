@@ -23,6 +23,12 @@ interface AssayDao {
     @Query("SELECT * FROM assay_table WHERE id = :id")
     fun getResultAssay(id: Int): Flow<AssayEntity>
 
+    @Query("UPDATE assay_table SET rating =:star WHERE id = :id")
+    fun setRating(
+        id: Int,
+        star: String
+    )
+
     @Query("UPDATE assay_table SET results =:newResult WHERE id = :id")
     suspend fun addNewResult(
         id: Int,

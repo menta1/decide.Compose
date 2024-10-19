@@ -48,14 +48,14 @@ fun ItemSettings(
     ) {
         Row(
             modifier = modifier
+                .padding(vertical = 16.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(background),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 modifier = Modifier
-                    .padding(vertical = 12.dp)
-                    .padding(end = 8.dp),
+                    .padding(horizontal = 8.dp),
                 painter = iconItem,
                 contentDescription = null,
                 tint = tintItem

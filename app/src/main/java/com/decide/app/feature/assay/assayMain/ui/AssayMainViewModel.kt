@@ -24,6 +24,7 @@ class AssayMainViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(AssayMainState())
     val state: StateFlow<AssayMainState> = _state.asStateFlow()
+    private var lastScrollIndex = 0
 
     private val assaysFlow = repository.getAssays().stateIn(
         viewModelScope, SharingStarted.Lazily, Resource.Success(emptyList())
@@ -86,6 +87,16 @@ class AssayMainViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     getAssays()
                 }
+            }
+
+            is AssayMainEvent.ScrollState -> {
+                if (event.newScrollIndex == lastScrollIndex) return
+
+                _state.update { state ->
+                    state.copy(scrollUp = event.newScrollIndex > lastScrollIndex)
+                }
+                lastScrollIndex = event.newScrollIndex
+
             }
         }
     }

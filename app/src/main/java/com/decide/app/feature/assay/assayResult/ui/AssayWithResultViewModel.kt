@@ -1,11 +1,11 @@
 package com.decide.app.feature.assay.assayResult.ui
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.feature.assay.assayResult.data.AssayWithResultRepository
 import com.decide.app.feature.passed.models.ResultCompletedAssay
+import com.decide.app.utils.Constants.NO_ARGS_INT
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class AssayWithResultViewModel @Inject constructor(
         const val WITHOUT_DATE = "-1"
     }
 
-    private val idAssay: Int = savedStateHandle["idAssay"] ?: -1
+    private val idAssay: Int = savedStateHandle["idAssay"] ?: NO_ARGS_INT
     private val dateResult: String = savedStateHandle["dateAssay"] ?: WITHOUT_DATE
 
     private val _state = MutableStateFlow(AssayWithResultState.Initial)
@@ -34,11 +34,19 @@ class AssayWithResultViewModel @Inject constructor(
         getResult()
     }
 
+    fun onEvent(star: Int) {
+        if (idAssay != NO_ARGS_INT) {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.setRating(id = idAssay, star = star.toString())
+            }
+        }
+
+    }
+
     private fun getResult() {
-        Log.d("TAG", "idAssay = $idAssay")
         viewModelScope.launch(Dispatchers.IO) {
             if (dateResult != WITHOUT_DATE) {
-                val result = repository.getResult(
+                repository.getResult(
                     id = idAssay,
                     dateResult = dateResult.toLong()
                 ).collect {
@@ -46,7 +54,7 @@ class AssayWithResultViewModel @Inject constructor(
                 }
 
             } else {
-                val result = repository.getResult(
+                repository.getResult(
                     id = idAssay,
                 ).collect {
                     determineState(it)
@@ -60,7 +68,6 @@ class AssayWithResultViewModel @Inject constructor(
         when (result) {
             is Resource.Success -> {
                 _state.update {
-                    Log.d("TAG", "WithResult = ${result.data}")
                     AssayWithResultState.Loaded(result.data)
                 }
             }
@@ -72,6 +79,5 @@ class AssayWithResultViewModel @Inject constructor(
             }
         }
     }
-
 
 }

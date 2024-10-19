@@ -79,7 +79,6 @@ fun CardAssay(
                     text = textAssay,
                     color = textColorAssay,
                     style = textStyleAssay,
-                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
 
@@ -126,7 +125,7 @@ fun PreviewCardAssay() {
         CardAssay(
             image = R.drawable.category_capabilities,
             icon = painterResource(id = R.drawable.ic_star_rating),
-            textAssay = "Which of the following professional development",
+            textAssay = "Which of the following professional development Which of the following professional development",
             textCategory = "Интеллект",
             textQuestion = "24 вопроса",
             textRating = "4.2",

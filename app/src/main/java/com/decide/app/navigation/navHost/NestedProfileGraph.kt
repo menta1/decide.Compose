@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.decide.app.feature.profile.editProfile.EditProfileScreen
+import com.decide.app.feature.profile.editProfile.ui.EditProfileScreen
 import com.decide.app.feature.profile.notification.NotificationScreen
 import com.decide.app.feature.profile.settings.ui.SettingsScreen
 import com.decide.app.feature.profile.terms.TermsScreen
@@ -18,15 +18,25 @@ import com.decide.app.navigation.Terms
 fun NavGraphBuilder.addNestedProfileGraph(
     navController: NavHostController,
 ) {
-    navigation(startDestination = EditProfile.route, route = ProfileRouteBranch.route) {
+    navigation(startDestination = Settings.route, route = ProfileRouteBranch.route) {
         composable(route = EditProfile.route) {
-            EditProfileScreen()
+            EditProfileScreen(
+                onClickBack = {
+                    navController.navigate(route = Profile.route) {
+                        popUpTo(route = Profile.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
         composable(route = Notification.route) {
             NotificationScreen()
         }
         composable(route = Terms.route) {
-            TermsScreen()
+            TermsScreen(
+                onClickBack = {}
+            )
         }
         composable(route = Settings.route) {
             SettingsScreen(

@@ -2,24 +2,31 @@ package com.decide.app.feature.profile.settings.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.decide.app.R
+import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
@@ -85,11 +92,27 @@ fun SettingsScreen(
                 ) {
                     onClickNotifications()
                 }
+
                 Spacer(modifier = Modifier.height(8.dp))
                 ItemSettings(
-                    text = "Условия", iconItem = painterResource(id = R.drawable.ic_terms)
+                    text = "Поделиться", iconItem = painterResource(id = R.drawable.ic_share)
                 ) {
                     onClickTerms()
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ItemSettings(
+                    text = "Написать нам", iconItem = painterResource(id = R.drawable.ic_write_us)
+                ) {
+                    onEvent(SettingsScreenEvent.SendEmail)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ItemSettings(
+                    text = "Политика конфиденциальности",
+                    iconItem = painterResource(id = R.drawable.ic_privacy)
+                ) {
+                    onEvent(SettingsScreenEvent.PrivacyPolicy)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 ItemSettings(
@@ -98,6 +121,29 @@ fun SettingsScreen(
                 ) {
                     onEvent(SettingsScreenEvent.LogOut)
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            indication = ripple(
+                                radius = 0.dp,
+                                color = DecideTheme.colors.inputBlack
+                            ),
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {
+
+                            }),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Удалить аккаунт",
+                        style = DecideTheme.typography.bodySmall,
+                        color = DecideTheme.colors.error,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
             }
         }
 

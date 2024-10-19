@@ -5,4 +5,5 @@ data class UserUpdate(
     val lastName: String = "",
     val dateBirth: Long = -1,
     val city: String = "",
+    val gender: String = ""
 )

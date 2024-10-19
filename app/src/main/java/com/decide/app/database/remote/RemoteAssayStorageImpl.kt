@@ -49,6 +49,8 @@ import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 class RemoteAssayStorageImpl @Inject constructor(
@@ -146,26 +148,37 @@ class RemoteAssayStorageImpl @Inject constructor(
     override suspend fun updateAccount(
         userUpdate: UserUpdate,
         id: String
-    ) {
-        try {
-            remoteDatabase.collection(USERS).document(id).update(
-                "firstName",
-                userUpdate.firstName,
-                "lastName",
-                userUpdate.lastName,
-                "dateBirth",
-                userUpdate.dateBirth,
-                "city",
-                userUpdate.city
-            ).addOnSuccessListener {
-                Timber.tag("FIREBASE").d("updateAccount Success")
-            }.addOnFailureListener {
-                Timber.tag("FIREBASE").d("FIREBASE ERRORS updateAccount = ${it.message}")
+    ): Resource<Boolean, DecideDatabaseException> =
+        suspendCoroutine { continuation ->
+
+            try {
+                remoteDatabase.collection(USERS).document(id).update(
+                    "firstName",
+                    userUpdate.firstName,
+                    "lastName",
+                    userUpdate.lastName,
+                    "dateBirth",
+                    userUpdate.dateBirth,
+                    "city",
+                    userUpdate.city,
+                    "gender", userUpdate.gender
+                ).addOnSuccessListener {
+                    continuation.resume(Resource.Success(true))
+                }.addOnFailureListener {
+                    continuation.resume(
+                        Resource.Error(
+                            firestoreExceptionMapper(it)
+                        )
+                    )
+                    Timber.tag("FIREBASE").d("FIREBASE ERRORS updateAccount = ${it.message}")
+                }
+            } catch (e: Exception) {
+                continuation.resume(Resource.Error(firestoreExceptionMapper(e)))
+                Timber.tag("FIREBASE").d("FIREBASE ERRORS updateAccount = ${e.message}")
             }
-        } catch (e: Exception) {
-            Timber.tag("FIREBASE").d("FIREBASE ERRORS updateAccount = ${e.message}")
+
         }
-    }
+
 
     override suspend fun saveAvatar(
         inputStream: InputStream?,
@@ -324,6 +337,7 @@ class RemoteAssayStorageImpl @Inject constructor(
         const val PASSED_ASSAYS = "PASSED_ASSAYS"
         const val STATISTICS = "STATISTICS"
         const val ANXIETY = 1
+        const val TEMPERAMENT = 2
         val KEY_AVATAR = stringPreferencesKey(
             name = "avatar"
         )

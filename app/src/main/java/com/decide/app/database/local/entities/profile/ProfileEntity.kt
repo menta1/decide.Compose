@@ -2,6 +2,7 @@ package com.decide.app.database.local.entities.profile
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.decide.app.feature.profile.editProfile.modal.ProfileEdit
 
 @Entity(tableName = "profile_table")
 data class ProfileEntity(
@@ -13,6 +14,13 @@ data class ProfileEntity(
     val gender: String = "",
     val city: String = "",
     val dateRegistration: Long,
-    val dateLastAddedResult: Long = -1,
-//    val listAssayPassed: List<AssayEntity> = emptyList()
+    val dateLastAddedResult: Long = -1
+)
+
+fun ProfileEntity.toProfileEdit() = ProfileEdit(
+    firstName = firstName,
+    lastName = lastName,
+    dateBirth = dateBirth,
+    gender = gender,
+    city = city
 )

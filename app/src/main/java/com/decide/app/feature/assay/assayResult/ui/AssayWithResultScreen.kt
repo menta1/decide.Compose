@@ -1,6 +1,10 @@
 package com.decide.app.feature.assay.assayResult.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,157 +13,275 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.feature.passed.models.ResultCompletedAssay
+import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonMain
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
+import kotlinx.coroutines.delay
 
 @Composable
 fun AssayWithResultScreen(
-    onClickExit: () -> Unit
-) {
+    onClickExit: () -> Unit,
+
+    ) {
 
     val viewModel: AssayWithResultViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+
     AssayWithResultScreen(
-        onClickExit = onClickExit, state = state
+        onClickExit = onClickExit,
+        state = state,
+        onEvent = viewModel::onEvent
     )
 
-    BackHandler {
-        onClickExit()
-    }
 }
 
 
 @Composable
 fun AssayWithResultScreen(
     onClickExit: () -> Unit,
-    state: AssayWithResultState
+    state: AssayWithResultState,
+    onEvent: (Int) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
-            .padding(top = 12.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    var showDialog by remember { mutableStateOf(false) }
+    var showedDialog by remember { mutableStateOf(false) }
 
-        when (state) {
-            is AssayWithResultState.Loaded -> {
+
+    BackHandler {
+        if (!showDialog) showDialog = true
+
+        if (showedDialog) onClickExit()
+    }
+
+    when (state) {
+        is AssayWithResultState.Loaded -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-
-                    if (state.result.results.size > 1) {
-                        Text(
-                            text = "Ваш результат:",
-                            style = DecideTheme.typography.titleLarge,
-                            color = DecideTheme.colors.inputBlack,
-                        )
-                    } else {
-                        Text(
-                            text = "Ваши результаты:",
-                            style = DecideTheme.typography.titleLarge,
-                            color = DecideTheme.colors.inputBlack,
-                        )
-                    }
-
-                    state.result.results.forEachIndexed { index, s ->
-                        Spacer(modifier = Modifier.height(4.dp))
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = DecideTheme.colors.gray
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-
-                            ) {
-                            Text(
-                                text = "Результат: ",
-                                style = DecideTheme.typography.titleLarge,
-                                color = DecideTheme.colors.inputBlack,
-                            )
-                            Text(
-                                text = state.result.shortResults[index],
-                                style = DecideTheme.typography.titleMedium,
-                                color = DecideTheme.colors.inputBlack,
-                                textAlign = TextAlign.End
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = s,
-                            style = DecideTheme.typography.bodyLarge,
-                            color = DecideTheme.colors.inputBlack,
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Bottom
-                    ) {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = "**Однако важно помнить, что результаты теста не могут заменить профессиональную консультацию специалиста. Если у вас есть какие-либо вопросы или сомнения относительно своего эмоционального состояния, рекомендуется обратиться к психологу или психотерапевту. Они помогут вам разобраться в своих чувствах и при необходимости предложат способы улучшения вашего самочувствия.",
-                            style = DecideTheme.typography.bodySmall,
-                            color = DecideTheme.colors.mainGreen40,
-                        )
-                    }
-
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-                ButtonMain(modifier = Modifier.padding(bottom = 10.dp), text = "Выход", onClick = {
-                    onClickExit()
-                })
-            }
-
-            AssayWithResultState.Loading -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(DecideTheme.colors.inputWhite)
                 ) {
                     Text(
-                        modifier = Modifier.padding(top = 60.dp),
-                        text = "Анализируем...",
-                        style = DecideTheme.typography.titleSmall,
-                        color = DecideTheme.colors.inputBlack,
+                        modifier = Modifier
+                            .padding(horizontal = 14.dp)
+                            .padding(top = 8.dp),
+                        text = "Результат",
+                        style = DecideTheme.typography.titleLarge,
+                        color = DecideTheme.colors.inputBlack
                     )
-                    Spacer(modifier = Modifier.height(84.dp))
-                    CircleDecideIndicator()
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
-            }
 
-            AssayWithResultState.Error -> {
                 Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    ErrorMessage()
+                    Column {
+                        state.result.shortResults.forEachIndexed { index, value ->
+                            Spacer(modifier = Modifier.height(16.dp))
+                            ElevatedCard(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 14.dp),
+                                colors = CardDefaults.elevatedCardColors().copy(
+                                    containerColor = DecideTheme.colors.inputWhite,
+                                    contentColor = DecideTheme.colors.inputBlack
+                                ),
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 4.dp, vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = value,
+                                        style = DecideTheme.typography.titleMedium,
+                                        color = DecideTheme.colors.inputBlack
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = state.result.results[index],
+                                        style = DecideTheme.typography.bodyMedium,
+                                        color = DecideTheme.colors.inputBlack
+                                    )
+                                }
+
+                            }
+                        }
+                    }
+
+                    ButtonMain(
+                        modifier = Modifier
+                            .padding(top = 12.dp)
+                            .padding(bottom = 10.dp)
+                            .padding(horizontal = 14.dp),
+                        text = "Выход",
+                    ) {
+
+                        if (!showDialog) showDialog = true
+
+                        if (showedDialog) onClickExit()
+
+                    }
+
+                    if (showDialog && !showedDialog) {
+                        DialogRating(
+                            onDismissRequest = {
+                                showedDialog = true
+                            },
+                            onClick = {
+                                showedDialog = true
+                                onEvent(it)
+                            }
+                        )
+                    }
+
+                }
+
+            }
+        }
+
+        AssayWithResultState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircleDecideIndicator()
+            }
+        }
+
+        AssayWithResultState.Error -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                ErrorMessage()
+            }
+        }
+
+    }
+
+}
+
+@Composable
+fun DialogRating(
+    onDismissRequest: () -> Unit,
+    onClick: (star: Int) -> Unit
+) {
+    var countSelected by remember { mutableIntStateOf(0) }
+    val animColor by animateColorAsState(
+        targetValue = DecideTheme.colors.accentYellow, label = ""
+    )
+
+    var starSelected by remember { mutableStateOf(false) }
+
+    if (starSelected) {
+        LaunchedEffect(key1 = Unit) {
+            delay(500)
+            onClick(countSelected)
+        }
+    }
+
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .padding(horizontal = 2.dp),
+                text = "Оцените тест",
+                style = DecideTheme.typography.titleLarge,
+                color = DecideTheme.colors.inputBlack,
+                textAlign = TextAlign.Center
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+            ) {
+                for (i in 1..5) {
+                    IconButton(onClick = {
+                        countSelected = i
+                        starSelected = true
+//                        onClick(i)
+                    }) {
+                        Icon(
+                            modifier = Modifier
+                                .animateContentSize()
+                                .size(if (i == countSelected) 34.dp else 24.dp),
+                            painter = painterResource(R.drawable.ic_star),
+                            tint = if (i > countSelected) {
+                                DecideTheme.colors.gray
+                            } else {
+                                animColor
+                            },
+                            contentDescription = ""
+                        )
+                    }
                 }
             }
+            Spacer(modifier = Modifier.height(34.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .padding(bottom = 8.dp)
+                        .clickable { onDismissRequest() },
+                    text = "Пропустить",
+                    style = DecideTheme.typography.titleMedium,
+                    color = DecideTheme.colors.inputBlack
+                )
+            }
+        }
+    }
+}
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewDialogRating() {
+    DecideTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            DialogRating({}, {})
         }
     }
 }
@@ -184,7 +306,7 @@ fun PreviewAssayWithResultScreenLoaded() {
     }
     DecideTheme {
         Column {
-            AssayWithResultScreen(state = state, onClickExit = {})
+            AssayWithResultScreen(state = state, onClickExit = {}, onEvent = {})
         }
     }
 }
@@ -197,7 +319,10 @@ fun PreviewAssayWithResultScreenLoaded() {
 fun PreviewAssayWithResultScreenLoading() {
     DecideTheme {
         Column {
-            AssayWithResultScreen(state = AssayWithResultState.Loading, onClickExit = {})
+            AssayWithResultScreen(
+                state = AssayWithResultState.Loading,
+                onClickExit = {},
+                onEvent = {})
         }
     }
 }
@@ -210,7 +335,10 @@ fun PreviewAssayWithResultScreenLoading() {
 fun PreviewAssayWithResultScreenError() {
     DecideTheme {
         Column {
-            AssayWithResultScreen(state = AssayWithResultState.Error, onClickExit = {})
+            AssayWithResultScreen(
+                state = AssayWithResultState.Error,
+                onClickExit = {},
+                onEvent = {})
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.decide.app.feature.passed.ui
+package com.decide.app.feature.passed.ui.passedMain
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -35,7 +35,7 @@ fun ExpandablePassedAssayList(
                 CardResultAssay(id = assay.id,
                     textCategory = assay.nameCategory,
                     textAssay = assay.name,
-                    textDate = dateFormatter(assay.results.last().date.toString()),
+                    textDate = dateFormatter(assay.results.last().date),
                     onClickResult = { id ->
                         clickedItemId = if (clickedItemId == id) Int.MIN_VALUE
                         else id

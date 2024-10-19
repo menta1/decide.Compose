@@ -18,6 +18,7 @@ import com.decide.app.database.local.entities.profile.ProfileEntity
 import com.decide.app.database.remote.RemoteAssayStorage
 import com.decide.app.database.remote.dto.AccountDTO
 import com.decide.app.utils.DecideException
+import com.decide.app.utils.NetworkChecker
 import com.decide.app.utils.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -31,8 +32,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.Date
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class AccountRepositoryImpl @Inject constructor(
+    private val networkChecker: NetworkChecker,
     private val authenticationClient: AuthenticationClient,
     private val remoteStorage: RemoteAssayStorage,
     private val localStorage: AppDatabase,
@@ -90,43 +94,63 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUser(userUpdate: UserUpdate) {
-        coroutineScope.launch {
-            val currentUserId = dataStore.data.map { it[KEY_USER_ID] }.first()
-            if (!currentUserId.isNullOrBlank()) {
-
-                var profile = localStorage.profileDao().get(currentUserId)
-                if (profile != null) {
-
-                    profile = profile.copy(
-                        firstName = userUpdate.firstName.ifBlank { profile!!.firstName },
-                        lastName = userUpdate.lastName.ifBlank { profile!!.lastName },
-                        dateBirth = if (userUpdate.dateBirth != -1L) {
-                            userUpdate.dateBirth
-                        } else {
-                            profile.dateBirth
-                        },
-                        city = userUpdate.city.ifBlank { profile!!.city },
-
-                        )
-                    localStorage.profileDao().insert(profile)
-                    remoteStorage.updateAccount(
-                        UserUpdate(
-                            firstName = profile.firstName,
-                            lastName = profile.lastName,
-                            dateBirth = profile.dateBirth,
-                            city = profile.city
-                        ), currentUserId
-                    )
-                } else {
-                    Timber.tag("TAG").d("updateUser profile == null")
-                }
-
+    override suspend fun updateUser(userUpdate: UserUpdate): Resource<Boolean, DecideException> =
+        suspendCoroutine { continuation ->
+            if (!networkChecker.isConnected()) {
+                continuation.resume(Resource.Error(DecideException.NoInternet()))
             } else {
-                Timber.tag("TAG").d("updateUser = else")
+                coroutineScope.launch {
+                    val currentUserId = dataStore.data.map { it[KEY_USER_ID] }.first()
+                    if (!currentUserId.isNullOrBlank()) {
+
+                        var profile = localStorage.profileDao().get(currentUserId)
+                        if (profile != null) {
+
+                            profile = profile.copy(
+                                firstName = userUpdate.firstName.ifBlank { profile!!.firstName },
+                                lastName = userUpdate.lastName.ifBlank { profile!!.lastName },
+                                dateBirth = if (userUpdate.dateBirth != -1L) {
+                                    userUpdate.dateBirth
+                                } else {
+                                    profile.dateBirth
+                                },
+                                city = userUpdate.city.ifBlank { profile!!.city },
+                                gender = userUpdate.gender
+                            )
+
+                            localStorage.profileDao().insert(profile)
+
+                            val resultSaveRemote = remoteStorage.updateAccount(
+                                userUpdate = UserUpdate(
+                                    firstName = profile.firstName,
+                                    lastName = profile.lastName,
+                                    dateBirth = profile.dateBirth,
+                                    city = profile.city,
+                                    gender = profile.gender
+                                ),
+                                id = currentUserId
+                            )
+                            when (resultSaveRemote) {
+                                is Resource.Error -> {
+                                    continuation.resume(Resource.Error(resultSaveRemote.error))
+                                }
+
+                                is Resource.Success -> {
+                                    continuation.resume(Resource.Success(true))
+                                }
+                            }
+                        } else {
+                            continuation.resume(Resource.Error(DecideException.UserNotAuthorization()))
+                            Timber.tag("TAG").d("updateUser profile == null")
+                        }
+
+                    } else {
+                        continuation.resume(Resource.Error(DecideException.UserNotAuthorization()))
+                        Timber.tag("TAG").d("updateUser = else")
+                    }
+                }
             }
         }
-    }
 
     override suspend fun singInUser(
         user: UserAuth,
@@ -158,6 +182,16 @@ class AccountRepositoryImpl @Inject constructor(
             onResult(Resource.Success(true))
             remoteStorage.getAssays {}//для оптимизации нужно выставлять какой то индикатор чтобы не загружать часто с БД
         }
+    }
+
+    override suspend fun passwordReset(
+        email: String,
+        onResult: (response: Resource<Boolean, DecideAuthException>) -> Unit
+    ) {
+        authenticationClient.passwordReset(
+            email = email,
+            onResult = onResult
+        )
     }
 
 
@@ -250,8 +284,7 @@ class AccountRepositoryImpl @Inject constructor(
         email: String,
         onResult: (Resource<Boolean, DecideException>) -> Unit
     ) {
-        Timber.tag("TAG").d("createUserLocalBD id = $id")
-        Timber.tag("TAG").d("createUserLocalBD email = $email")
+
         coroutineScope.launch {
             dataStore.edit { userSettings ->
                 userSettings[KEY_USER_ID] = id

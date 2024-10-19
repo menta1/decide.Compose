@@ -31,14 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import com.decide.app.R
 import com.decide.app.feature.profile.profileMain.modal.ProfileUI
+import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonEntry
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
 import com.decide.uikit.ui.statistic.LineStatistic
 import com.decide.uikit.ui.statistic.PieStatistic
+import com.decide.uikit.ui.statistic.modal.TemperamentUI
 
 @Composable
 fun ProfileScreen(
@@ -71,11 +72,12 @@ fun ProfileScreen(
         is ProfileState.Error -> Error()
         ProfileState.Loading -> Loading()
         ProfileState.NotAuthorized -> {
-            NotAuthorized(
-                modifier = modifier,
-                onClickLogin = onClickLogin,
-                onClickRegistration = onClickRegistration
-            )
+            onClickLogin()
+//            NotAuthorized(
+//                modifier = modifier,
+//                onClickLogin = onClickLogin,
+//                onClickRegistration = onClickRegistration
+//            )
         }
 
         is ProfileState.Loaded -> {
@@ -180,7 +182,8 @@ fun Loaded(
         )
         Spacer(modifier = Modifier.height(8.dp))
         ContentProfile(
-            anxiety = profileUI.anxiety
+            anxiety = profileUI.anxiety,
+            temperament = profileUI.temperament
         )
 
     }
@@ -189,16 +192,14 @@ fun Loaded(
 @Composable
 fun ContentProfile(
     anxiety: Pair<Float, Float>?,
+    temperament: TemperamentUI?
 ) {
-    PieStatistic(
-        delayTime = 500,
-        data = mapOf(
-            "Холерик" to 25,
-            "Сангвиник" to 25,
-            "Флегматик" to 25,
-            "Меланхолик" to 25,
+    if (temperament != null) {
+        PieStatistic(
+            delayTime = 500,
+            data = temperament
         )
-    )
+    }
     Spacer(modifier = Modifier.height(32.dp))
     Text(
         modifier = Modifier
@@ -234,7 +235,13 @@ fun PreviewLoaded() {
                     firstName = "Ainur",
                     lastName = "a;sldajkdjaskd",
                     email = "asdasd@asdasd.eer",
-                    anxiety = Pair(34f, 66f)
+                    anxiety = Pair(34f, 66f),
+                    temperament = TemperamentUI(
+                        choleric = Pair(first = "Холерик", second = 1.0),
+                        sanguine = Pair(first = "Сангвиник", second = 1.0),
+                        melancholic = Pair(first = "Меланхолик", second = 1.0),
+                        phlegmatic = Pair(first = "Флегматик", second = 1.0)
+                    ),
                 )
             )
         }

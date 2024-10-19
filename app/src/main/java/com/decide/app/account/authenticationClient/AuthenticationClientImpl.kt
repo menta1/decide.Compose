@@ -6,7 +6,6 @@ import com.decide.app.account.modal.UserAuth
 import com.decide.app.account.modal.UserDto
 import com.decide.app.utils.NetworkChecker
 import com.decide.app.utils.Resource
-import com.decide.app.utils.Response
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
@@ -25,15 +24,13 @@ class AuthenticationClientImpl @Inject constructor(
                 return if (user != null) {
                     Resource.Success(
                         UserDto(
-                            id = user.uid,
-                            email = user.email
+                            id = user.uid, email = user.email
                         )
                     )
                 } else {
                     Resource.Error(
                         DecideAuthException.UserNotAuth(
-                            "AuthException.UserNotAuth: Юзер не авторизован",
-                            "Не авторизован"
+                            "AuthException.UserNotAuth: Юзер не авторизован", "Не авторизован"
                         )
                     )
                 }
@@ -68,8 +65,7 @@ class AuthenticationClientImpl @Inject constructor(
                                 )
                             )
                         )
-                    }
-                    .addOnFailureListener {
+                    }.addOnFailureListener {
                         Timber.tag("TAG").d("signInWithEmailAndPassword addOnFailureListener")
                         onResult(
                             Resource.Error(
@@ -102,6 +98,7 @@ class AuthenticationClientImpl @Inject constructor(
                 firebaseAuth.createUserWithEmailAndPassword(user.email, user.password)
                     .addOnSuccessListener { task ->
                         val userData = task.user
+                        userData?.sendEmailVerification()
                         onResult(
                             Resource.Success(
                                 UserDto(
@@ -109,8 +106,7 @@ class AuthenticationClientImpl @Inject constructor(
                                 )
                             )
                         )
-                    }
-                    .addOnFailureListener {
+                    }.addOnFailureListener {
                         onResult(
                             Resource.Error(
                                 authExceptionMapper(
@@ -132,8 +128,27 @@ class AuthenticationClientImpl @Inject constructor(
         }
     }
 
-    override suspend fun passwordReset(): Response {
-        TODO("Not yet implemented")
+    override suspend fun passwordReset(
+        email: String,
+        onResult: (response: Resource<Boolean, DecideAuthException>) -> Unit
+    ) {
+        if (checkerNetworkConnection {}) {
+            firebaseAuth.sendPasswordResetEmail(email)
+                .addOnSuccessListener {
+                    onResult(Resource.Success(true))
+                }
+                .addOnFailureListener {
+                    onResult(
+                        Resource.Error(
+                            authExceptionMapper(
+                                it
+                            )
+                        )
+                    )
+                }
+        } else {
+            onResult(Resource.Error(authExceptionMapper(FirebaseNetworkException(""))))
+        }
     }
 
     override suspend fun getUser() {

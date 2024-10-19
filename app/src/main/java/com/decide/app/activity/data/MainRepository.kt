@@ -5,4 +5,5 @@ interface MainRepository {
     suspend fun initCategories()
     suspend fun initProfile()
     suspend fun checkNewPassedAssay()
+    suspend fun checkAuth(): Boolean
 }

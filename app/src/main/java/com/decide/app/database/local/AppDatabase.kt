@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.decide.app.database.local.convertors.AnswerConverter
+import com.decide.app.database.local.convertors.GlobalResultsConvertor
 import com.decide.app.database.local.convertors.KeysConverter
 import com.decide.app.database.local.convertors.PassedAssayConverter
 import com.decide.app.database.local.convertors.QuestionConvertor
@@ -34,7 +35,8 @@ import com.decide.app.database.local.entities.profile.ProfileEntity
     AnswerConverter::class,
     ResultConvertor::class,
     KeysConverter::class,
-    PassedAssayConverter::class
+    PassedAssayConverter::class,
+    GlobalResultsConvertor::class,
 )
 abstract class AppDatabase : RoomDatabase() {
 

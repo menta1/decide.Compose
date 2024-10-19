@@ -8,13 +8,13 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 class QuestionConvertor {
-    @TypeConverter()
+    @TypeConverter
     fun fromQuestionList(questionList: List<QuestionEntity>): String {
         return Json.encodeToString(questionList)
     }
 
 
-    @TypeConverter()
+    @TypeConverter
     fun toQuestionList(jsonString: String): List<QuestionEntity> {
         return Json.decodeFromString<List<QuestionEntity>>(jsonString)
     }

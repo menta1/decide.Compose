@@ -64,14 +64,17 @@ fun CategoryScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(
-            modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (state) {
                 is CategoryState.Loaded -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                     ) {
-                        items(state.categories, key = { item -> item.id }) { item: Category ->
+                        items(
+                            items = state.categories,
+                            key = { item -> item.id }) { item: Category ->
                             /**
                              * Нужно проверить содержит ли категория хотя бы один тест
                              * в противном случае не показывать
@@ -146,7 +149,56 @@ fun PreviewCategoryScreen() {
                         description = "",
                         countAssays = -1
                     ), Category(
-                        id = 3,
+                        id = 4,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = "",
+                        countAssays = -1
+                    ), Category(
+                        id = 5,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = "",
+                        countAssays = -1
+                    ), Category(
+                        id = 6,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = "",
+                        countAssays = -1
+                    ), Category(
+                        id = 7,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = "",
+                        countAssays = -1
+                    ), Category(
+                        id = 8,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = "",
+                        countAssays = -1
+                    ), Category(
+                        id = 9,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = "",
+                        countAssays = -1
+                    ), Category(
+                        id = 10,
+                        name = "Темперамент",
+                        nameEng = "Temperament",
+                        colorBackground = "",
+                        description = "",
+                        countAssays = -1
+                    ), Category(
+                        id = 11,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",
@@ -160,56 +212,7 @@ fun PreviewCategoryScreen() {
                         description = "",
                         countAssays = -1
                     ), Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = "",
-                        countAssays = -1
-                    ), Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = "",
-                        countAssays = -1
-                    ), Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = "",
-                        countAssays = -1
-                    ), Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = "",
-                        countAssays = -1
-                    ), Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = "",
-                        countAssays = -1
-                    ), Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = "",
-                        countAssays = -1
-                    ), Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = "",
-                        countAssays = -1
-                    ), Category(
-                        id = 3,
+                        id = 12,
                         name = "Темперамент",
                         nameEng = "Temperament",
                         colorBackground = "",

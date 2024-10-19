@@ -127,6 +127,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
 
     //SplashScreen
     implementation(libs.splashscreen)
@@ -140,5 +141,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-//    implementation(libs.tracing)
+    //Yandex ads
+    implementation(libs.yandex.mobileads)
+
+    //Leak Canary
+    debugImplementation(libs.leak.canary)
 }

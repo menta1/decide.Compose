@@ -1,7 +1,7 @@
 package com.decide.app.account.ui.fillProfile
 
 import android.net.Uri
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -10,13 +10,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,14 +58,15 @@ import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import com.decide.app.R
 import com.decide.app.feature.defaultScreens.ErrorScreen
 import com.decide.app.feature.defaultScreens.LoadingScreen
 import com.decide.app.feature.defaultScreens.NetworkErrorScreen
+import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.EditTextField
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 import com.decide.uikit.ui.buttons.ButtonEntry
+import com.decide.uikit.ui.buttons.ButtonVariant
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -70,7 +75,7 @@ import java.util.Locale
 fun FillProfileScreen(
     onClickBack: () -> Unit,
     onClickContinue: () -> Unit,
-    onClickMainPage: () -> Unit
+    onClickMainPage: () -> Unit,
 ) {
     val viewModel: FillProfileViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -81,18 +86,14 @@ fun FillProfileScreen(
         onEvent = viewModel::onEvent,
         onClickBack = onClickBack,
         onClickContinue = onClickContinue,
-        onClickMainPage = onClickMainPage
+        onClickMainPage = onClickMainPage,
     )
 
-    object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            onClickMainPage()
-        }
-
+    BackHandler {
+        onClickMainPage()
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FillProfileScreen(
     modifier: Modifier,
@@ -100,159 +101,173 @@ fun FillProfileScreen(
     onEvent: (event: FillProfileEvent) -> Unit,
     onClickBack: () -> Unit,
     onClickContinue: () -> Unit,
-    onClickMainPage: () -> Unit
+    onClickMainPage: () -> Unit,
 ) {
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            uri?.let {
-                onEvent(FillProfileEvent.SetUriAvatar(it))
-                imageUri = it
-            }
-        }
-    )
+
+    val galleryLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent(),
+            onResult = { uri ->
+                uri?.let {
+                    onEvent(FillProfileEvent.SetUriAvatar(it))
+                    imageUri = it
+                }
+            })
 
     var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
 
     when (state.uiState) {
         UIState.DATA_ENTRY -> {
+
             Column(
                 modifier = modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 14.dp)
-                    .padding(top = 8.dp),
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-
                 Column(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(horizontal = 14.dp)
+                        .padding(top = 8.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        ButtonBackArrow(
-                            text = "Заполните свой профиль",
-                            onClick = { onClickBack() })
-
-                        Spacer(modifier = Modifier.height(24.dp))
-                    }
-
-                    Box(
-                        modifier = Modifier.clickable {
-                            galleryLauncher.launch("image/*")
-
-                        },
-                        contentAlignment = Alignment.BottomEnd
-                    ) {
-
-                        Image(
-                            painter = if (imageUri == null) {
-                                painterResource(id = R.drawable.placeholder_fill_profile)
-                            } else {
-                                rememberAsyncImagePainter(
-                                    model = imageUri
-                                )
-                            },
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(114.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                        if (imageUri == null) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_select_picture),
-                                contentDescription = "select picture",
-                                tint = DecideTheme.colors.accentGreen
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Чем больше информации Вы укажите,\n тем точнее будут результаты",
-                        style = DecideTheme.typography.labelSmall,
-                        textAlign = TextAlign.Center,
-                        color = DecideTheme.colors.inputBlack
-                    )
-
-                    EditTextField(
-                        value = state.firstName,
-                        onValueChange = { onEvent(FillProfileEvent.SetFirstName(it)) },
-                        supportingText = if (state.isErrorFirstName) "Это поле не может быть пустым!" else "",
-                        isError = state.isErrorFirstName,
-                        labelText = "Имя*",
-                        isFocus = {}
-                    )
-                    EditTextField(
-                        value = state.secondName,
-                        onValueChange = { onEvent(FillProfileEvent.SetSecondName(it)) },
-                        supportingText = "",
-                        labelText = "Фамилия",
-                        isFocus = {}
-                    )
-
-                    OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp)
-                            .onFocusChanged { if (it.isFocused) showDatePicker = !showDatePicker },
-                        value = state.dateOFBirth,
-                        onValueChange = { },
-                        maxLines = 1,
-                        readOnly = true,
-                        label = {
-                            Text(
-                                text = "День рождения",
-                                style = DecideTheme.typography.titleSmall
+                            .padding(bottom = 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            ButtonBackArrow(text = "Заполните свой профиль",
+                                onClick = { onClickBack() })
+
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        Box(
+                            modifier = Modifier.clickable {
+                                galleryLauncher.launch("image/*")
+                            }, contentAlignment = Alignment.BottomEnd
+                        ) {
+
+                            Image(
+                                painter = if (imageUri == null) {
+                                    painterResource(id = R.drawable.placeholder_fill_profile)
+                                } else {
+                                    rememberAsyncImagePainter(
+                                        model = imageUri
+                                    )
+                                },
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .size(114.dp),
+                                contentScale = ContentScale.Crop
                             )
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        trailingIcon = {
-                            IconButton(onClick = { showDatePicker = !showDatePicker }) {
+                            if (imageUri == null) {
                                 Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = "Select date"
+                                    painter = painterResource(id = R.drawable.ic_select_picture),
+                                    contentDescription = "select picture",
+                                    tint = DecideTheme.colors.accentGreen
                                 )
                             }
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = DecideTheme.colors.inputBlack,
-                            focusedLabelColor = DecideTheme.colors.inputBlack,
-                            unfocusedLabelColor = DecideTheme.colors.gray,
-                            focusedPlaceholderColor = DecideTheme.colors.gray,
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Чем больше информации Вы укажите,\n тем точнее будут результаты",
+                            style = DecideTheme.typography.labelSmall,
+                            textAlign = TextAlign.Center,
+                            color = DecideTheme.colors.inputBlack
                         )
-                    )
 
-                    if (showDatePicker) {
-                        DatePickerModal(
-                            onDateSelected = {
-                                onEvent(
-                                    FillProfileEvent.SetDateOFBirth(
-                                        convertMillisToDate(it)
-                                    )
+                        EditTextField(value = state.firstName,
+                            onValueChange = { onEvent(FillProfileEvent.SetFirstName(it)) },
+                            supportingText = if (state.isErrorFirstName) "Это поле не может быть пустым!" else "",
+                            isError = state.isErrorFirstName,
+                            labelText = "Имя*",
+                            isFocus = {})
+
+                        EditTextField(value = state.secondName,
+                            onValueChange = { onEvent(FillProfileEvent.SetSecondName(it)) },
+                            supportingText = "",
+                            labelText = "Фамилия",
+                            isFocus = {})
+
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onFocusChanged {
+                                    if (it.isFocused) showDatePicker = !showDatePicker
+                                },
+                            value = if (state.dateOFBirth == -1L) "" else convertMillisToDate(state.dateOFBirth),
+                            onValueChange = { },
+                            maxLines = 1,
+                            readOnly = true,
+                            label = {
+                                Text(
+                                    text = "День рождения",
+                                    style = DecideTheme.typography.titleSmall
                                 )
                             },
-                            onDismiss = { showDatePicker = !showDatePicker }
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            trailingIcon = {
+                                IconButton(onClick = { showDatePicker = !showDatePicker }) {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Select date"
+                                    )
+                                }
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = DecideTheme.colors.inputBlack,
+                                focusedLabelColor = DecideTheme.colors.inputBlack,
+                                unfocusedLabelColor = DecideTheme.colors.gray,
+                                focusedPlaceholderColor = DecideTheme.colors.gray,
+                            )
                         )
+
+                        Spacer(modifier = Modifier.height(26.dp))
+
+                        ChooseGander(state = state, onEvent = onEvent)
+                        Spacer(modifier = Modifier.height(26.dp))
+
+                        EditTextField(
+                            value = state.city,
+                            onValueChange = { },
+                            supportingText = "",
+                            labelText = "Укажите город",
+                            isFocus = {
+                                if (it.isFocused) onEvent(FillProfileEvent.SearchCity(""))
+                            })
+
+                        if (showDatePicker) {
+                            DatePickerModal(onDateSelected = {
+                                onEvent(
+                                    FillProfileEvent.SetDateOFBirth(
+                                        it ?: -1
+                                    )
+                                )
+                            }, onDismiss = { showDatePicker = !showDatePicker })
+                        }
+
                     }
 
-
                 }
-
-                ButtonEntry(text = "Продолжить") {
+                ButtonEntry(
+                    modifier = Modifier
+                        .padding(bottom = 10.dp),
+                    text = "Продолжить"
+                ) {
                     onEvent(FillProfileEvent.Continue)
                 }
-
             }
+
         }
 
         UIState.LOADING -> {
@@ -274,7 +289,58 @@ fun FillProfileScreen(
                 onEvent(FillProfileEvent.Continue)
             }
         }
+
+        UIState.SEARCH_CITY -> {
+            FillProfileChooseCity(
+                state = state,
+                onEvent = onEvent
+            )
+        }
     }
+}
+
+@Composable
+fun ChooseGander(
+    state: FillProfileState,
+    onEvent: (event: FillProfileEvent) -> Unit,
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(start = 4.dp)
+                .padding(top = 4.dp),
+            text = "Укажите пол",
+            style = DecideTheme.typography.titleMedium,
+            textAlign = TextAlign.Start,
+            color = DecideTheme.colors.inputBlack
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+
+            ButtonVariant(
+                modifier = Modifier.wrapContentSize(), text = "Мужчина", onClick = {
+                    onEvent(FillProfileEvent.SetGender("Мужчина"))
+                }, selected = state.gender == "Мужчина"
+            )
+
+            ButtonVariant(
+                modifier = Modifier.wrapContentSize(), text = "Женщина", onClick = {
+                    onEvent(FillProfileEvent.SetGender("Женщина"))
+                }, selected = state.gender == "Женщина"
+            )
+        }
+    }
+
 }
 
 fun convertMillisToDate(millis: Long?): String {
@@ -286,18 +352,14 @@ fun convertMillisToDate(millis: Long?): String {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun PreviewFillProfileScreen() {
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
-            FillProfileScreen(
-                modifier = Modifier,
-                state = FillProfileState(),
-                onEvent = {},
-                onClickBack = { },
-                {}, {}
-            )
+            FillProfileScreen(modifier = Modifier, state = FillProfileState(
+                city = "", cities = listOf("Vjcasd", "Vjcasd", "Vjcasd", "Vjcasd", "Vjcasd")
+            ), onEvent = {}, onClickBack = { }, {}, {})
         }
     }
 }
@@ -312,7 +374,8 @@ fun PreviewError() {
                 state = FillProfileState(uiState = UIState.ERROR),
                 onEvent = {},
                 onClickBack = { },
-                {}, {}
+                {},
+                {},
             )
         }
     }
@@ -326,26 +389,42 @@ fun DatePickerModal(
 ) {
     val datePickerState = rememberDatePickerState()
 
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Отмена")
-            }
+    DatePickerDialog(onDismissRequest = onDismiss, confirmButton = {
+        TextButton(onClick = {
+            onDateSelected(datePickerState.selectedDateMillis)
+            onDismiss()
+        }) {
+            Text(
+                text = "Выбрать",
+                style = DecideTheme.typography.titleMedium,
+                color = DecideTheme.colors.inputBlack
+            )
         }
+    }, dismissButton = {
+        TextButton(onClick = onDismiss) {
+            Text(
+                text = "Отмена",
+                style = DecideTheme.typography.titleMedium,
+                color = DecideTheme.colors.inputBlack
+            )
+        }
+    },
+        colors = DatePickerDefaults.colors().copy(
+            containerColor = DecideTheme.colors.background,
+
+            )
     ) {
-        DatePicker(state = datePickerState)
+        DatePicker(
+            state = datePickerState,
+            colors = DatePickerDefaults.colors().copy(
+                containerColor = DecideTheme.colors.background,
+                selectedDayContentColor = DecideTheme.colors.inputWhite,
+                selectedDayContainerColor = DecideTheme.colors.accentGreen,
+                todayDateBorderColor = DecideTheme.colors.accentYellow,
+                todayContentColor = DecideTheme.colors.inputBlack
+            )
+        )
     }
-
-
 }
 
 @Preview(showBackground = true, showSystemUi = true, locale = "ru")
@@ -369,8 +448,7 @@ fun DatePickerDocked() {
             trailingIcon = {
                 IconButton(onClick = { showDatePicker = !showDatePicker }) {
                     Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = "Select date"
+                        imageVector = Icons.Default.DateRange, contentDescription = "Select date"
                     )
                 }
             },
@@ -381,8 +459,7 @@ fun DatePickerDocked() {
 
         if (showDatePicker) {
             Popup(
-                onDismissRequest = { showDatePicker = false },
-                alignment = Alignment.TopStart
+                onDismissRequest = { showDatePicker = false }, alignment = Alignment.TopStart
             ) {
                 Box(
                     modifier = Modifier
@@ -393,8 +470,7 @@ fun DatePickerDocked() {
                         .padding(16.dp)
                 ) {
                     DatePicker(
-                        state = datePickerState,
-                        showModeToggle = false
+                        state = datePickerState, showModeToggle = false
                     )
                 }
             }

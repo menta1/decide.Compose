@@ -43,4 +43,8 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun checkNewPassedAssay() {
 
     }
+
+    override suspend fun checkAuth(): Boolean {
+        return isUserAuthUseCase.invoke() != null
+    }
 }

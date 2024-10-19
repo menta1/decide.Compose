@@ -7,13 +7,16 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
+import com.decide.app.account.domain.kladr.KladrApi
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.local.dao.AssayDao
+import com.decide.app.database.local.dao.ProfileDao
 import com.decide.app.utils.NetworkChecker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +24,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
@@ -28,6 +35,27 @@ import javax.inject.Singleton
 object AppModule {
 
     private const val PREFERENCES_STORE_NAME = "user_datastore"
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(json: Json): KladrApi {
+        return Retrofit.Builder()
+            .baseUrl("https://kladr-api.ru")///api.php
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+            .create(KladrApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
+
+    @Provides
+    @Singleton
+    fun provideJson(): Json = Json { ignoreUnknownKeys = true }
+
 
     @Provides
     @Singleton
@@ -62,6 +90,13 @@ object AppModule {
     fun provideAssayDao(database: AppDatabase): AssayDao {
         return database.assayDao()
     }
+
+    @Provides
+    @Singleton
+    fun provideProfileDao(database: AppDatabase): ProfileDao {
+        return database.profileDao()
+    }
+
 
     @Provides
     @Singleton

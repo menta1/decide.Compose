@@ -24,6 +24,8 @@ import com.decide.app.feature.category.specificCategory.data.CategoriesSpecificR
 import com.decide.app.feature.category.specificCategory.data.CategoriesSpecificRepositoryImpl
 import com.decide.app.feature.passed.data.PassedScreenRepository
 import com.decide.app.feature.passed.data.PassedScreenRepositoryImpl
+import com.decide.app.feature.profile.editProfile.data.EditProfileRepository
+import com.decide.app.feature.profile.editProfile.data.EditProfileRepositoryImpl
 import com.decide.app.feature.profile.profileMain.data.ProfileRepositoryImpl
 import com.decide.app.feature.profile.profileMain.domain.ProfileRepository
 import com.decide.app.feature.profile.settings.data.SettingsRepository
@@ -78,4 +80,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository
+
+    @Binds
+    abstract fun bindEditProfileRepository(editProfileRepositoryImpl: EditProfileRepositoryImpl): EditProfileRepository
 }

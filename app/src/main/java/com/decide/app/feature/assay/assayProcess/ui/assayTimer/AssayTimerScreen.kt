@@ -238,9 +238,13 @@ fun AssayWithTimer(
                 Column {
                     questionAssay.listAnswers.forEach {
                         Spacer(modifier = Modifier.height(12.dp))
-                        ButtonVariant(text = it.text, selected = isSelectedItem(it.id), onClick = {
-                            onChangeState(it.id)
-                        })
+                        ButtonVariant(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = it.text,
+                            selected = isSelectedItem(it.id),
+                            onClick = {
+                                onChangeState(it.id)
+                            })
                     }
                     Spacer(modifier = Modifier.height(84.dp))
                 }

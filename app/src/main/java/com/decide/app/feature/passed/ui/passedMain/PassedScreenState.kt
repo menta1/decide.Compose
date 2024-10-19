@@ -1,4 +1,4 @@
-package com.decide.app.feature.passed.ui
+package com.decide.app.feature.passed.ui.passedMain
 
 import com.decide.app.feature.passed.models.PassedAssay
 

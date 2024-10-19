@@ -28,6 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
@@ -35,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.decide.uikit.R
 import com.decide.uikit.theme.DecideTheme
-
 
 @Composable
 fun SearchBarDecide(
@@ -45,16 +46,22 @@ fun SearchBarDecide(
     hint: String = "Поиск...",
     backgroundColor: Color = DecideTheme.colors.inputWhite,
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val interactionSource = remember { MutableInteractionSource() }
     Row(
         modifier = modifier
             .border(
-                width = 0.5.dp,
+                width = 0.2.dp,
                 color = DecideTheme.colors.gray,
                 shape = RoundedCornerShape(15.dp),
             )
             .height(56.dp)
             .fillMaxWidth()
-            .background(color = backgroundColor, shape = RoundedCornerShape(15.dp)),
+            .background(color = backgroundColor, shape = RoundedCornerShape(15.dp))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) { focusRequester.requestFocus() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -69,13 +76,12 @@ fun SearchBarDecide(
             Spacer(modifier = Modifier.width(16.dp))
 
             BasicTextField(
+                modifier = Modifier.focusRequester(focusRequester),
                 value = value,
                 onValueChange = onValueChange,
                 maxLines = 1,
                 singleLine = true,
-                interactionSource = remember {
-                    MutableInteractionSource()
-                },
+                interactionSource = remember { MutableInteractionSource() },
                 decorationBox = { innerTextField ->
                     if (value.isEmpty()) {
                         Text(
@@ -98,7 +104,11 @@ fun SearchBarDecide(
             modifier = Modifier
                 .size(40.dp)
                 .background(color = Color.Transparent, shape = CircleShape)
-                .clickable {
+
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null
+                ) {
                     if (value.isNotEmpty()) {
                         onValueChange("")
                     }

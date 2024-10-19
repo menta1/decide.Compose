@@ -3,6 +3,7 @@ package com.decide.app.database.remote
 import com.decide.app.account.modal.UserUpdate
 import com.decide.app.database.remote.dto.AccountDTO
 import com.decide.app.database.remote.dto.AssayDTO
+import com.decide.app.database.remote.exceptions.DecideDatabaseException
 import com.decide.app.utils.DecideException
 import com.decide.app.utils.Resource
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,7 @@ interface RemoteAssayStorage {
     suspend fun updateAccount(
         userUpdate: UserUpdate,
         id: String
-    )
+    ): Resource<Boolean, DecideDatabaseException>
 
     suspend fun saveAvatar(
         inputStream: InputStream?,

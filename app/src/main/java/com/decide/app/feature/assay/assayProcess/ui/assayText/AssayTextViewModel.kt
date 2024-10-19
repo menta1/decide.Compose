@@ -3,6 +3,7 @@ package com.decide.app.feature.assay.assayProcess.ui.assayText
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.decide.app.activity.ShowAds
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import com.decide.app.feature.assay.assayProcess.domain.useCase.GetAssayUseCase
 import com.decide.app.feature.assay.assayProcess.domain.useCase.SaveResultUseCase
@@ -31,6 +32,9 @@ class AssayTextViewModel @Inject constructor(
         getId(assayId)
     }
 
+    private var adsLoaded: Boolean = false
+    private lateinit var ads: ShowAds
+
     private val _state: MutableStateFlow<AssayTextState> =
         MutableStateFlow(AssayTextState.Loading)
     val state: StateFlow<AssayTextState> = _state.asStateFlow()
@@ -41,43 +45,95 @@ class AssayTextViewModel @Inject constructor(
     private var currentProgress = 0
 
     fun onEvent(event: EventAssayText) {
-        if (event.idAnswer.size == 1) {
-            listAnswer.add(//Если возможен один ответ
-                Answer(
-                    idQuestion = event.idQuestion,
-                    idAnswer = event.idAnswer.first(),
-                    answerValue = event.answerValue.first()
+        when (event) {
+            is EventAssayText.Ad -> {
+                ads = event.ads
+                ads.loadAds(
+                    onAdLoaded = {
+                        adsLoaded = true
+                    },
+                    onAdFailedToLoad = {
+                        adsLoaded = false
+                    }
                 )
-            )
-        } else {
-            listAnswers.add(//Если возможены несколько ответов
-                Answers(
-                    idQuestion = event.idQuestion,
-                    idAnswer = event.idAnswer,
-                    answerValue = event.answerValue
-                )
-            )
-        }
-        _state.update {
-            if (listQuestions.size == event.idQuestion) {
+            }
 
-                viewModelScope.launch(Dispatchers.IO) {
-                    saveResultUseCase.invoke(
-                        id = assayId,
-                        answer = listAnswer,
-                        answers = listAnswers
+            is EventAssayText.AssayText -> {
+                if (event.idAnswer.size == 1) {
+                    listAnswer.add(//Если возможен один ответ
+                        Answer(
+                            idQuestion = event.idQuestion,
+                            idAnswer = event.idAnswer.first(),
+                            answerValue = event.answerValue.first()
+                        )
+                    )
+                } else {
+                    listAnswers.add(//Если возможены несколько ответов
+                        Answers(
+                            idQuestion = event.idQuestion,
+                            idAnswer = event.idAnswer,
+                            answerValue = event.answerValue
+                        )
                     )
                 }
 
-                AssayTextState.End(idAssay = assayId)
-            } else {
-                currentProgress++
-                AssayTextState.Loaded(
-                    listQuestions[currentProgress],
-                    currentProgress.toFloat() / listQuestions.size.toFloat()
-                )
+                if (listQuestions.size == event.idQuestion) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        saveResultUseCase.invoke(
+                            id = assayId,
+                            answer = listAnswer,
+                            answers = listAnswers
+                        )
+                    }
+
+                    if (adsLoaded) {
+                        ads.showAds(
+                            onAdShown = {
+                                _state.update {
+                                    ads.clearAds()
+                                    AssayTextState.End(idAssay = assayId)
+                                }
+                            },
+                            onAdImpression = {
+                                _state.update {
+                                    ads.clearAds()
+                                    AssayTextState.End(idAssay = assayId)
+                                }
+                            },
+                            onAdFailedToShow = {
+                                _state.update {
+                                    ads.clearAds()
+                                    AssayTextState.End(idAssay = assayId)
+                                }
+                            },
+                            onAdDismissed = {
+                                _state.update {
+                                    ads.clearAds()
+                                    AssayTextState.End(idAssay = assayId)
+                                }
+                            },
+                            onAdClicked = {
+                                _state.update {
+                                    ads.clearAds()
+                                    AssayTextState.End(idAssay = assayId)
+                                }
+                            }
+                        )
+                    }
+                } else {
+                    currentProgress++
+                    _state.update {
+                        AssayTextState.Loaded(
+                            listQuestions[currentProgress],
+                            currentProgress.toFloat() / listQuestions.size.toFloat()
+                        )
+                    }
+
+                }
+
             }
         }
+
     }
 
     private fun getId(id: Int) {

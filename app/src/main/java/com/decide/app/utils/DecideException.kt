@@ -10,6 +10,11 @@ open class DecideException(
         messageLog: String
     ) : DecideException(message, messageLog)
 
+    open class NoInternet(
+        message: String = "No Internet",
+        messageLog: String = "Отсутствует соединение"
+    ) : DecideException(message, messageLog)
+
     open class FirestoneException(
         message: String,
         messageLog: String
@@ -31,9 +36,13 @@ open class DecideException(
     ) : DecideException(message, messageLog)
 
     class UserNotAuthorization(
+        message: String = "User not authorization",
+        messageLog: String = "Пользователь не авторизован"
+    ) : DecideException(message, messageLog)
+
+    open class KladrException(
         message: String,
         messageLog: String
     ) : DecideException(message, messageLog)
-
 
 }

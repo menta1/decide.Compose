@@ -72,6 +72,7 @@ internal fun assay4(
     val shortResults = mutableListOf<String>()
     val results = mutableListOf<String>()
     val keyResults = mutableListOf<Int>()
+    var statistics = -1.0
 
     answers.forEach { answer ->
         if (listSincerity.contains(answer.idQuestion)) {
@@ -198,20 +199,25 @@ internal fun assay4(
             results.add(key.result["20"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["20"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(20)
+            statistics = 20.0
         } else {
             results.add(key.result["21"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["21"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(21)
+            statistics = 21.0
         }
     } else {
         if (neuroticism in 0f..12f) {
             results.add(key.result["19"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["19"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(19)
+            statistics = 19.0
+
         } else {
             results.add(key.result["18"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["18"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(18)
+            statistics = 18.0
         }
     }
 
@@ -219,6 +225,7 @@ internal fun assay4(
         date = Date().time,
         shortResults = shortResults,
         results = results,
-        keyResults = keyResults
+        keyResults = keyResults,
+        resultForStatistic = statistics
     )
 }

@@ -76,6 +76,12 @@ object PassedRouteBranch : DecideDestination {
 
 }
 
+object ShowPassedResult : DecideDestination {
+    override val route: String
+        get() = "SHOW_PASSED_RESULT"
+
+}
+
 //Profile Branch
 object ProfileRouteBranch : DecideDestination {
     override val route: String
@@ -122,6 +128,11 @@ object Registration : DecideDestination {
 object FillProfile : DecideDestination {
     override val route: String
         get() = "FILL_PROFILE"
+}
+
+object FillProfileChooseCity : DecideDestination {
+    override val route: String
+        get() = "FILL_PROFILE_CITY"
 }
 
 object RecoveryAccount : DecideDestination {

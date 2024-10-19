@@ -1,6 +1,5 @@
 package com.decide.app.feature.profile.profileMain.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.feature.profile.profileMain.domain.IsAuthUserUseCase
@@ -28,7 +27,6 @@ class ProfileViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         _state.update {
-                            Log.d("TAG", "Resource.Success _state.update")
                             ProfileState.Loaded(result.data)
                         }
                     }
@@ -36,14 +34,12 @@ class ProfileViewModel @Inject constructor(
                     is Resource.Error -> {
                         when (result.error) {
                             is DecideException.UserNotAuthorization -> {
-                                Log.d("TAG", "DecideException.UserNotAuthorization")
                                 _state.update {
                                     ProfileState.NotAuthorized
                                 }
                             }
 
                             else -> {
-                                Log.d("TAG", "else")
                                 _state.update { ProfileState.Error("") }
                             }
                         }

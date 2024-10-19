@@ -1,6 +1,8 @@
 package com.decide.app.utils
 
 object Constants {
+    const val NO_ARGS_INT = -1
+    const val NO_ARGS_STR = ""
     const val INTERNET_PROBLEM = -1
     const val TYPE_PROBLEM = 400
     const val RESPONSE_SUCCESS = 200

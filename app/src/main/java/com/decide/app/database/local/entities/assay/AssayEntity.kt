@@ -1,10 +1,12 @@
 package com.decide.app.database.local.entities.assay
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.decide.app.feature.assay.assayMain.modals.Assay
 import com.decide.app.feature.passed.models.PassedAssay
 
+@Keep
 @Entity(tableName = "assay_table")
 data class AssayEntity(
     @PrimaryKey val id: Int,

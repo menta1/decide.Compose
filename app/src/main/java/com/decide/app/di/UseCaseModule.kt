@@ -1,5 +1,6 @@
 package com.decide.app.di
 
+import com.decide.app.account.data.KladrClientImpl
 import com.decide.app.account.domain.impl.CreateUserUseCaseImpl
 import com.decide.app.account.domain.impl.GetAvatarUseCaseImpl
 import com.decide.app.account.domain.impl.IsUserAuthUseCaseImpl
@@ -7,6 +8,7 @@ import com.decide.app.account.domain.impl.LogOutUseCaseImpl
 import com.decide.app.account.domain.impl.SaveAvatarUseCaseImpl
 import com.decide.app.account.domain.impl.SingInUseCaseImpl
 import com.decide.app.account.domain.impl.UpdateUserDataUseCaseImpl
+import com.decide.app.account.domain.kladr.KladrClient
 import com.decide.app.account.domain.useCase.CreateUserUseCase
 import com.decide.app.account.domain.useCase.GetAvatarUseCase
 import com.decide.app.account.domain.useCase.IsUserAuthUseCase
@@ -73,5 +75,8 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindCheckForSync(checkForSyncImpl: CheckForSyncImpl): CheckForSync
+
+    @Binds
+    abstract fun bindKladrClient(kladrClientImpl: KladrClientImpl): KladrClient
 
 }

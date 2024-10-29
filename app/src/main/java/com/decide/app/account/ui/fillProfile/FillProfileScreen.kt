@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -32,7 +30,6 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -46,27 +43,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import com.decide.app.feature.defaultScreens.ErrorScreen
-import com.decide.app.feature.defaultScreens.LoadingScreen
-import com.decide.app.feature.defaultScreens.NetworkErrorScreen
 import com.decide.uikit.R
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
-import com.decide.uikit.ui.EditTextField
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 import com.decide.uikit.ui.buttons.ButtonEntry
 import com.decide.uikit.ui.buttons.ButtonVariant
+import com.decide.uikit.ui.defaultScreens.ErrorScreen
+import com.decide.uikit.ui.defaultScreens.LoadingScreen
+import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
+import com.decide.uikit.ui.text.EditTextField
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -95,7 +90,7 @@ fun FillProfileScreen(
 }
 
 @Composable
-fun FillProfileScreen(
+private fun FillProfileScreen(
     modifier: Modifier,
     state: FillProfileState,
     onEvent: (event: FillProfileEvent) -> Unit,
@@ -183,7 +178,7 @@ fun FillProfileScreen(
                             text = "Чем больше информации Вы укажите,\n тем точнее будут результаты",
                             style = DecideTheme.typography.labelSmall,
                             textAlign = TextAlign.Center,
-                            color = DecideTheme.colors.inputBlack
+                            color = DecideTheme.colors.gray
                         )
 
                         EditTextField(value = state.firstName,
@@ -225,10 +220,12 @@ fun FillProfileScreen(
                                 }
                             },
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = DecideTheme.colors.inputBlack,
-                                focusedLabelColor = DecideTheme.colors.inputBlack,
+                                focusedBorderColor = DecideTheme.colors.text,
+                                focusedLabelColor = DecideTheme.colors.text,
                                 unfocusedLabelColor = DecideTheme.colors.gray,
                                 focusedPlaceholderColor = DecideTheme.colors.gray,
+                                focusedTextColor = DecideTheme.colors.text,
+                                unfocusedTextColor = DecideTheme.colors.text
                             )
                         )
 
@@ -261,7 +258,8 @@ fun FillProfileScreen(
                 }
                 ButtonEntry(
                     modifier = Modifier
-                        .padding(bottom = 10.dp),
+                        .padding(bottom = 10.dp)
+                        .padding(horizontal = 14.dp),
                     text = "Продолжить"
                 ) {
                     onEvent(FillProfileEvent.Continue)
@@ -300,7 +298,7 @@ fun FillProfileScreen(
 }
 
 @Composable
-fun ChooseGander(
+private fun ChooseGander(
     state: FillProfileState,
     onEvent: (event: FillProfileEvent) -> Unit,
 ) {
@@ -316,7 +314,7 @@ fun ChooseGander(
             text = "Укажите пол",
             style = DecideTheme.typography.titleMedium,
             textAlign = TextAlign.Start,
-            color = DecideTheme.colors.inputBlack
+            color = DecideTheme.colors.text
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -343,7 +341,7 @@ fun ChooseGander(
 
 }
 
-fun convertMillisToDate(millis: Long?): String {
+private fun convertMillisToDate(millis: Long?): String {
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     return if (millis != null) {
         formatter.format(Date(millis))
@@ -352,9 +350,62 @@ fun convertMillisToDate(millis: Long?): String {
     }
 }
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreviewFillProfileScreen() {
+private fun DatePickerModal(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+
+    DatePickerDialog(onDismissRequest = onDismiss, confirmButton = {
+        TextButton(onClick = {
+            onDateSelected(datePickerState.selectedDateMillis)
+            onDismiss()
+        }) {
+            Text(
+                text = "Выбрать",
+                style = DecideTheme.typography.titleMedium,
+                color = DecideTheme.colors.text
+            )
+        }
+    }, dismissButton = {
+        TextButton(onClick = onDismiss) {
+            Text(
+                text = "Отмена",
+                style = DecideTheme.typography.titleMedium,
+                color = DecideTheme.colors.text
+            )
+        }
+    },
+        colors = DatePickerDefaults.colors().copy(
+            containerColor = DecideTheme.colors.background,
+
+            )
+    ) {
+        DatePicker(
+            state = datePickerState,
+            colors = DatePickerDefaults.colors().copy(
+                containerColor = DecideTheme.colors.background,
+                selectedDayContentColor = DecideTheme.colors.text,
+                selectedDayContainerColor = DecideTheme.colors.accentGreen,
+                todayDateBorderColor = DecideTheme.colors.accentYellow,
+                todayContentColor = DecideTheme.colors.text,
+                titleContentColor = DecideTheme.colors.text,
+                headlineContentColor = DecideTheme.colors.text,
+                weekdayContentColor = DecideTheme.colors.text,
+                navigationContentColor = DecideTheme.colors.text,
+                yearContentColor = DecideTheme.colors.text,
+                selectedYearContainerColor = DecideTheme.colors.unFocused,
+                dayContentColor = DecideTheme.colors.unFocused,
+            )
+        )
+    }
+}
+
+@MainPreview
+@Composable
+private fun Preview() {
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             FillProfileScreen(modifier = Modifier, state = FillProfileState(
@@ -364,9 +415,10 @@ fun PreviewFillProfileScreen() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+
+@MainPreview
 @Composable
-fun PreviewError() {
+private fun PreviewError() {
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             FillProfileScreen(
@@ -381,108 +433,10 @@ fun PreviewError() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@MainPreview
 @Composable
-fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val datePickerState = rememberDatePickerState()
-
-    DatePickerDialog(onDismissRequest = onDismiss, confirmButton = {
-        TextButton(onClick = {
-            onDateSelected(datePickerState.selectedDateMillis)
-            onDismiss()
-        }) {
-            Text(
-                text = "Выбрать",
-                style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.inputBlack
-            )
-        }
-    }, dismissButton = {
-        TextButton(onClick = onDismiss) {
-            Text(
-                text = "Отмена",
-                style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.inputBlack
-            )
-        }
-    },
-        colors = DatePickerDefaults.colors().copy(
-            containerColor = DecideTheme.colors.background,
-
-            )
-    ) {
-        DatePicker(
-            state = datePickerState,
-            colors = DatePickerDefaults.colors().copy(
-                containerColor = DecideTheme.colors.background,
-                selectedDayContentColor = DecideTheme.colors.inputWhite,
-                selectedDayContainerColor = DecideTheme.colors.accentGreen,
-                todayDateBorderColor = DecideTheme.colors.accentYellow,
-                todayContentColor = DecideTheme.colors.inputBlack
-            )
-        )
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true, locale = "ru")
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerDocked() {
-    var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
-    val selectedDate = datePickerState.selectedDateMillis?.let {
-        convertMillisToDate(it)
-    } ?: ""
-
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        OutlinedTextField(
-            value = selectedDate,
-            onValueChange = { },
-            label = { Text("DOB") },
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = { showDatePicker = !showDatePicker }) {
-                    Icon(
-                        imageVector = Icons.Default.DateRange, contentDescription = "Select date"
-                    )
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-        )
-
-        if (showDatePicker) {
-            Popup(
-                onDismissRequest = { showDatePicker = false }, alignment = Alignment.TopStart
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = 64.dp)
-                        .shadow(elevation = 4.dp)
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(16.dp)
-                ) {
-                    DatePicker(
-                        state = datePickerState, showModeToggle = false
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true, locale = "ru")
-@Composable
-fun PreviewDatePicker() {
-    DecideTheme {
+private fun PreviewDatePicker() {
+    DecideTheme(darkTheme = true) {
         Column(modifier = Modifier.fillMaxSize()) {
             DatePickerModal(onDateSelected = {}) {
 
@@ -490,4 +444,3 @@ fun PreviewDatePicker() {
         }
     }
 }
-

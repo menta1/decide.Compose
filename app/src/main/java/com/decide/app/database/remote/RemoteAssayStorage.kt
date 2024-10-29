@@ -13,7 +13,8 @@ interface RemoteAssayStorage {
     suspend fun getAssay(id: String): Flow<Result<AssayDTO>>
     suspend fun getAssays(onResult: (result: Resource<Boolean, DecideException>) -> Unit)
     suspend fun getCategories()
-    suspend fun getKey(id: String)
+    suspend fun getKeys()
+    suspend fun getKey(id: String): Resource<Boolean, DecideDatabaseException>
 
     suspend fun createAccount(
         account: AccountDTO,
@@ -30,6 +31,10 @@ interface RemoteAssayStorage {
         id: String
     )
 
+    suspend fun saveAvatar(
+        id: String
+    )
+
     suspend fun getPassedAssays(id: String)
 
     suspend fun putPassedAssays(id: Int)
@@ -38,5 +43,10 @@ interface RemoteAssayStorage {
         id: String?,
         onResult: (result: Resource<Boolean, DecideException>) -> Unit
     )
+
+//    suspend fun updateExamRating(
+//        id: Int,
+//        star: Int
+//    )
 
 }

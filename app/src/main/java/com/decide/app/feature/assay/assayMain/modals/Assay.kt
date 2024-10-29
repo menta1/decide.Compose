@@ -11,5 +11,7 @@ data class Assay(
     val type: Int,
     val timeForTest: Long,
     val timeForQuestions: Long,
-    val rating: String,
+    val rating: Float,
+    val rated: Int,
+    val finished: Int
 )

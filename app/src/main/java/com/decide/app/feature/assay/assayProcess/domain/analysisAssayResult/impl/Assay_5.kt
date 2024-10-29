@@ -4,7 +4,6 @@ import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl.AnalysisKeyAssayImpl.Companion.NO_KEY_FOR_ASSAY
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
-import timber.log.Timber
 import java.util.Date
 
 internal fun assay5(
@@ -14,6 +13,7 @@ internal fun assay5(
 
     var anxiety = 0f
     var depression = 0f
+    val multiplierStats = 0.8
 
     answers.forEach { answer ->
         when {
@@ -74,6 +74,7 @@ internal fun assay5(
     val shortResults = mutableListOf<String>()
     val results = mutableListOf<String>()
     val keyResults = mutableListOf<Int>()
+    var resultForStatistics = 0.0
 
     when {
         (anxiety >= 1.28f) -> {
@@ -99,28 +100,29 @@ internal fun assay5(
             results.add(key.result["4"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["4"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(4)
+            resultForStatistics = -20.0 * multiplierStats
         }
 
         (-1.27f..1.27f).contains(depression) -> {
             results.add(key.result["5"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["5"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(5)
+            resultForStatistics = 10.0 * multiplierStats
         }
 
         (depression <= -1.28f) -> {
             results.add(key.result["6"] ?: NO_KEY_FOR_ASSAY)
             shortResults.add(key.resultShort["6"] ?: NO_KEY_FOR_ASSAY)
             keyResults.add(6)
+            resultForStatistics = 20.0 * multiplierStats
         }
     }
-
-    Timber.tag("TAG").d("depression = $depression")
-    Timber.tag("TAG").d("anxiety = $anxiety")
 
     return ResultCompletedAssay(
         date = Date().time,
         shortResults = shortResults,
         results = results,
-        keyResults = keyResults
+        keyResults = keyResults,
+        resultForStatistic = resultForStatistics
     )
 }

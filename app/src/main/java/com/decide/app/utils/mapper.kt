@@ -16,7 +16,8 @@ fun Assay.toAssayUI(): AssayUI {
         idCategory = idCategory,
         nameCategory = nameCategory,
         countQuestions = questions.size.toString(),
-        rating = rating,
+        rating = "",//рейтинг, не реализованно
+        rated = rated
     )
 }
 
@@ -33,7 +34,9 @@ fun Assay.toAssayEntity(): AssayEntity {
         type = type,
         results = emptyList(),
         timeForQuestions = timeForQuestions,
-        timeForTest = timeForTest
+        timeForTest = timeForTest,
+        rated = rated,
+        finished = finished
     )
 }
 

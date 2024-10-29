@@ -104,15 +104,15 @@ object Notification : DecideDestination {
 
 }
 
-object Terms : DecideDestination {
-    override val route: String
-        get() = "TERMS"
-
-}
 
 object AuthenticationRouteBranch : DecideDestination {
     override val route: String
         get() = "AUTHENTICATION_ROUTE_BRANCH"
+}
+
+object LaunchingScreensRoute : DecideDestination {
+    override val route: String
+        get() = "LAUNCH"
 }
 
 object Authentication : DecideDestination {

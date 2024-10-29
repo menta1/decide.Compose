@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -11,7 +14,27 @@ plugins {
     alias(libs.plugins.kotlin.symbol.processing)
 }
 
+val keyPropertiesFile = rootProject.file("keys.properties")
+val keyProperties = Properties()
+keyProperties.load(FileInputStream(keyPropertiesFile))
+
+
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file(keyProperties["storeFile"] as String)
+            storePassword = keyProperties["storePassword"] as String
+            keyAlias = keyProperties["keyAlias"] as String
+            keyPassword = keyProperties["keyPassword"] as String
+        }
+
+        getByName("debug") {
+            storeFile = file("C:\\Users\\ainur\\Desktop\\decide_key\\key_store.jks")
+            storePassword = "ZX73yXUgQM3c"
+            keyAlias = "key"
+            keyPassword = "ljoOfszrcN9l"
+        }
+    }
     namespace = "com.decide.app"
     compileSdk = 34
 
@@ -27,10 +50,19 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        addManifestPlaceholders(
+            mapOf(
+                "VKIDClientID" to "52560464", // ID вашего приложения (app_id).
+                "VKIDClientSecret" to "9zAXn29yajqbLukFRvTL", // Ваш защищенный ключ (client_secret).
+                "VKIDRedirectHost" to "vk.com", // Обычно используется vk.com.
+                "VKIDRedirectScheme" to "vk52560464", // Обычно используется vk{ID приложения}.
+            )
+        )
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
@@ -38,6 +70,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
 
         getByName("debug") {
@@ -48,14 +81,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -66,6 +101,10 @@ android {
 
 dependencies {
     implementation(project(":uikit"))
+
+    //VK
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    implementation(libs.onetap.compose)
 
     //Core
     implementation(libs.androidx.core.ktx)
@@ -120,6 +159,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.firebase.firestore)
     implementation(libs.play.services.auth)
+    implementation(libs.firebase.config)
 
     //Network
     implementation(libs.retrofit)

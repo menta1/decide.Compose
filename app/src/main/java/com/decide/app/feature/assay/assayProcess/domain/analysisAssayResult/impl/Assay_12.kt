@@ -41,12 +41,12 @@ internal fun assay12(
     return if (points1 == maxPoints) {
         getResultCompletedAssay(key = "1", keyAssay = key)
     } else if (points2 == maxPoints) {
-        getResultCompletedAssay(key = "1", keyAssay = key)
+        getResultCompletedAssay(key = "2", keyAssay = key)
     } else if (points3 == maxPoints) {
-        getResultCompletedAssay(key = "1", keyAssay = key)
+        getResultCompletedAssay(key = "3", keyAssay = key)
     } else if (points4 == maxPoints) {
-        getResultCompletedAssay(key = "1", keyAssay = key)
+        getResultCompletedAssay(key = "4", keyAssay = key)
     } else {
-        getResultCompletedAssay(key = "1", keyAssay = key)
+        getResultCompletedAssay(key = "5", keyAssay = key)
     }
 }

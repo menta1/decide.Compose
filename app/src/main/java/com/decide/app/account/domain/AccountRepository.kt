@@ -17,8 +17,12 @@ interface AccountRepository {
     fun saveAvatarFromGallery(uri: Uri)
     suspend fun getAvatar(): Resource<Uri, DecideException>
     suspend fun updateUser(userUpdate: UserUpdate): Resource<Boolean, DecideException>
-    suspend fun singInUser(
+    suspend fun singInUserWithEmail(
         user: UserAuth,
+        onResult: (result: Resource<Boolean, DecideException>) -> Unit
+    )
+
+    suspend fun singInUserWithVK(
         onResult: (result: Resource<Boolean, DecideException>) -> Unit
     )
 

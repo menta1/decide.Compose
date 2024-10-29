@@ -2,6 +2,7 @@ package com.decide.uikit.ui.buttons
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +31,7 @@ fun ButtonMain(
     backgroundIsNotActive: Color = DecideTheme.colors.gray,
     isActive: Boolean = true,
     text: String,
-    textColor: Color = DecideTheme.colors.inputWhite,
+    textColor: Color = DecideTheme.colors.white,
     textStyle: TextStyle = DecideTheme.typography.titleMedium,
     onClick: () -> Unit
 ) {
@@ -42,7 +45,12 @@ fun ButtonMain(
         )
 
     val combinedModifier = if (isActive) {
-        custom.clickable { onClick() }
+        custom.clickable(
+            indication = ripple(
+                color = DecideTheme.colors.text
+            ), interactionSource = remember { MutableInteractionSource() }, onClick = {
+                onClick()
+            })
     } else {
         custom
     }
@@ -59,14 +67,16 @@ fun ButtonMain(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewMainButton() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 39.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        ButtonMain(text = "Начать") {
+    DecideTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 39.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            ButtonMain(text = "Начать") {
 
+            }
         }
     }
 }

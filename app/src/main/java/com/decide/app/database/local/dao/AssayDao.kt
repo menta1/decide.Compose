@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AssayDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(assays: List<AssayEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -37,6 +37,9 @@ interface AssayDao {
 
     @Query("SELECT * FROM assay_table")
     suspend fun getAllAssays(): List<AssayEntity>
+
+    @Query("SELECT * FROM assay_table")
+    fun getFlowAllAssays(): Flow<List<AssayEntity>>
 
     @Query("SELECT * FROM assay_table WHERE idCategory = :idCategory")
     suspend fun fetchAllAssaysByIdCategory(idCategory: Int): List<AssayEntity>

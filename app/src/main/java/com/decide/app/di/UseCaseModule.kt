@@ -6,7 +6,8 @@ import com.decide.app.account.domain.impl.GetAvatarUseCaseImpl
 import com.decide.app.account.domain.impl.IsUserAuthUseCaseImpl
 import com.decide.app.account.domain.impl.LogOutUseCaseImpl
 import com.decide.app.account.domain.impl.SaveAvatarUseCaseImpl
-import com.decide.app.account.domain.impl.SingInUseCaseImpl
+import com.decide.app.account.domain.impl.SingInWithEmailUseCaseImpl
+import com.decide.app.account.domain.impl.SingInWithVKUseCaseImpl
 import com.decide.app.account.domain.impl.UpdateUserDataUseCaseImpl
 import com.decide.app.account.domain.kladr.KladrClient
 import com.decide.app.account.domain.useCase.CreateUserUseCase
@@ -14,12 +15,19 @@ import com.decide.app.account.domain.useCase.GetAvatarUseCase
 import com.decide.app.account.domain.useCase.IsUserAuthUseCase
 import com.decide.app.account.domain.useCase.LogOutUseCase
 import com.decide.app.account.domain.useCase.SaveAvatarUseCase
-import com.decide.app.account.domain.useCase.SingInUseCase
+import com.decide.app.account.domain.useCase.SingInWithEmailUseCase
+import com.decide.app.account.domain.useCase.SingInWithVKUseCase
 import com.decide.app.account.domain.useCase.UpdateUserDataUseCase
+import com.decide.app.activity.domain.ChangeVariableFirstLaunchUseCase
 import com.decide.app.activity.domain.CheckForSync
-import com.decide.app.activity.domain.CheckForSyncImpl
 import com.decide.app.activity.domain.InitApp
-import com.decide.app.activity.domain.InitAppImpl
+import com.decide.app.activity.domain.InitRemoteConfig
+import com.decide.app.activity.domain.IsFirstLaunchUseCase
+import com.decide.app.activity.domain.impl.ChangeVariableFirstLaunchUseCaseImpl
+import com.decide.app.activity.domain.impl.CheckForSyncImpl
+import com.decide.app.activity.domain.impl.InitAppImpl
+import com.decide.app.activity.domain.impl.InitRemoteConfigImpl
+import com.decide.app.activity.domain.impl.IsFirstLaunchUseCaseImpl
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.AnalysisKeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl.AnalysisKeyAssayImpl
 import com.decide.app.feature.assay.assayProcess.domain.impl.GetAssayUseCaseImpl
@@ -68,7 +76,7 @@ abstract class UseCaseModule {
     abstract fun bindIsUserAuthUseCase(isUserAuthUseCaseImpl: IsUserAuthUseCaseImpl): IsUserAuthUseCase
 
     @Binds
-    abstract fun bindSingInUseCase(singInUseCaseImpl: SingInUseCaseImpl): SingInUseCase
+    abstract fun bindSingInUseCase(singInUseCaseImpl: SingInWithEmailUseCaseImpl): SingInWithEmailUseCase
 
     @Binds
     abstract fun bindLogOutUseCase(logOutUseCaseImpl: LogOutUseCaseImpl): LogOutUseCase
@@ -79,4 +87,15 @@ abstract class UseCaseModule {
     @Binds
     abstract fun bindKladrClient(kladrClientImpl: KladrClientImpl): KladrClient
 
+    @Binds
+    abstract fun bindInitRemoteConfig(initRemoteConfigImpl: InitRemoteConfigImpl): InitRemoteConfig
+
+    @Binds
+    abstract fun bindSingInWithVKUseCase(singInWithVKUseCaseImpl: SingInWithVKUseCaseImpl): SingInWithVKUseCase
+
+    @Binds
+    abstract fun bindIsFirstLaunchUseCase(isFirstLaunchUseCaseImpl: IsFirstLaunchUseCaseImpl): IsFirstLaunchUseCase
+
+    @Binds
+    abstract fun bindChangeVariableFirstLaunchUseCase(changeVariableFirstLaunchUseCaseImpl: ChangeVariableFirstLaunchUseCaseImpl): ChangeVariableFirstLaunchUseCase
 }

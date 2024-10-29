@@ -5,6 +5,6 @@ data class PassedAssay(
     val idCategory: Int,
     val name: String,
     val nameCategory: String,
-    val rating: String,
+    val rating: Float,
     val results: List<ResultCompletedAssay>
 )

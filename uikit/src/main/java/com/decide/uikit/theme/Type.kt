@@ -9,7 +9,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.decide.uikit.R
 
-//Fira Sans
 private val FiraSans = FontFamily(
     Font(R.font.fira_sans_light),
     Font(R.font.fira_sans_regular),

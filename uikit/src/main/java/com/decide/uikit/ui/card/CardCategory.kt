@@ -30,15 +30,13 @@ fun CardCategory(
     modifier: Modifier = Modifier,
     imageId: Int,
     textCategory: String,
-    textColorCategory: Color = DecideTheme.colors.inputWhite,
-    textStyleCategory: TextStyle = DecideTheme.typography.titleLarge,
-    overlayColor: Color = DecideTheme.colors.inputBlack,
-    overlayAlpha: Float = 0.4f,
+    textColorCategory: Color = DecideTheme.colors.white,
+    textStyleCategory: TextStyle = DecideTheme.typography.titleMedium,
+    overlayColor: Color = DecideTheme.colors.black,
+    overlayAlpha: Float = 0.5f,
     onClickAssay: () -> Unit,
 ) {
     Box(modifier = modifier
-//        .width(180.dp)
-//        .height(180.dp)
         .clickable { onClickAssay() }
         .padding(4.dp)
         .clip(RoundedCornerShape(20.dp)),

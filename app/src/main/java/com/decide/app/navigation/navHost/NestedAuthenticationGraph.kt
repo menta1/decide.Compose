@@ -38,6 +38,13 @@ fun NavGraphBuilder.addNestedAuthenticationGraph(
                             inclusive = true
                         }
                     }
+                },
+                skip = {
+                    navController.navigate(route = Assay.route) {
+                        popUpTo(route = Assay.route) {
+                            inclusive = true
+                        }
+                    }
                 })
         }
 
@@ -90,6 +97,5 @@ fun NavGraphBuilder.addNestedAuthenticationGraph(
                 }
             })
         }
-
     }
 }

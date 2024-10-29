@@ -1,9 +1,7 @@
 package com.decide.app.database.remote
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -30,7 +28,6 @@ import com.decide.app.utils.DecideException
 import com.decide.app.utils.NetworkChecker
 import com.decide.app.utils.Resource
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.snapshots
@@ -77,57 +74,110 @@ class RemoteAssayStorageImpl @Inject constructor(
             }
     }
 
-    @SuppressLint("LogNotTimber")
     override suspend fun getAssays(onResult: (result: Resource<Boolean, DecideException>) -> Unit) {
         remoteDatabase.collection(EXAMS).get().addOnCompleteListener { task: Task<QuerySnapshot> ->
             coroutineScope.launch {
-                localStorage.assayDao().insert(task.result.map {
-                    it.toObject(AssayDTO::class.java).toAssayEntity()
-                })
-                onResult(Resource.Success(true))
-                Log.d("FIREBASE", "FIREBASE SUCCESS = getAssays")
+                try {
+                    localStorage.assayDao().insert(task.result.map {
+                        it.toObject(AssayDTO::class.java).toAssayEntity()
+                    })
+                    onResult(Resource.Success(true))
+                } catch (e: Exception) {
+                    onResult(Resource.Success(false))
+                }
+
             }
         }.addOnFailureListener {
             onResult(Resource.Error(firestoreExceptionMapper(it)))
-            Log.d("FIREBASE", "FIREBASE ERRORS = $it")
         }
     }
 
-    @SuppressLint("LogNotTimber")
     override suspend fun getCategories() {
         try {
-            remoteDatabase.collection(CATEGORIES).get()
-                .addOnSuccessListener { task ->
-                    coroutineScope.launch {
+            remoteDatabase.collection(CATEGORIES).get().addOnSuccessListener { task ->
+                coroutineScope.launch {
+                    try {
                         localStorage.categoryDao().insert(task.map {
                             it.toObject(CategoryDTO::class.java).toCategoryEntity()
                         })
+                    } catch (e: Exception) {
                     }
-                }.addOnFailureListener {
-                    Log.d("FIREBASE", "FIREBASE ERRORS = $it")
+
                 }
+            }.addOnFailureListener {
+            }
         } catch (e: Exception) {
-            Log.d("FIREBASE", "FIREBASE ERRORS = ${e.message}")
         }
 
     }
 
-    override suspend fun getKey(id: String) {
-        try {
-            remoteDatabase.collection(KEYS).document(id).get()
-                .addOnCompleteListener { task: Task<DocumentSnapshot> ->
+    override suspend fun getKeys() {
+        remoteDatabase.collection(KEYS).get()
+            .addOnSuccessListener { task ->
+                val result = task.documents.mapNotNull { it.toObject(KeyDto::class.java) }
+                if (result.isNotEmpty()) {
+                    Timber.tag("TAG").d("getKeys() result.isNotEmpty()")
                     coroutineScope.launch {
-                        task.result.toObject(KeyDto::class.java)
-                            ?.let { localStorage.keyDao().insert(it.toKeyEntity()) }
-                    }
-                }.addOnFailureListener {
-                    Timber.tag("FIREBASE").d("FIREBASE ERRORS getKey = ${it.message}")
-                }
-        } catch (e: Exception) {
-            Timber.tag("FIREBASE").d("FIREBASE ERRORS getKey = ${e.message}")
-        }
+                        try {
+                            localStorage.keyDao().insert(result.map { it.toKeyEntity() })
+                        } catch (e: Exception) {
+                            Timber.tag("TAG").d("getKeys() catch e = ${e.message}")
+                        }
 
+                    }
+                } else {
+                    Timber.tag("TAG").d("getKeys() else")
+                }
+
+            }.addOnFailureListener {
+                Timber.tag("TAG").d("getKeys() addOnFailureListener")
+            }
     }
+
+    override suspend fun getKey(id: String): Resource<Boolean, DecideDatabaseException> =
+        suspendCoroutine { continuation ->
+            try {
+                remoteDatabase.collection(KEYS).document(id).get()
+                    .addOnSuccessListener { documents ->
+                        try {
+                            val result = documents.toObject(KeyDto::class.java)
+
+                            if (result != null) {
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    continuation.resume(Resource.Success(true))
+                                    localStorage.keyDao().insert(result.toKeyEntity())
+                                }
+                            } else {
+                                continuation.resume(
+                                    Resource.Error(
+                                        DecideDatabaseException.UnknownError()
+                                    )
+                                )
+                            }
+
+                        } catch (e: Exception) {
+                            continuation.resume(
+                                Resource.Error(
+                                    DecideDatabaseException.UnknownError()
+                                )
+                            )
+                        }
+
+                    }.addOnFailureListener {
+                        continuation.resume(Resource.Error(firestoreExceptionMapper(it)))
+
+                    }
+            } catch (e: Exception) {
+
+                continuation.resume(
+                    Resource.Error(
+                        DecideDatabaseException.UnknownError()
+                    )
+                )
+
+            }
+
+        }
 
     override suspend fun createAccount(
         account: AccountDTO,
@@ -148,37 +198,35 @@ class RemoteAssayStorageImpl @Inject constructor(
     override suspend fun updateAccount(
         userUpdate: UserUpdate,
         id: String
-    ): Resource<Boolean, DecideDatabaseException> =
-        suspendCoroutine { continuation ->
-
-            try {
-                remoteDatabase.collection(USERS).document(id).update(
-                    "firstName",
-                    userUpdate.firstName,
-                    "lastName",
-                    userUpdate.lastName,
-                    "dateBirth",
-                    userUpdate.dateBirth,
-                    "city",
-                    userUpdate.city,
-                    "gender", userUpdate.gender
-                ).addOnSuccessListener {
-                    continuation.resume(Resource.Success(true))
-                }.addOnFailureListener {
-                    continuation.resume(
-                        Resource.Error(
-                            firestoreExceptionMapper(it)
-                        )
+    ): Resource<Boolean, DecideDatabaseException> = suspendCoroutine { continuation ->
+        try {
+            remoteDatabase.collection(USERS).document(id).update(
+                "firstName",
+                userUpdate.firstName,
+                "lastName",
+                userUpdate.lastName,
+                "dateBirth",
+                userUpdate.dateBirth,
+                "city",
+                userUpdate.city,
+                "gender",
+                userUpdate.gender
+            ).addOnSuccessListener {
+                continuation.resume(Resource.Success(true))
+            }.addOnFailureListener {
+                continuation.resume(
+                    Resource.Error(
+                        firestoreExceptionMapper(it)
                     )
-                    Timber.tag("FIREBASE").d("FIREBASE ERRORS updateAccount = ${it.message}")
-                }
-            } catch (e: Exception) {
-                continuation.resume(Resource.Error(firestoreExceptionMapper(e)))
-                Timber.tag("FIREBASE").d("FIREBASE ERRORS updateAccount = ${e.message}")
+                )
+                Timber.tag("FIREBASE").d("FIREBASE ERRORS updateAccount = ${it.message}")
             }
-
+        } catch (e: Exception) {
+            continuation.resume(Resource.Error(firestoreExceptionMapper(e)))
+            Timber.tag("FIREBASE").d("FIREBASE ERRORS updateAccount = ${e.message}")
         }
 
+    }
 
     override suspend fun saveAvatar(
         inputStream: InputStream?,
@@ -200,9 +248,14 @@ class RemoteAssayStorageImpl @Inject constructor(
 //                storageExceptionMapper(e)
             }
         } else {
+            Timber.tag("TAG").d("inputStream = null")
             DecideStorageException.InputStream("InputStream = null", "InputStream = null")
         }
 
+    }
+
+    override suspend fun saveAvatar(id: String) {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getPassedAssays(id: String) {
@@ -235,11 +288,9 @@ class RemoteAssayStorageImpl @Inject constructor(
                 if (userId != null) {
                     val newPassedAssay = localStorage.assayDao().getAssay(id)
                     remoteDatabase.collection(USERS).document(userId).collection(PASSED_ASSAYS)
-                        .document(id.toString()).set(newPassedAssay)
-                        .addOnSuccessListener {
+                        .document(id.toString()).set(newPassedAssay).addOnSuccessListener {
                             Timber.tag("FIREBASE").d("FIREBASE putPassedAssays Success")
-                        }
-                        .addOnFailureListener {
+                        }.addOnFailureListener {
                             Timber.tag("FIREBASE").d(it.message ?: "FIREBASE putPassedAssays Fail")
                         }
                 } else {
@@ -284,7 +335,6 @@ class RemoteAssayStorageImpl @Inject constructor(
                     .addOnSuccessListener { document ->
                         val profile = document.toObject(AccountDTO::class.java)
                         if (profile != null) {
-                            Timber.tag("TAG").d("remoteDatabase getAccountData = profile == null")
                             coroutineScope.launch {
                                 localStorage.profileDao().insert(
                                     profile.toProfileEntity()
@@ -300,36 +350,52 @@ class RemoteAssayStorageImpl @Inject constructor(
                             }
 
                         } else {
-                            Timber.tag("TAG").d("remoteDatabase getAccountData = else")
                             onResult(
                                 Resource.Error(
-                                    firestoreExceptionMapper(
-                                        DecideDatabaseException.NotFoundDocument(
-                                            "DecideDatabaseException.NotFoundDocument: Нет данных пользователя в firebase",
-                                            "Нет данных пользователя в firebase"
-                                        )
+                                    DecideDatabaseException.NotFoundDocument(
+                                        "DecideDatabaseException.NotFoundDocument: Нет данных пользователя в firebase",
+                                        "Нет данных пользователя в firebase"
                                     )
                                 )
                             )
                         }
-
                     }.addOnFailureListener {
                         onResult(Resource.Error(firestoreExceptionMapper(it)))
                     }
-
                 statisticsClient.getRemoteStatistic(id)
-
             } catch (e: Exception) {
                 Timber.tag("TAG").d("remoteDatabase getAccountData = ${e.message}")
                 onResult(Resource.Error(firestoreExceptionMapper(e)))
-
             }
         } else {
             onResult(Resource.Error(DecideAuthException.UserNotAuth("id.isNull", "Нет id")))
         }
     }
 
+    //Rating пока не нужно
+//    override suspend fun updateExamRating(
+//        id: Int,
+//        star: Int
+//    ) {
+//        try {
+//            remoteDatabase.collection(EXAMS).document(id.toString()).get()
+//                .addOnSuccessListener { document->
+//                   val exam = document.toObject(AssayDTO::class.java)
+//                    if (exam != null){
+//                        var oldRating = exam.rating * exam.rated
+//                        val newRating = (oldRating + star) / (exam.rated + 1)
+//                    }
+//                }
+//                .addOnFailureListener {
+//
+//                }
+//        }catch (e: Exception){
+//
+//        }
+//    }
+
     companion object {
+        const val RATING_EXAMS = "rating"
         const val EXAMS = "EXAMS"
         const val CATEGORIES = "CATEGORIES"
         const val KEYS = "KEYS"
@@ -338,6 +404,7 @@ class RemoteAssayStorageImpl @Inject constructor(
         const val STATISTICS = "STATISTICS"
         const val ANXIETY = 1
         const val TEMPERAMENT = 2
+        const val DEPRESSION = 3
         val KEY_AVATAR = stringPreferencesKey(
             name = "avatar"
         )

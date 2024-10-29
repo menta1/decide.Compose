@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.account.authenticationClient.exception.DecideAuthException
 import com.decide.app.account.domain.useCase.CreateUserUseCase
+import com.decide.app.account.domain.useCase.SingInWithVKUseCase
 import com.decide.app.account.modal.UserAuth
 import com.decide.app.account.ui.validators.ValidationEmail
 import com.decide.app.account.ui.validators.ValidationPassword
+import com.decide.app.activity.domain.ChangeVariableFirstLaunchUseCase
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -18,13 +21,18 @@ import javax.inject.Inject
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val createUserUseCase: CreateUserUseCase,
+    private val changeVariableFirstLaunchUseCase: ChangeVariableFirstLaunchUseCase,
+    private val singInWithVKUseCase: SingInWithVKUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RegistrationState())
     val state: StateFlow<RegistrationState> = _state
 
-    fun updateData(event: RegistrationEvent) {
+    init {
+        viewModelScope.launch(Dispatchers.IO) { changeVariableFirstLaunchUseCase.invoke() }
+    }
 
+    fun updateData(event: RegistrationEvent) {
         when (event) {
             is RegistrationEvent.SetEmail -> {
                 _state.update { state ->
@@ -144,6 +152,35 @@ class RegistrationViewModel @Inject constructor(
                         }
                     }
 
+                }
+            }
+
+            RegistrationEvent.AuthWithVK -> {
+                _state.update {
+                    it.copy(
+                        uiState = UIState.REGISTRATION
+                    )
+                }
+                viewModelScope.launch {
+                    singInWithVKUseCase.invoke {
+                        when (it) {
+                            is Resource.Success -> {
+                                _state.update { state ->
+                                    state.copy(
+                                        uiState = UIState.SUCCESS_REGISTRATION
+                                    )
+                                }
+                            }
+
+                            is Resource.Error -> {
+                                _state.update { state ->
+                                    state.copy(
+                                        uiState = UIState.DATA_ENTRY
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

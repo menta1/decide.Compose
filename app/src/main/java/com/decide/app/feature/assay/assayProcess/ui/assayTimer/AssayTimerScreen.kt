@@ -24,12 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.feature.assay.assayMain.modals.AnswerAssay
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonBackArrow
@@ -58,16 +58,14 @@ fun AssayTimerScreen(
 }
 
 @Composable
-fun AssayTimerScreen(
+private fun AssayTimerScreen(
     timer: Long,
     state: AssayTimerState,
     onClickDone: (argument: Int) -> Unit,
     onClickBack: () -> Unit,
     onEvent: (event: EventAssayTimer) -> Unit,
 ) {
-
     when (state) {
-
         is AssayTimerState.Loaded -> {
             AssayWithTimer(timer = timer,
                 questionAssay = state.question,
@@ -113,9 +111,9 @@ fun AssayTimerScreen(
                 Text(
                     text = "Время закончилось",
                     style = DecideTheme.typography.titleMedium,
-                    color = DecideTheme.colors.inputBlack,
+                    color = DecideTheme.colors.text,
                 )
-
+                Spacer(modifier = Modifier.height(14.dp))
 
                 ButtonMain(
                     modifier = Modifier
@@ -140,13 +138,13 @@ fun AssayTimerScreen(
                 Text(
                     text = "Готовы?",
                     style = DecideTheme.typography.titleMedium,
-                    color = DecideTheme.colors.inputBlack,
+                    color = DecideTheme.colors.text,
                 )
-
+                Spacer(Modifier.height(14.dp))
                 ButtonMain(
                     modifier = Modifier
                         .padding(bottom = 10.dp),
-                    text = "ГОТОВ",
+                    text = "Да",
                     isActive = true
                 ) {
                     onEvent(EventAssayTimer.StartTimer)
@@ -157,7 +155,7 @@ fun AssayTimerScreen(
 }
 
 @Composable
-fun AssayWithTimer(
+private fun AssayWithTimer(
     timer: Long,
     questionAssay: QuestionAssay,
     progress: Float,
@@ -215,7 +213,7 @@ fun AssayWithTimer(
             Text(
                 text = formatTime(timer),
                 style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.inputBlack,
+                color = DecideTheme.colors.text,
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -283,9 +281,9 @@ private fun formatTime(timeSeconds: Long): String {
     return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
-fun PreviewLoadedAssayWithTimer() {
+private fun Preview() {
     val state by remember {
         mutableStateOf(
             AssayTimerState.Loaded(
@@ -321,9 +319,9 @@ fun PreviewLoadedAssayWithTimer() {
     }
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
-fun PreviewTimeOver() {
+private fun PreviewTimeOver() {
     val state by remember {
         mutableStateOf(
             AssayTimerState.TimeOver
@@ -341,9 +339,9 @@ fun PreviewTimeOver() {
     }
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
-fun PreviewIsReady() {
+private fun PreviewIsReady() {
     val state by remember {
         mutableStateOf(
             AssayTimerState.IsReady

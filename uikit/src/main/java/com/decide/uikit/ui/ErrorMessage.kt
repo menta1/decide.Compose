@@ -16,20 +16,19 @@ import com.decide.uikit.theme.DecideTheme
 @Composable
 fun ErrorMessage() {
     Column(
-        //  modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Произошла ошибка!",
             style = DecideTheme.typography.headlineSmall,
-            color = DecideTheme.colors.inputBlack,
+            color = DecideTheme.colors.text,
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Попробуйте позже",
             style = DecideTheme.typography.titleLarge,
-            color = DecideTheme.colors.inputBlack,
+            color = DecideTheme.colors.text,
         )
     }
 

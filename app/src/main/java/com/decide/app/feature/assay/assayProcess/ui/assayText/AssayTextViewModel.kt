@@ -3,12 +3,14 @@ package com.decide.app.feature.assay.assayProcess.ui.assayText
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.decide.app.account.adsManager.AdsManager
 import com.decide.app.activity.ShowAds
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import com.decide.app.feature.assay.assayProcess.domain.useCase.GetAssayUseCase
 import com.decide.app.feature.assay.assayProcess.domain.useCase.SaveResultUseCase
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.assay.assayProcess.ui.Answers
+import com.decide.app.utils.DecideException
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +25,8 @@ import javax.inject.Inject
 class AssayTextViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getAssayUseCase: GetAssayUseCase,
-    private val saveResultUseCase: SaveResultUseCase
+    private val saveResultUseCase: SaveResultUseCase,
+    private val adsManager: AdsManager
 ) : ViewModel() {
 
     private val assayId: Int = checkNotNull(savedStateHandle["idAssay"])
@@ -47,15 +50,21 @@ class AssayTextViewModel @Inject constructor(
     fun onEvent(event: EventAssayText) {
         when (event) {
             is EventAssayText.Ad -> {
-                ads = event.ads
-                ads.loadAds(
-                    onAdLoaded = {
-                        adsLoaded = true
-                    },
-                    onAdFailedToLoad = {
-                        adsLoaded = false
+                viewModelScope.launch {
+                    adsManager.isShowFullScreenAds().collect {
+                        if (it) {
+                            ads = event.ads
+                            ads.loadAds(
+                                onAdLoaded = {
+                                    adsLoaded = true
+                                },
+                                onAdFailedToLoad = {
+                                    adsLoaded = false
+                                }
+                            )
+                        }
                     }
-                )
+                }
             }
 
             is EventAssayText.AssayText -> {
@@ -87,6 +96,7 @@ class AssayTextViewModel @Inject constructor(
                     }
 
                     if (adsLoaded) {
+
                         ads.showAds(
                             onAdShown = {
                                 _state.update {
@@ -119,6 +129,10 @@ class AssayTextViewModel @Inject constructor(
                                 }
                             }
                         )
+                    } else {
+                        _state.update {
+                            AssayTextState.End(idAssay = assayId)
+                        }
                     }
                 } else {
                     currentProgress++
@@ -132,6 +146,10 @@ class AssayTextViewModel @Inject constructor(
                 }
 
             }
+
+            EventAssayText.TryAgain -> {
+                getId(assayId)
+            }
         }
 
     }
@@ -140,9 +158,20 @@ class AssayTextViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             when (val assay = getAssayUseCase.invoke(id)) {
                 is Resource.Error -> {
-                    _state.update {
-                        AssayTextState.Error
+                    when (assay.error) {
+                        is DecideException.NoInternet -> {
+                            _state.update {
+                                AssayTextState.NetworkError
+                            }
+                        }
+
+                        else -> {
+                            _state.update {
+                                AssayTextState.Error
+                            }
+                        }
                     }
+
                 }
 
                 is Resource.Success -> {

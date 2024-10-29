@@ -1,5 +1,6 @@
 package com.decide.app.feature.profile.profileMain.data
 
+import com.decide.app.account.SINGLE
 import com.decide.app.account.domain.useCase.GetAvatarUseCase
 import com.decide.app.account.domain.useCase.IsUserAuthUseCase
 import com.decide.app.account.statisticsClient.TEMPERAMENT_CHOLERIC
@@ -31,6 +32,7 @@ class ProfileRepositoryImpl @Inject constructor(
             val statistic = localStorage.statisticsDao().getAll().map { it.toStatistic() }
             val anxiety = statistic.find { it.id == 1 }
             val temperament = statistic.find { it.id == 2 }
+            val depression = statistic.find { it.id == 3 }
             if (profile != null) {
                 when (val uri = getAvatarUseCase.invoke()) {
                     is Resource.Error -> {
@@ -42,7 +44,11 @@ class ProfileRepositoryImpl @Inject constructor(
                                     email = profile.email,
                                     anxiety = if (anxiety != null) Pair(
                                         anxiety.result.toFloat(),
-                                        (anxiety.globalResults["result"]?.div(anxiety.users))!!.toFloat()
+                                        (anxiety.globalResults[SINGLE]?.div(anxiety.users))!!.toFloat()
+                                    ) else null,
+                                    depression = if (depression != null) Pair(
+                                        depression.result.toFloat(),
+                                        (depression.globalResults[SINGLE]?.div(depression.users))!!.toFloat()
                                     ) else null,
                                     temperament = if (temperament != null) parseTemperament(
                                         temperament.globalResults
@@ -62,7 +68,11 @@ class ProfileRepositoryImpl @Inject constructor(
                                     email = profile.email,
                                     anxiety = if (anxiety != null) Pair(
                                         anxiety.result.toFloat(),
-                                        (anxiety.globalResults["result"]?.div(anxiety.users))!!.toFloat()
+                                        (anxiety.globalResults[SINGLE]?.div(anxiety.users))!!.toFloat()
+                                    ) else null,
+                                    depression = if (depression != null) Pair(
+                                        depression.result.toFloat(),
+                                        (depression.globalResults[SINGLE]?.div(depression.users))!!.toFloat()
                                     ) else null,
                                     temperament = if (temperament != null) parseTemperament(
                                         temperament.globalResults

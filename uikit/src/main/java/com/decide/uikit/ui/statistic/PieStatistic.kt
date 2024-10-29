@@ -28,38 +28,44 @@ import com.decide.uikit.ui.statistic.modal.TemperamentUI
 
 @Composable
 fun PieStatistic(
-    data: TemperamentUI,
+    data: TemperamentUI?,
     radiusOuter: Dp = 60.dp,
     chartBarWidth: Dp = 25.dp,
-    animDuration: Int = 500,
-    delayTime: Long = 0,
     itemsStyle: TextStyle = DecideTheme.typography.labelLarge,
-    itemsColor: Color = DecideTheme.colors.inputBlack,
+    itemsColor: Color = DecideTheme.colors.text,
     itemsPercentStyle: TextStyle = DecideTheme.typography.labelMedium,
     itemsPercentColor: Color = DecideTheme.colors.gray,
 ) {
+    val dataStatistic = data ?: TemperamentUI(
+        choleric = Pair(first = "Холерик", second = 25.0),
+        sanguine = Pair(first = "Сангвиник", second = 25.0),
+        melancholic = Pair(first = "Меланхолик", second = 25.0),
+        phlegmatic = Pair(first = "Флегматик", second = 25.0)
+    )
+
 
     val totalSum =
-        data.choleric.second + data.melancholic.second + data.sanguine.second + data.phlegmatic.second
+        dataStatistic.choleric.second + dataStatistic.melancholic.second +
+                dataStatistic.sanguine.second + dataStatistic.phlegmatic.second
     val floatValue = mutableListOf<Pair<String, Float>>()
 
     floatValue.addAll(
         listOf(
             Pair(
-                first = data.choleric.first,
-                second = data.choleric.second.toFloat()
+                first = dataStatistic.choleric.first,
+                second = dataStatistic.choleric.second.toFloat()
             ),
             Pair(
-                first = data.melancholic.first,
-                second = data.melancholic.second.toFloat()
+                first = dataStatistic.melancholic.first,
+                second = dataStatistic.melancholic.second.toFloat()
             ),
             Pair(
-                first = data.sanguine.first,
-                second = data.sanguine.second.toFloat()
+                first = dataStatistic.sanguine.first,
+                second = dataStatistic.sanguine.second.toFloat()
             ),
             Pair(
-                first = data.phlegmatic.first,
-                second = data.phlegmatic.second.toFloat()
+                first = dataStatistic.phlegmatic.first,
+                second = dataStatistic.phlegmatic.second.toFloat()
             ),
         )
     )
@@ -237,7 +243,7 @@ fun PreviewDetailsPieChartItem() {
             data = Pair("Холерик", 30),
             color = DecideTheme.colors.accentPink,
             itemsStyle = DecideTheme.typography.labelLarge,
-            itemsColor = DecideTheme.colors.inputBlack,
+            itemsColor = DecideTheme.colors.text,
             itemsPercentStyle = DecideTheme.typography.labelMedium,
             itemsPercentColor = DecideTheme.colors.gray,
         )

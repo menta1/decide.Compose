@@ -44,7 +44,7 @@ fun SearchBarDecide(
     value: String,
     onValueChange: (String) -> Unit,
     hint: String = "Поиск...",
-    backgroundColor: Color = DecideTheme.colors.inputWhite,
+    backgroundColor: Color = DecideTheme.colors.background,
 ) {
     val focusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
@@ -71,7 +71,7 @@ fun SearchBarDecide(
             Icon(
                 painter = painterResource(id = R.drawable.ic_search),
                 contentDescription = "Search",
-                tint = DecideTheme.colors.inputBlack
+                tint = DecideTheme.colors.text
             )
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -93,9 +93,9 @@ fun SearchBarDecide(
                     innerTextField()
                 },
                 keyboardActions = KeyboardActions(KeyboardActions().onSearch),
-                cursorBrush = SolidColor(DecideTheme.colors.inputBlack),
+                cursorBrush = SolidColor(DecideTheme.colors.text),
                 textStyle = DecideTheme.typography.titleMedium.copy(
-                    color = DecideTheme.colors.inputBlack
+                    color = DecideTheme.colors.text
                 )
             )
         }
@@ -104,7 +104,6 @@ fun SearchBarDecide(
             modifier = Modifier
                 .size(40.dp)
                 .background(color = Color.Transparent, shape = CircleShape)
-
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null
@@ -120,7 +119,7 @@ fun SearchBarDecide(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_remove_text),
                         contentDescription = "Search",
-                        tint = DecideTheme.colors.inputBlack
+                        tint = DecideTheme.colors.text
                     )
                 }
             }
@@ -138,7 +137,7 @@ fun PreviewSearchBar() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(DecideTheme.colors.inputBlack)
+                .background(DecideTheme.colors.background)
         ) {
             Spacer(modifier = Modifier.height(80.dp))
             SearchBarDecide(

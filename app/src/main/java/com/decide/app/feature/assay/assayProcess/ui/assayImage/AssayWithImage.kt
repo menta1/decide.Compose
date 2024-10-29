@@ -61,7 +61,7 @@ fun AssayWithImage() {
             Text(
                 text = "Назад",
                 style = DecideTheme.typography.titleLarge,
-                color = DecideTheme.colors.inputBlack,
+                color = DecideTheme.colors.text,
             )
         }
 
@@ -83,7 +83,7 @@ fun AssayWithImage() {
             Text(
                 text = "03:23",
                 style = DecideTheme.typography.titleLarge,
-                color = DecideTheme.colors.inputBlack,
+                color = DecideTheme.colors.text,
             )
 
             Spacer(modifier = Modifier.height(12.dp))

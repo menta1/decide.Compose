@@ -16,12 +16,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.feature.category.mainCategory.modals.Category
 import com.decide.app.utils.setDrawable
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
@@ -43,7 +43,7 @@ fun CategoryScreen(
 }
 
 @Composable
-fun CategoryScreen(
+private fun CategoryScreen(
     modifier: Modifier = Modifier,
     state: CategoryState,
     onClickSpecificCategory: (id: Int) -> Unit
@@ -59,28 +59,22 @@ fun CategoryScreen(
         Text(
             text = "Категории",
             style = DecideTheme.typography.titleLarge,
-            color = DecideTheme.colors.inputBlack
+            color = DecideTheme.colors.text
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (state) {
                 is CategoryState.Loaded -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                     ) {
-                        items(
-                            items = state.categories,
+                        items(items = state.categories,
                             key = { item -> item.id }) { item: Category ->
-                            /**
-                             * Нужно проверить содержит ли категория хотя бы один тест
-                             * в противном случае не показывать
-                             */
-                            CardCategory(
-                                imageId = setDrawable(item.id),
+
+                            CardCategory(imageId = setDrawable(item.id),
                                 textCategory = item.name,
                                 onClickAssay = {
                                     onClickSpecificCategory(
@@ -120,9 +114,9 @@ fun CategoryScreen(
     }
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
-fun PreviewCategoryScreen() {
+private fun Preview() {
     val state: CategoryState by remember {
         mutableStateOf(
             CategoryState.Loaded(
@@ -205,13 +199,6 @@ fun PreviewCategoryScreen() {
                         description = "",
                         countAssays = -1
                     ), Category(
-                        id = 3,
-                        name = "Темперамент",
-                        nameEng = "Temperament",
-                        colorBackground = "",
-                        description = "",
-                        countAssays = -1
-                    ), Category(
                         id = 12,
                         name = "Темперамент",
                         nameEng = "Temperament",
@@ -225,21 +212,5 @@ fun PreviewCategoryScreen() {
     }
     DecideTheme {
         CategoryScreen(onClickSpecificCategory = {}, state = state)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewLoadingCategoryScreen() {
-    DecideTheme {
-        CategoryScreen(onClickSpecificCategory = {}, state = CategoryState.Initial)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewErrorCategoryScreen() {
-    DecideTheme {
-        CategoryScreen(onClickSpecificCategory = {}, state = CategoryState.Error(""))
     }
 }

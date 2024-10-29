@@ -24,4 +24,7 @@ interface StatisticDao {
 
     @Update
     suspend fun update(statisticEntity: StatisticEntity)
+
+    @Query("DELETE FROM statistics")
+    suspend fun deleteAll()
 }

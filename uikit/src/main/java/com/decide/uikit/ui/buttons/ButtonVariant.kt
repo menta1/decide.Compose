@@ -31,9 +31,9 @@ import com.decide.uikit.theme.DecideTheme
 @Composable
 fun ButtonVariant(
     modifier: Modifier = Modifier,
-    background: Color = DecideTheme.colors.inputWhite,
+    background: Color = DecideTheme.colors.container,
     text: String,
-    textColor: Color = DecideTheme.colors.inputBlack,
+    textColor: Color = DecideTheme.colors.text,
     textStyle: TextStyle = DecideTheme.typography.bodyMedium,
     selected: Boolean = false,
     iconSelected: Painter = painterResource(id = R.drawable.ic_checkbox_selected),
@@ -44,7 +44,6 @@ fun ButtonVariant(
 ) {
     Row(
         modifier = modifier
-//            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(background)
             .clickable { onClick() },

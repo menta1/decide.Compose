@@ -37,29 +37,15 @@ fun LineStatistic(
     all: Float = 0f,
     delayTime: Long = 0,
     itemsStyle: TextStyle = DecideTheme.typography.labelLarge,
-    itemsColor: Color = DecideTheme.colors.inputBlack,
+    itemsColor: Color = DecideTheme.colors.text,
     itemsPercentStyle: TextStyle = DecideTheme.typography.labelMedium,
     itemsPercentColor: Color = DecideTheme.colors.gray,
     isHasResult: Boolean = false
 ) {
 
-//    var animationPlayed by remember { mutableStateOf(false) }
-//
-//    LaunchedEffect(key1 = true) {
-//        delay(delayTime)
-//        animationPlayed = true
-//    }
-
-//    AnimatedVisibility(visible = animationPlayed) {
     Column(
         modifier = modifier
-            .height(70.dp)
-//                .animateEnterExit(
-//                    enter = slideInHorizontally(
-//                        initialOffsetX = { it }
-//                    )
-//                )
-        ,
+            .height(70.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -195,8 +181,6 @@ fun LineStatistic(
             }
         }
     }
-//    }
-
 }
 
 @Preview(showBackground = true)
@@ -210,7 +194,6 @@ fun PreviewLine() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Preview with sample data
         LineStatistic(
         )
 

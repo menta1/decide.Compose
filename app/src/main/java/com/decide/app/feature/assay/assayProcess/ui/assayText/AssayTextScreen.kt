@@ -23,19 +23,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.activity.ShowAds
 import com.decide.app.feature.assay.assayMain.modals.AnswerAssay
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 import com.decide.uikit.ui.buttons.ButtonMain
 import com.decide.uikit.ui.buttons.ButtonVariant
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
 import com.decide.uikit.ui.card.CardQuestion
+import com.decide.uikit.ui.defaultScreens.ErrorScreen
+import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
 
 @Composable
 fun AssayTextScreen(
@@ -59,15 +61,13 @@ fun AssayTextScreen(
 }
 
 @Composable
-fun AssayTextScreen(
+private fun AssayTextScreen(
     state: AssayTextState,
     onClickDone: (argument: Int) -> Unit,
     onClickBack: () -> Unit,
     onEvent: (event: EventAssayText) -> Unit,
 ) {
-
     when (state) {
-
         is AssayTextState.Loaded -> {
             AssayWithText(state = state,
                 questionAssay = state.question,
@@ -92,12 +92,21 @@ fun AssayTextScreen(
         }
 
         AssayTextState.Error -> {
+            ErrorScreen {
+                onClickBack()
+            }
+        }
+
+        AssayTextState.NetworkError -> {
+            NetworkErrorScreen {
+                onEvent(EventAssayText.TryAgain)
+            }
         }
     }
 }
 
 @Composable
-fun AssayWithText(
+private fun AssayWithText(
     state: AssayTextState,
     questionAssay: QuestionAssay,
     progress: Float,
@@ -145,7 +154,6 @@ fun AssayWithText(
         ) {
 
             LinearProgressIndicator(
-//                modifier = Modifier.clip(RoundedCornerShape(40.dp)),
                 progress = { progress },
                 color = DecideTheme.colors.accentYellow,
                 gapSize = 0.dp,
@@ -211,9 +219,9 @@ fun AssayWithText(
     }
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
-fun PreviewAssayWithText() {
+private fun Preview() {
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             AssayWithText(

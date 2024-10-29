@@ -8,8 +8,8 @@ sealed class DecideDatabaseException(
 ) : DecideException.FirestoneException(message, messageLog) {
 
     class NotFoundDocument(
-        message: String,
-        messageLog: String
+        message: String = "NotFoundDocument",
+        messageLog: String = "NotFoundDocument"
     ) : DecideDatabaseException(message, messageLog)
 
     class OutOfRange(
@@ -18,7 +18,7 @@ sealed class DecideDatabaseException(
     ) : DecideDatabaseException(message, messageLog)
 
     class UnknownError(
-        message: String,
-        messageLog: String
+        message: String = "UnknownError",
+        messageLog: String = "UnknownError"
     ) : DecideDatabaseException(message, messageLog)
 }

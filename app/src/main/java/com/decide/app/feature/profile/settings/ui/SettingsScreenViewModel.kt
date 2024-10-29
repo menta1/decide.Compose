@@ -21,16 +21,16 @@ class SettingsScreenViewModel @Inject constructor(
     private val repository: SettingsRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-    private val _state = MutableStateFlow(SettingsScreenState.Initial)
+    private val _state = MutableStateFlow(SettingsScreenState())
     val state: StateFlow<SettingsScreenState> = _state.asStateFlow()
 
     fun onEvent(event: SettingsScreenEvent) {
         when (event) {
             SettingsScreenEvent.LogOut -> {
-                _state.update { SettingsScreenState.Loading }
+                _state.update { it.copy(uiState = SettingState.Loading) }
                 viewModelScope.launch(Dispatchers.IO) {
                     repository.logOut {
-                        _state.update { SettingsScreenState.LogOut }
+                        _state.update { it.copy(uiState = SettingState.LogOut) }
                     }
                 }
             }
@@ -60,6 +60,7 @@ class SettingsScreenViewModel @Inject constructor(
                     e.printStackTrace()
                 }
             }
+
         }
     }
 

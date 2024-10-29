@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,16 +29,20 @@ import com.decide.uikit.theme.DecideTheme
 @Composable
 fun ItemSettings(
     modifier: Modifier = Modifier,
-    background: Color = DecideTheme.colors.inputWhite,
+    background: Color = DecideTheme.colors.container,
     text: String,
-    textColor: Color = DecideTheme.colors.inputBlack,
+    switchable: Boolean = false,
+    checked: Boolean = false,
+    onCheckedChange: (Boolean) -> Unit = {},
+    textColor: Color = DecideTheme.colors.text,
     textStyle: TextStyle = DecideTheme.typography.bodyMedium,
     iconItem: Painter = painterResource(id = R.drawable.ic_bookmark_unselected),
-    tintItem: Color = DecideTheme.colors.gray,
+    tintItem: Color = DecideTheme.colors.mainColor,
     iconArrow: Painter = painterResource(id = R.drawable.ic_arrow_right),
     tintArrow: Color = DecideTheme.colors.gray,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -48,7 +54,7 @@ fun ItemSettings(
     ) {
         Row(
             modifier = modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = 12.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(background),
             verticalAlignment = Alignment.CenterVertically
@@ -69,12 +75,30 @@ fun ItemSettings(
                 style = textStyle
             )
         }
-        Icon(
-            modifier = Modifier.padding(end = 4.dp),
-            painter = iconArrow,
-            contentDescription = null,
-            tint = tintArrow
-        )
+        if (switchable) {
+            Switch(
+                modifier = Modifier.padding(end = 4.dp),
+                checked = checked,
+                onCheckedChange = {
+                    onCheckedChange(it)
+                },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = DecideTheme.colors.accentGreen,
+                    checkedTrackColor = DecideTheme.colors.accentYellow,
+                    checkedBorderColor = DecideTheme.colors.accentYellow,
+                    uncheckedBorderColor = DecideTheme.colors.gray,
+                    uncheckedThumbColor = DecideTheme.colors.gray,
+                    uncheckedTrackColor = DecideTheme.colors.background,
+                )
+            )
+        } else {
+            Icon(
+                modifier = Modifier.padding(end = 4.dp),
+                painter = iconArrow,
+                contentDescription = null,
+                tint = tintArrow
+            )
+        }
 
     }
 
@@ -83,14 +107,18 @@ fun ItemSettings(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewItemSettings() {
-    Column(
-        modifier = Modifier
-            .background(DecideTheme.colors.inputBlack)
-            .fillMaxSize()
-            .padding(horizontal = 39.dp), verticalArrangement = Arrangement.Center
-    ) {
-        ItemSettings(text = "Редактировать профиль") {
+    DecideTheme {
+        Column(
+            modifier = Modifier
+                .background(DecideTheme.colors.accentGreen)
+                .fillMaxSize()
+                .padding(horizontal = 39.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            ItemSettings(text = "Редактировать профиль") {
 
+            }
         }
     }
+
 }

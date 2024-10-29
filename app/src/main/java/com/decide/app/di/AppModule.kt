@@ -10,12 +10,9 @@ import androidx.room.Room
 import com.decide.app.account.domain.kladr.KladrApi
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.local.dao.AssayDao
+import com.decide.app.database.local.dao.CategoryDao
 import com.decide.app.database.local.dao.ProfileDao
 import com.decide.app.utils.NetworkChecker
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -40,7 +37,7 @@ object AppModule {
     @Singleton
     fun provideRetrofit(json: Json): KladrApi {
         return Retrofit.Builder()
-            .baseUrl("https://kladr-api.ru")///api.php
+            .baseUrl("https://kladr-api.ru")
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(KladrApi::class.java)
@@ -56,18 +53,6 @@ object AppModule {
     @Singleton
     fun provideJson(): Json = Json { ignoreUnknownKeys = true }
 
-
-    @Provides
-    @Singleton
-    fun provideFirebase() = Firebase.firestore
-
-    @Provides
-    @Singleton
-    fun provideFirebaseAuth() = Firebase.auth
-
-    @Provides
-    @Singleton
-    fun provideFirebaseStorage() = Firebase.storage
 
     @Provides
     fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
@@ -89,6 +74,12 @@ object AppModule {
     @Singleton
     fun provideAssayDao(database: AppDatabase): AssayDao {
         return database.assayDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCategoryDao(database: AppDatabase): CategoryDao {
+        return database.categoryDao()
     }
 
     @Provides

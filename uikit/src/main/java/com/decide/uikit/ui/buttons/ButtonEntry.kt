@@ -27,7 +27,7 @@ fun ButtonEntry(
     modifier: Modifier = Modifier,
     background: Color = DecideTheme.colors.buttonPrimary,
     text: String,
-    textColor: Color = DecideTheme.colors.inputWhite,
+    textColor: Color = DecideTheme.colors.white,
     textStyle: TextStyle = DecideTheme.typography.titleLarge,
     onClick: () -> Unit
 ) {
@@ -42,9 +42,10 @@ fun ButtonEntry(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = text, color = textColor, style = textStyle
+            text = text,
+            color = textColor,
+            style = textStyle
         )
-//        ButtonCircle { onClick() }
     }
 }
 

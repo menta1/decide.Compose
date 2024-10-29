@@ -5,7 +5,9 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +24,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,13 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.uikit.R
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonMain
@@ -66,7 +69,7 @@ fun AssayWithResultScreen(
 
 
 @Composable
-fun AssayWithResultScreen(
+private fun AssayWithResultScreen(
     onClickExit: () -> Unit,
     state: AssayWithResultState,
     onEvent: (Int) -> Unit
@@ -91,7 +94,7 @@ fun AssayWithResultScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(DecideTheme.colors.inputWhite)
+                        .background(DecideTheme.colors.background)
                 ) {
                     Text(
                         modifier = Modifier
@@ -99,7 +102,7 @@ fun AssayWithResultScreen(
                             .padding(top = 8.dp),
                         text = "Результат",
                         style = DecideTheme.typography.titleLarge,
-                        color = DecideTheme.colors.inputBlack
+                        color = DecideTheme.colors.text
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                 }
@@ -118,8 +121,8 @@ fun AssayWithResultScreen(
                                     .fillMaxWidth()
                                     .padding(horizontal = 14.dp),
                                 colors = CardDefaults.elevatedCardColors().copy(
-                                    containerColor = DecideTheme.colors.inputWhite,
-                                    contentColor = DecideTheme.colors.inputBlack
+                                    containerColor = DecideTheme.colors.container,
+                                    contentColor = DecideTheme.colors.text
                                 ),
                             ) {
                                 Column(
@@ -130,13 +133,13 @@ fun AssayWithResultScreen(
                                     Text(
                                         text = value,
                                         style = DecideTheme.typography.titleMedium,
-                                        color = DecideTheme.colors.inputBlack
+                                        color = DecideTheme.colors.text
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
                                         text = state.result.results[index],
                                         style = DecideTheme.typography.bodyMedium,
-                                        color = DecideTheme.colors.inputBlack
+                                        color = DecideTheme.colors.text
                                     )
                                 }
 
@@ -152,23 +155,23 @@ fun AssayWithResultScreen(
                         text = "Выход",
                     ) {
 
-                        if (!showDialog) showDialog = true
-
-                        if (showedDialog) onClickExit()
-
+//                        if (!showDialog) showDialog = true
+//
+//                        if (showedDialog)
+                        onClickExit()
                     }
 
-                    if (showDialog && !showedDialog) {
-                        DialogRating(
-                            onDismissRequest = {
-                                showedDialog = true
-                            },
-                            onClick = {
-                                showedDialog = true
-                                onEvent(it)
-                            }
-                        )
-                    }
+//                    if (showDialog && !showedDialog) {
+//                        DialogRating(
+//                            onDismissRequest = {
+//                                showedDialog = true
+//                            },
+//                            onClick = {
+//                                showedDialog = true
+//                                onEvent(it)
+//                            }
+//                        )
+//                    }
 
                 }
 
@@ -200,7 +203,7 @@ fun AssayWithResultScreen(
 }
 
 @Composable
-fun DialogRating(
+private fun DialogRating(
     onDismissRequest: () -> Unit,
     onClick: (star: Int) -> Unit
 ) {
@@ -219,7 +222,11 @@ fun DialogRating(
     }
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
-        Card {
+        Card(
+            colors = CardDefaults.cardColors().copy(
+                containerColor = DecideTheme.colors.background
+            )
+        ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -227,7 +234,7 @@ fun DialogRating(
                     .padding(horizontal = 2.dp),
                 text = "Оцените тест",
                 style = DecideTheme.typography.titleLarge,
-                color = DecideTheme.colors.inputBlack,
+                color = DecideTheme.colors.text,
                 textAlign = TextAlign.Center
             )
             Row(
@@ -237,7 +244,7 @@ fun DialogRating(
                     IconButton(onClick = {
                         countSelected = i
                         starSelected = true
-//                        onClick(i)
+                        onClick(i)
                     }) {
                         Icon(
                             modifier = Modifier
@@ -256,42 +263,37 @@ fun DialogRating(
             }
             Spacer(modifier = Modifier.height(34.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                Text(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .padding(bottom = 8.dp)
-                        .clickable { onDismissRequest() },
-                    text = "Пропустить",
-                    style = DecideTheme.typography.titleMedium,
-                    color = DecideTheme.colors.inputBlack
-                )
+                Box(
+                    modifier = Modifier.clickable(
+                        indication = ripple(
+                            radius = 30.dp,
+                            color = DecideTheme.colors.text
+                        ), interactionSource = remember { MutableInteractionSource() }, onClick = {
+                            onDismissRequest()
+                        })
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .padding(bottom = 8.dp),
+                        text = "Не хочу",
+                        style = DecideTheme.typography.titleMedium,
+                        color = DecideTheme.colors.text
+                    )
+                }
+
             }
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@MainPreview
 @Composable
-fun PreviewDialogRating() {
-    DecideTheme {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            DialogRating({}, {})
-        }
-    }
-}
-
-/**
- * AssayWithResultState.Loaded
- */
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewAssayWithResultScreenLoaded() {
+private fun Preview() {
     val state: AssayWithResultState by remember {
         mutableStateOf(
             AssayWithResultState.Loaded(
@@ -311,34 +313,16 @@ fun PreviewAssayWithResultScreenLoaded() {
     }
 }
 
-/**
- * AssayWithResultState.Loading
- */
-@Preview(showBackground = true, showSystemUi = true)
+@MainPreview
 @Composable
-fun PreviewAssayWithResultScreenLoading() {
+fun PreviewDialogRating() {
     DecideTheme {
-        Column {
-            AssayWithResultScreen(
-                state = AssayWithResultState.Loading,
-                onClickExit = {},
-                onEvent = {})
-        }
-    }
-}
-
-/**
- * AssayWithResultState.Loading
- */
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewAssayWithResultScreenError() {
-    DecideTheme {
-        Column {
-            AssayWithResultScreen(
-                state = AssayWithResultState.Error,
-                onClickExit = {},
-                onEvent = {})
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            DialogRating({}, {})
         }
     }
 }

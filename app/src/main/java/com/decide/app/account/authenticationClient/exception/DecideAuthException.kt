@@ -23,8 +23,8 @@ sealed class DecideAuthException(
     ) : DecideAuthException(message, messageLog)
 
     class NoInternet(
-        message: String,
-        messageLog: String
+        message: String = "Отсутствует интернет",
+        messageLog: String = "Отсутствует интернет"
     ) : DecideAuthException(message, messageLog)
 
     class UnknownError(

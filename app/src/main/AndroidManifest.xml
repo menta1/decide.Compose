@@ -25,9 +25,10 @@
         android:theme="@style/Theme.Decide"
         tools:targetApi="31">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Decide">
+            android:theme="@style/Theme.Decide"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

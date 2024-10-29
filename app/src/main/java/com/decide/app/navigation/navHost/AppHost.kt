@@ -14,6 +14,7 @@ import com.decide.app.activity.ShowAds
 import com.decide.app.feature.assay.assayMain.ui.AssayMainScreen
 import com.decide.app.feature.category.mainCategory.ui.CategoryScreen
 import com.decide.app.feature.category.specificCategory.ui.CategoriesSpecificScreen
+import com.decide.app.feature.launchingScreens.LaunchingScreens
 import com.decide.app.feature.passed.ui.passedMain.PassedScreen
 import com.decide.app.feature.passed.ui.showPassedResult.ShowPassedResultScreen
 import com.decide.app.feature.profile.profileMain.ui.ProfileScreen
@@ -22,6 +23,7 @@ import com.decide.app.navigation.AssayRouteBranch
 import com.decide.app.navigation.Authentication
 import com.decide.app.navigation.CategoriesSpecific
 import com.decide.app.navigation.Category
+import com.decide.app.navigation.LaunchingScreensRoute
 import com.decide.app.navigation.Passed
 import com.decide.app.navigation.Profile
 import com.decide.app.navigation.Registration
@@ -43,6 +45,17 @@ fun AppHost(
     NavHost(
         navController = navController, startDestination = startDestination, modifier = modifier
     ) {
+
+        composable(route = LaunchingScreensRoute.route) {
+            LaunchingScreens {
+                navController.navigate(route = Registration.route) {
+                    popUpTo(route = Registration.route) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
+
         composable(route = Assay.route,
             enterTransition = {
                 slideIntoContainer(
@@ -212,10 +225,7 @@ fun AppHost(
                             inclusive = true
                         }
                     }
-                },
-                onClickRegistration = {
-                    navController.navigate(route = Registration.route)
-                },
+                }
             )
         }
         addNestedAssayGraph(

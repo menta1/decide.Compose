@@ -47,21 +47,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import com.decide.app.feature.defaultScreens.ErrorScreen
-import com.decide.app.feature.defaultScreens.LoadingScreen
-import com.decide.app.feature.defaultScreens.NetworkErrorScreen
 import com.decide.uikit.R
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
-import com.decide.uikit.ui.EditTextField
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 import com.decide.uikit.ui.buttons.ButtonEntry
 import com.decide.uikit.ui.buttons.ButtonVariant
+import com.decide.uikit.ui.defaultScreens.ErrorScreen
+import com.decide.uikit.ui.defaultScreens.LoadingScreen
+import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
 import com.decide.uikit.ui.dialog.SuccessDialog
+import com.decide.uikit.ui.text.EditTextField
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -83,7 +83,7 @@ fun EditProfileScreen(
 }
 
 @Composable
-fun EditProfileScreen(
+private fun EditProfileScreen(
     modifier: Modifier,
     state: EditProfileState,
     onEvent: (event: EditProfileEvent) -> Unit,
@@ -107,7 +107,6 @@ fun EditProfileScreen(
 
     when (state.uiState) {
         UIState.DATA_ENTRY -> {
-
 
             Column(
                 modifier = modifier
@@ -171,7 +170,7 @@ fun EditProfileScreen(
                             text = "Чем больше информации Вы укажите,\n тем точнее будут результаты",
                             style = DecideTheme.typography.labelSmall,
                             textAlign = TextAlign.Center,
-                            color = DecideTheme.colors.inputBlack
+                            color = DecideTheme.colors.gray
                         )
 
                         EditTextField(value = state.firstName,
@@ -200,7 +199,8 @@ fun EditProfileScreen(
                             label = {
                                 Text(
                                     text = "День рождения",
-                                    style = DecideTheme.typography.titleSmall
+                                    style = DecideTheme.typography.titleSmall,
+                                    color = DecideTheme.colors.text,
                                 )
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -213,10 +213,12 @@ fun EditProfileScreen(
                                 }
                             },
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = DecideTheme.colors.inputBlack,
-                                focusedLabelColor = DecideTheme.colors.inputBlack,
+                                focusedBorderColor = DecideTheme.colors.text,
+                                focusedLabelColor = DecideTheme.colors.text,
                                 unfocusedLabelColor = DecideTheme.colors.gray,
                                 focusedPlaceholderColor = DecideTheme.colors.gray,
+                                focusedTextColor = DecideTheme.colors.text,
+                                unfocusedTextColor = DecideTheme.colors.text
                             )
                         )
 
@@ -235,13 +237,14 @@ fun EditProfileScreen(
                             })
 
                         if (showDatePicker) {
-                            DatePickerModal(onDateSelected = {
-                                onEvent(
-                                    EditProfileEvent.SetDateOFBirth(
-                                        it ?: -1
+                            DatePickerModal(
+                                onDateSelected = {
+                                    onEvent(
+                                        EditProfileEvent.SetDateOFBirth(
+                                            it ?: -1
+                                        )
                                     )
-                                )
-                            }, onDismiss = { showDatePicker = !showDatePicker })
+                                }, onDismiss = { showDatePicker = !showDatePicker })
                         }
 
                     }
@@ -249,7 +252,8 @@ fun EditProfileScreen(
                 }
                 ButtonEntry(
                     modifier = Modifier
-                        .padding(bottom = 12.dp),
+                        .padding(bottom = 12.dp)
+                        .padding(horizontal = 14.dp),
                     text = "Сохранить"
                 ) {
                     onEvent(EditProfileEvent.Continue)
@@ -292,35 +296,14 @@ fun EditProfileScreen(
                 onEvent = onEvent
             )
         }
-
-    }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewFillProfileScreen() {
-    DecideTheme {
-        Column(modifier = Modifier.fillMaxSize()) {
-            EditProfileScreen(
-                modifier = Modifier,
-                state = EditProfileState(
-                    city = "",
-                    cities = listOf("Vjcasd", "Vjcasd", "Vjcasd", "Vjcasd", "Vjcasd")
-                ),
-                onEvent = {},
-                onClickBack = {}
-            )
-        }
     }
 }
 
 @Composable
-fun ChooseGander(
+private fun ChooseGander(
     state: EditProfileState,
     onEvent: (event: EditProfileEvent) -> Unit,
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -332,7 +315,7 @@ fun ChooseGander(
             text = "Укажите пол",
             style = DecideTheme.typography.titleMedium,
             textAlign = TextAlign.Start,
-            color = DecideTheme.colors.inputBlack
+            color = DecideTheme.colors.text
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -359,7 +342,7 @@ fun ChooseGander(
 
 }
 
-fun convertMillisToDate(millis: Long?): String {
+private fun convertMillisToDate(millis: Long?): String {
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     return if (millis != null) {
         formatter.format(Date(millis))
@@ -370,7 +353,7 @@ fun convertMillisToDate(millis: Long?): String {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerModal(
+private fun DatePickerModal(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -384,7 +367,7 @@ fun DatePickerModal(
             Text(
                 text = "Выбрать",
                 style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.inputBlack
+                color = DecideTheme.colors.text
             )
         }
     }, dismissButton = {
@@ -392,26 +375,61 @@ fun DatePickerModal(
             Text(
                 text = "Отмена",
                 style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.inputBlack
+                color = DecideTheme.colors.text
             )
         }
     },
         colors = DatePickerDefaults.colors().copy(
-            containerColor = DecideTheme.colors.background,
-
-            )
+            containerColor = DecideTheme.colors.background
+        )
     ) {
         DatePicker(
             state = datePickerState,
             colors = DatePickerDefaults.colors().copy(
                 containerColor = DecideTheme.colors.background,
-                selectedDayContentColor = DecideTheme.colors.inputWhite,
+                selectedDayContentColor = DecideTheme.colors.text,
                 selectedDayContainerColor = DecideTheme.colors.accentGreen,
                 todayDateBorderColor = DecideTheme.colors.accentYellow,
-                todayContentColor = DecideTheme.colors.inputBlack
+                todayContentColor = DecideTheme.colors.text,
+                titleContentColor = DecideTheme.colors.text,
+                headlineContentColor = DecideTheme.colors.text,
+                weekdayContentColor = DecideTheme.colors.text,
+                navigationContentColor = DecideTheme.colors.text,
+                yearContentColor = DecideTheme.colors.text,
+                selectedYearContainerColor = DecideTheme.colors.unFocused,
+                dayContentColor = DecideTheme.colors.unFocused,
             )
         )
     }
 }
 
+@MainPreview
+@Composable
+private fun Preview() {
+    DecideTheme {
+        Column(modifier = Modifier.fillMaxSize()) {
+            EditProfileScreen(
+                modifier = Modifier,
+                state = EditProfileState(
+                    city = "",
+                    cities = listOf("Vjcasd", "Vjcasd", "Vjcasd", "Vjcasd", "Vjcasd")
+                ),
+                onEvent = {},
+                onClickBack = {}
+            )
+        }
+    }
+}
+
+@MainPreview
+@Composable
+private fun PreviewDatePickerModal() {
+    DecideTheme {
+        Column(modifier = Modifier.fillMaxSize()) {
+            DatePickerModal(
+                {}, {}
+            )
+        }
+    }
+}
 

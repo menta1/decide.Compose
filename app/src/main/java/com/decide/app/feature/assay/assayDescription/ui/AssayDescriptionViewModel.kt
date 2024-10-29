@@ -3,7 +3,7 @@ package com.decide.app.feature.assay.assayDescription.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepository
+import com.decide.app.feature.assay.assayDescription.data.AssayDescriptionRepository
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

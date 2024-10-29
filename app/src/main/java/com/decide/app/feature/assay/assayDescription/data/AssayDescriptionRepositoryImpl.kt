@@ -1,4 +1,4 @@
-package com.decide.app.feature.assay.assayDescription.ui.data
+package com.decide.app.feature.assay.assayDescription.data
 
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.local.entities.assay.toAssay

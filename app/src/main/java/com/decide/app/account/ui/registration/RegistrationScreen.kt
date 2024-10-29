@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,24 +28,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.decide.app.R
-import com.decide.app.feature.defaultScreens.ErrorScreen
-import com.decide.app.feature.defaultScreens.LoadingScreen
-import com.decide.app.feature.defaultScreens.NetworkErrorScreen
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.buttons.ButtonEntry
+import com.decide.uikit.ui.defaultScreens.ErrorScreen
+import com.decide.uikit.ui.defaultScreens.LoadingScreen
+import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
+import com.decide.uikit.ui.text.EditTextField
 
 @Composable
 fun RegistrationScreen(
     onClickFillProfile: () -> Unit,
     onClickBack: () -> Unit,
     onClickLogin: () -> Unit,
-    onClickMainPage: () -> Unit
+    onClickMainPage: () -> Unit,
+    skip: () -> Unit
 ) {
 
     val viewModel: RegistrationViewModel = hiltViewModel()
@@ -59,7 +58,8 @@ fun RegistrationScreen(
         state = state,
         onEvent = viewModel::updateData,
         onClickFillProfile = onClickFillProfile,
-        onClickMainPage = onClickMainPage
+        onClickMainPage = onClickMainPage,
+        skip = skip
     )
 
     BackHandler {
@@ -67,6 +67,7 @@ fun RegistrationScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(
     modifier: Modifier = Modifier,
@@ -74,7 +75,8 @@ fun RegistrationScreen(
     state: RegistrationState,
     onEvent: (event: RegistrationEvent) -> Unit,
     onClickFillProfile: () -> Unit,
-    onClickMainPage: () -> Unit
+    onClickMainPage: () -> Unit,
+    skip: () -> Unit
 ) {
 
     var passwordVisibility by rememberSaveable {
@@ -113,14 +115,8 @@ fun RegistrationScreen(
                     .padding(top = 12.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    modifier = Modifier.padding(bottom = 24.dp),
-                    text = "decide",
-                    style = DecideTheme.typography.displayLarge,
-                    color = DecideTheme.colors.inputBlack
-                )
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -128,9 +124,16 @@ fun RegistrationScreen(
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
+                        modifier = Modifier.padding(bottom = 24.dp),
+                        text = "decide",
+                        style = DecideTheme.typography.displayLarge,
+                        color = DecideTheme.colors.text
+                    )
+
+                    Text(
                         text = "Давай начнем",
                         style = DecideTheme.typography.displaySmall,
-                        color = DecideTheme.colors.inputBlack
+                        color = DecideTheme.colors.text
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -140,136 +143,97 @@ fun RegistrationScreen(
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        value = state.email,
+                    EditTextField(value = state.email,
                         onValueChange = { onEvent(RegistrationEvent.SetEmail(it)) },
-                        maxLines = 1,
+                        labelText = "email",
                         isError = state.isErrorEmail.isError,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        supportingText = {
-                            Text(
-                                text = state.isErrorEmail.nameError,
-                                style = DecideTheme.typography.titleSmall,
-                                color = DecideTheme.colors.error
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = "email", style = DecideTheme.typography.titleSmall
-                            )
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = DecideTheme.colors.inputBlack,
-                            focusedLabelColor = DecideTheme.colors.inputBlack,
-                            unfocusedLabelColor = DecideTheme.colors.gray
-                        )
-                    )
-                    OutlinedTextField(modifier = Modifier
-                        .fillMaxWidth(),
-                        value = state.password,
+                        supportingText = state.isErrorEmail.nameError,
+                        isFocus = {})
+
+                    EditTextField(value = state.password,
                         onValueChange = { onEvent(RegistrationEvent.SetPassword(it)) },
-                        maxLines = 1,
-                        label = {
-                            Text(
-                                text = "Пароль", style = DecideTheme.typography.titleSmall
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        labelText = "Пароль",
                         trailingIcon = {
                             if (state.password.isNotBlank()) IconButton(onClick = {
                                 passwordVisibility = !passwordVisibility
                             }) {
-                                Icon(painter = icon, contentDescription = "Visibility")
+                                Icon(
+                                    painter = icon,
+                                    contentDescription = "Visibility",
+                                    tint = DecideTheme.colors.gray
+                                )
                             }
                         },
+                        supportingText = state.isErrorPassword.nameError,
                         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = DecideTheme.colors.inputBlack,
-                            focusedLabelColor = DecideTheme.colors.inputBlack,
-                            unfocusedLabelColor = DecideTheme.colors.gray,
-                            focusedPlaceholderColor = DecideTheme.colors.gray,
-                        ),
-                        isError = state.isErrorPassword.isError,
-                        supportingText = {
-                            Text(
-                                text = state.isErrorPassword.nameError,
-                                style = DecideTheme.typography.titleSmall,
-                                color = DecideTheme.colors.error
-                            )
-                        })
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        value = state.confirmPassword,
+                        isFocus = {})
+
+                    EditTextField(value = state.confirmPassword,
                         onValueChange = { onEvent(RegistrationEvent.SetConfirmPassword(it)) },
-                        maxLines = 1,
-                        label = {
-                            Text(
-                                text = "Подтвердите пароль",
-                                style = DecideTheme.typography.titleSmall
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        labelText = "Подтвердите пароль",
                         trailingIcon = {
                             if (state.confirmPassword.isNotBlank()) IconButton(onClick = {
                                 passwordConfirmVisibility = !passwordConfirmVisibility
                             }) {
                                 Icon(
-                                    painter = iconConfirmPassword, contentDescription = "Visibility"
+                                    painter = iconConfirmPassword,
+                                    contentDescription = "Visibility",
+                                    tint = DecideTheme.colors.gray
                                 )
                             }
                         },
-                        visualTransformation = if (passwordConfirmVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = DecideTheme.colors.inputBlack,
-                            focusedLabelColor = DecideTheme.colors.inputBlack,
-                            unfocusedLabelColor = DecideTheme.colors.gray,
-                            focusedPlaceholderColor = DecideTheme.colors.gray,
-                        ),
                         isError = state.isErrorPasswordConfirm.isError,
-                        supportingText = {
-                            Text(
-                                text = state.isErrorPasswordConfirm.nameError,
-                                style = DecideTheme.typography.titleSmall,
-                                color = DecideTheme.colors.error
-                            )
-                        })
+                        supportingText = state.isErrorPassword.nameError,
+                        visualTransformation = if (passwordConfirmVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                        isFocus = {})
 
                     Spacer(modifier = Modifier.height(16.dp))
                     ButtonEntry(text = "Регистрация") {
                         onEvent(RegistrationEvent.TryRegistration)
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ButtonEntry(
+                        text = "Пропустить",
+                        background = DecideTheme.colors.unFocused40,
+                        textColor = DecideTheme.colors.white
+                    ) {
+                        skip()
+                    }
                 }
+
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(26.dp),
+                        .fillMaxWidth()
+                        .padding(bottom = 26.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
                 ) {
 
-                    Text(
-                        text = "продолжить с ",
-                        style = DecideTheme.typography.titleSmall,
-                        color = DecideTheme.colors.inputBlack
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    AsyncImage(
-                        modifier = Modifier.size(100.dp),
-                        model = R.drawable.social_media,
-                        contentDescription = null
-                    )
+                    Spacer(modifier = Modifier.height(4.dp))
 
+                    Text(
+                        text = "или с помощью",
+                        style = DecideTheme.typography.titleSmall,
+                        color = DecideTheme.colors.unFocused
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    IconButton(onClick = {
+                        onEvent(RegistrationEvent.AuthWithVK)
+                    }) {
+                        Icon(
+                            painter = painterResource(com.decide.uikit.R.drawable.ic_vk),
+                            tint = null,
+                            contentDescription = null
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = "Уже есть профиль?",
                             style = DecideTheme.typography.titleSmall,
-                            color = DecideTheme.colors.inputBlack
+                            color = DecideTheme.colors.text
                         )
                         Text(
                             modifier = Modifier
@@ -300,20 +264,18 @@ fun RegistrationScreen(
 }
 
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
-fun PreviewRegistration() {
-
+private fun PreviewRegistration() {
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
-            RegistrationScreen(
-                modifier = Modifier,
+            RegistrationScreen(modifier = Modifier,
                 onClickLogin = {},
                 onEvent = {},
                 state = RegistrationState(),
                 onClickFillProfile = {},
-                onClickMainPage = {}
-            )
+                onClickMainPage = {},
+                skip = {})
         }
     }
 }

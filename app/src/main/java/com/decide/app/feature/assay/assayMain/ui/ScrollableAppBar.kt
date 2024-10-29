@@ -50,7 +50,7 @@ fun ScrollableAppBar(
             Text(
                 text = "Психологические тесты",
                 style = DecideTheme.typography.titleLarge,
-                color = DecideTheme.colors.inputBlack
+                color = DecideTheme.colors.textReverse
             )
             Spacer(modifier = Modifier.height(16.dp))
             SearchBarDecide(

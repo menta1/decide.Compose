@@ -15,10 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonBackArrow
@@ -44,7 +44,7 @@ fun AssayDescriptionScreen(
 }
 
 @Composable
-fun AssayDescriptionScreen(
+private fun AssayDescriptionScreen(
     state: AssayDescriptionState,
     onStartAssayText: () -> Unit,
     onStartAssayTimer: () -> Unit,
@@ -71,10 +71,12 @@ fun AssayDescriptionScreen(
                             .padding(bottom = 60.dp)
                     ) {
                         Text(
-                            modifier = Modifier.fillMaxHeight(),
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(bottom = 4.dp),
                             text = state.description,
                             style = DecideTheme.typography.bodyLarge,
-                            color = DecideTheme.colors.inputBlack,
+                            color = DecideTheme.colors.text,
                         )
 
                     }
@@ -122,36 +124,22 @@ fun AssayDescriptionScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@MainPreview
 @Composable
-fun PreviewAssayDescriptionScreen() {
-    val state by remember {
-        mutableStateOf(
-            AssayDescriptionState.Loaded(
-                "Цель: выявить состояwwwwwwwwwwwwwЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнwwwwwwwние тревожности и депрессии, обусловленное неуравновешенностью нервных процессов.",
-                1
+private fun Preview() {
+    DecideTheme {
+        val state by remember {
+            mutableStateOf(
+                AssayDescriptionState.Loaded(
+                    "Цель: выявить состояwwwwwwwwwwwwwЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнЦель: выявить состояwwwwwwwwwwwwwwwwwwwwние тревожнwwwwwwwние тревожности и депрессии, обусловленное неуравновешенностью нервных процессов.",
+                    1
+                )
             )
-        )
+        }
+        AssayDescriptionScreen(
+            state = state,
+            onClickBack = {},
+            onStartAssayText = {},
+            onStartAssayTimer = {})
     }
-    AssayDescriptionScreen(
-        state = state,
-        onClickBack = {},
-        onStartAssayText = {},
-        onStartAssayTimer = {})
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewLoadingAssayDescriptionScreen() {
-    AssayDescriptionScreen(state = AssayDescriptionState.Initial,
-        onClickBack = {},
-        onStartAssayText = {}, onStartAssayTimer = {})
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewErrorAssayDescriptionScreen() {
-    AssayDescriptionScreen(state = AssayDescriptionState.Error,
-        onClickBack = {},
-        onStartAssayText = {}, onStartAssayTimer = {})
 }

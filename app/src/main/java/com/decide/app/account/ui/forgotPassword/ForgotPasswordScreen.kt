@@ -4,29 +4,28 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 import com.decide.uikit.ui.buttons.ButtonEntry
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
+import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
+import com.decide.uikit.ui.text.EditTextField
 
 @Composable
 fun ForgotPasswordScreen(
@@ -72,47 +71,28 @@ fun ForgotPasswordScreen(
                     .padding(top = 8.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
+                ButtonBackArrow(
+                    text = "Забыли пароль",
+                    onClick = { onClickBack() })
 
                 Column {
-
-                    ButtonBackArrow(
-                        text = "Забыли пароль",
-                        onClick = { onClickBack() })
-
                     Spacer(modifier = Modifier.height(42.dp))
 
                     Text(
                         text = "Введите Вашу почту для восстановления",
                         style = DecideTheme.typography.headlineSmall,
-                        color = DecideTheme.colors.inputBlack
+                        color = DecideTheme.colors.text
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
+                    EditTextField(
                         value = state.email,
                         onValueChange = { onEvent(ForgotPasswordEvent.SetEmail(it)) },
-                        maxLines = 1,
-                        isError = state.isErrorEmail.isError,
+                        labelText = "Пароль",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        supportingText = {
-                            Text(
-                                text = state.isErrorEmail.nameError,
-                                style = DecideTheme.typography.titleSmall,
-                                color = DecideTheme.colors.error
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = "email", style = DecideTheme.typography.titleSmall
-                            )
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = DecideTheme.colors.inputBlack,
-                            focusedLabelColor = DecideTheme.colors.inputBlack,
-                            unfocusedLabelColor = DecideTheme.colors.gray
-                        )
-                    )
+                        isError = state.isErrorEmail.isError,
+                        supportingText = state.isErrorEmail.nameError,
+                        isFocus = {})
+
                 }
 
 
@@ -127,7 +107,15 @@ fun ForgotPasswordScreen(
         }
 
         UIState.NO_INTERNET -> {
-
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                NetworkErrorScreen(
+                    onClick = {}
+                )
+            }
         }
 
         UIState.UNKNOWN_ERROR -> {
@@ -143,7 +131,7 @@ fun ForgotPasswordScreen(
 
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
 fun PreviewForgotPasswordScreen() {
     DecideTheme {

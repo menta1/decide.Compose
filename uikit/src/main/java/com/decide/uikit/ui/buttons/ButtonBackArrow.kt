@@ -1,12 +1,14 @@
 package com.decide.uikit.ui.buttons
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,15 +24,19 @@ import com.decide.uikit.theme.DecideTheme
 fun ButtonBackArrow(
     modifier: Modifier = Modifier,
     text: String,
-    textColor: Color = DecideTheme.colors.inputBlack,
+    textColor: Color = DecideTheme.colors.text,
     textStyle: TextStyle = DecideTheme.typography.headlineSmall,
     icon: Painter = painterResource(id = R.drawable.ic_back_arrow),
-    tintIcon: Color = DecideTheme.colors.inputBlack,
+    tintIcon: Color = DecideTheme.colors.text,
     onClick: () -> Unit
 ) {
     Row(
         modifier = modifier
-            .clickable { onClick() },
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = { onClick() }
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

@@ -24,8 +24,8 @@ import com.decide.uikit.theme.DecideTheme
 @Composable
 fun ButtonCircle(
     modifier: Modifier = Modifier,
-    background: Color = DecideTheme.colors.inputWhite,
-    arrowColor: Color = DecideTheme.colors.buttonPrimary,
+    background: Color = DecideTheme.colors.mainColor,
+    arrowColor: Color = DecideTheme.colors.white,
     onClick: () -> Unit
 ) {
     Box(
@@ -49,14 +49,16 @@ fun ButtonCircle(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewButtonCircle() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 39.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        ButtonCircle() {
+    DecideTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 39.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            ButtonCircle() {
 
+            }
         }
     }
 }

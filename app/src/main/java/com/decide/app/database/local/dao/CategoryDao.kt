@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.decide.app.database.local.entities.CategoryEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
@@ -17,6 +16,6 @@ interface CategoryDao {
     suspend fun getCategory(id: Int): CategoryEntity
 
     @Query("SELECT * FROM category_table")
-    fun getFlowCategory(): Flow<List<CategoryEntity>>
+    fun getAllCategory(): List<CategoryEntity>
 
 }

@@ -20,7 +20,7 @@ import com.decide.uikit.theme.DecideTheme
 @Composable
 fun SuccessDialog(
     title: String,
-    backgroundColor: Color = DecideTheme.colors.inputWhite,
+    backgroundColor: Color = DecideTheme.colors.container,
     onDismissRequest: () -> Unit
 ) {
 
@@ -37,7 +37,7 @@ fun SuccessDialog(
                 text = title,
                 style = DecideTheme.typography.titleMedium,
                 textAlign = TextAlign.Start,
-                color = DecideTheme.colors.inputBlack
+                color = DecideTheme.colors.text
             )
         }
     }

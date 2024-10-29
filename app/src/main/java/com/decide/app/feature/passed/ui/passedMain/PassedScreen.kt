@@ -13,10 +13,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
@@ -37,7 +37,7 @@ fun PassedScreen(
 }
 
 @Composable
-fun PassedScreen(
+private fun PassedScreen(
     modifier: Modifier = Modifier,
     onClickResult: (id: Int, date: Long) -> Unit,
     state: PassedScreenState,
@@ -54,7 +54,7 @@ fun PassedScreen(
         Text(
             text = "Завершенные",
             style = DecideTheme.typography.titleLarge,
-            color = DecideTheme.colors.inputBlack
+            color = DecideTheme.colors.text
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -78,13 +78,13 @@ fun PassedScreen(
                         Text(
                             text = "Здесь появится информация",
                             style = DecideTheme.typography.bodyLarge,
-                            color = DecideTheme.colors.inputBlack
+                            color = DecideTheme.colors.text
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Когда Вы пройдете тест",
                             style = DecideTheme.typography.bodyLarge,
-                            color = DecideTheme.colors.inputBlack
+                            color = DecideTheme.colors.text
                         )
                     }
                 }
@@ -115,47 +115,15 @@ fun PassedScreen(
 
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+@MainPreview
 @Composable
-fun PreviewPassedScreen() {
+private fun Preview() {
     val state by remember {
         mutableStateOf(PassedScreenState.Initial)
     }
     DecideTheme {
         Column {
             PassedScreen(onClickResult = { id, date -> }, state = state, onEvent = {})
-        }
-    }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun PreviewPassedScreenLoading() {
-    val state by remember {
-        mutableStateOf(PassedScreenState.Initial)
-    }
-    DecideTheme {
-        Column {
-            PassedScreen(
-                onClickResult = { id, date -> },
-                state = PassedScreenState.Loading,
-                onEvent = {})
-        }
-    }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun PreviewPassedScreenEmpty() {
-    val state by remember {
-        mutableStateOf(PassedScreenState.Initial)
-    }
-    DecideTheme {
-        Column {
-            PassedScreen(
-                onClickResult = { id, date -> },
-                state = PassedScreenState.Empty,
-                onEvent = {})
         }
     }
 }

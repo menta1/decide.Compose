@@ -1,7 +1,9 @@
 package com.decide.app.di
 
-import com.decide.app.account.authenticationClient.AuthenticationClient
-import com.decide.app.account.authenticationClient.AuthenticationClientImpl
+import com.decide.app.account.adsManager.AdsManager
+import com.decide.app.account.adsManager.AdsManagerImpl
+import com.decide.app.account.authenticationClient.FirebaseAuthenticationClient
+import com.decide.app.account.authenticationClient.FirebaseAuthenticationClientImpl
 import com.decide.app.account.data.AccountRepositoryImpl
 import com.decide.app.account.domain.AccountRepository
 import com.decide.app.account.statisticsClient.StatisticsClient
@@ -10,8 +12,8 @@ import com.decide.app.activity.data.MainRepository
 import com.decide.app.activity.data.MainRepositoryImpl
 import com.decide.app.database.remote.RemoteAssayStorage
 import com.decide.app.database.remote.RemoteAssayStorageImpl
-import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepository
-import com.decide.app.feature.assay.assayDescription.ui.data.AssayDescriptionRepositoryImpl
+import com.decide.app.feature.assay.assayDescription.data.AssayDescriptionRepository
+import com.decide.app.feature.assay.assayDescription.data.AssayDescriptionRepositoryImpl
 import com.decide.app.feature.assay.assayMain.data.AssayMainRepository
 import com.decide.app.feature.assay.assayMain.data.AssayMainRepositoryImpl
 import com.decide.app.feature.assay.assayProcess.data.AssayProcessRepositoryImpl
@@ -70,7 +72,7 @@ abstract class RepositoryModule {
     abstract fun bindAccountRepository(accountRepositoryImpl: AccountRepositoryImpl): AccountRepository
 
     @Binds
-    abstract fun bindNetworkClient(authenticationClientImpl: AuthenticationClientImpl): AuthenticationClient
+    abstract fun bindNetworkClient(authenticationClientImpl: FirebaseAuthenticationClientImpl): FirebaseAuthenticationClient
 
     @Binds
     abstract fun bindStatisticsClient(statisticsClientImpl: StatisticsClientImpl): StatisticsClient
@@ -83,4 +85,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindEditProfileRepository(editProfileRepositoryImpl: EditProfileRepositoryImpl): EditProfileRepository
+
+    @Binds
+    abstract fun bindAdsManager(adsManagerImpl: AdsManagerImpl): AdsManager
 }

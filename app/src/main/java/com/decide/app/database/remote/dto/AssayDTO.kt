@@ -16,8 +16,10 @@ data class AssayDTO(
     @SerialName("type") val type: Int = -1,
     @SerialName("timeForTest") val timeForTest: Long = -1,
     @SerialName("timeForQuestions") val timeForQuestions: Long = -1,
-    @SerialName("rating") val rating: String = "",
-    @SerialName("results") val results: List<ResultCompletedAssayDTO> = listOf()
+    @SerialName("rating") val rating: Float = 0f,
+    @SerialName("results") val results: List<ResultCompletedAssayDTO> = listOf(),
+    @SerialName("rated") val rated: Int = 0,
+    @SerialName("finished") val finished: Int = 0
 )
 
 fun AssayDTO.toAssayEntity() = AssayEntity(
@@ -32,5 +34,7 @@ fun AssayDTO.toAssayEntity() = AssayEntity(
     type = type,
     timeForQuestions = timeForQuestions,
     timeForTest = timeForTest,
-    results = convertToResultCompletedAssayEntity(results)
+    results = convertToResultCompletedAssayEntity(results),
+    rated = rated,
+    finished = finished
 )

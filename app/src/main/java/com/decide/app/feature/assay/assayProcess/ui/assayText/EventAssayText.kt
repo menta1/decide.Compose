@@ -11,5 +11,7 @@ sealed interface EventAssayText {
     ) : EventAssayText
 
     data class Ad(val ads: ShowAds) : EventAssayText
+
+    data object TryAgain : EventAssayText
 }
 

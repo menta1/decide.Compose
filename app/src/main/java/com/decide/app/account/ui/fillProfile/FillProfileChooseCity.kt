@@ -23,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 
@@ -38,7 +38,6 @@ fun FillProfileChooseCity(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 ButtonBackArrow(
                     modifier = Modifier.padding(horizontal = 4.dp),
                     text = "",
@@ -55,15 +54,18 @@ fun FillProfileChooseCity(
                     label = {
                         Text(
                             text = "Поиск по городам",
-                            style = DecideTheme.typography.titleSmall
+                            style = DecideTheme.typography.titleSmall,
+                            color = DecideTheme.colors.unFocused
                         )
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = DecideTheme.colors.inputBlack,
-                        focusedLabelColor = DecideTheme.colors.inputBlack,
+                        focusedBorderColor = DecideTheme.colors.text,
+                        focusedLabelColor = DecideTheme.colors.text,
                         unfocusedLabelColor = DecideTheme.colors.gray,
                         focusedPlaceholderColor = DecideTheme.colors.gray,
+                        focusedTextColor = DecideTheme.colors.text,
+                        unfocusedTextColor = DecideTheme.colors.unFocused
                     )
                 )
             }
@@ -90,7 +92,7 @@ fun FillProfileChooseCity(
                         text = it,
                         style = DecideTheme.typography.titleSmall,
                         textAlign = TextAlign.Center,
-                        color = DecideTheme.colors.inputBlack
+                        color = DecideTheme.colors.text
                     )
                     Icon(
                         painter = painterResource(com.decide.uikit.R.drawable.ic_arrow_right),
@@ -105,10 +107,9 @@ fun FillProfileChooseCity(
 
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
 fun PreviewFillProfileChooseCity() {
-
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             FillProfileChooseCity(

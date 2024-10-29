@@ -10,6 +10,7 @@ sealed interface AssayTextState {
     ) : AssayTextState
 
     data object Error : AssayTextState
+    data object NetworkError : AssayTextState
     data class End(val idAssay: Int) : AssayTextState
     companion object {
         val Initial: AssayTextState = Loading

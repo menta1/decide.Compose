@@ -6,4 +6,7 @@ interface MainRepository {
     suspend fun initProfile()
     suspend fun checkNewPassedAssay()
     suspend fun checkAuth(): Boolean
+    suspend fun checkFirstLaunch(): Boolean
+    suspend fun updateRemoteConfig()
+    suspend fun changeFirstLaunch()
 }

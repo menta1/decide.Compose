@@ -2,16 +2,20 @@ package com.decide.app.account.statisticsClient
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.decide.app.account.SINGLE
 import com.decide.app.account.data.AccountRepositoryImpl.Companion.KEY_USER_ID
 import com.decide.app.account.statisticsClient.modals.GlobalStatistics
 import com.decide.app.account.statisticsClient.modals.GlobalTemperament
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.local.entities.StatisticEntity
 import com.decide.app.database.remote.RemoteAssayStorageImpl.Companion.ANXIETY
+import com.decide.app.database.remote.RemoteAssayStorageImpl.Companion.DEPRESSION
 import com.decide.app.database.remote.RemoteAssayStorageImpl.Companion.STATISTICS
 import com.decide.app.database.remote.RemoteAssayStorageImpl.Companion.TEMPERAMENT
 import com.decide.app.database.remote.RemoteAssayStorageImpl.Companion.USERS
 import com.decide.app.database.remote.dto.StatisticDTO
+import com.decide.app.database.remote.exceptions.DecideDatabaseException
+import com.decide.app.database.remote.exceptions.firestoreExceptionMapper
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -43,38 +47,68 @@ class StatisticsClientImpl @Inject constructor(
      */
     override suspend fun updateStatistic() {
         val forStatisticAnxiety = setOf(8, 9, 15)//тесты по тревожности
+        //Оценка реактивной тревожности
+        //Оценка личностной тревожности
+        //Личностная шкала проявления тревоги (Дж. Тейлор)
         val forStatisticTemperament = 4//тест по темпераменту
-
+        //Личностный тест Айзенка (EPi)
+        val forStatisticDepression = setOf(5, 6)//тест по депрессии
+        //Тест тревожности и депрессии
+        //Шкала депрессии
         var countTestAnxiety = 0
-
+        var countTestDepression = 0
         val getAllResults = localStorage.assayDao().getAllAssays()
         val statisticsAll = localStorage.statisticsDao().getAll()
         coroutineScope.launch {
-            var resultAnxiety = 0.0//Счетчик баллов
+            var resultAnxiety = 0.0//Счетчик тревожности
             var resultTemperament = 0.0//Счетчик темперамент
+            var resultDepression = 0.0//Счетчик депрессии
+
             getAllResults.forEach { result ->
 
                 if (result.id in forStatisticAnxiety && result.results.isNotEmpty()) {
                     countTestAnxiety++//Считаем сколько тестов завершено, нужно чтобы было в итоге 3
-                    Timber.tag("TAG")
-                        .d("getAllResults.forEach countTestAnxiety = $countTestAnxiety")
                     resultAnxiety += result.results.last().resultForStatistic
+                    Timber.tag("TAG")
+                        .d("Anxiety countTestAnxiety = $countTestAnxiety resultAnxiety = $resultAnxiety")
+                }
+
+                if (result.id in forStatisticDepression && result.results.isNotEmpty()) {
+                    countTestDepression++//Считаем сколько тестов завершено, нужно чтобы было в итоге 2
+                    resultDepression += result.results.last().resultForStatistic
                 }
 
                 if (result.id == forStatisticTemperament && result.results.isNotEmpty()) {
-                    resultTemperament =
-                        result.results.last().resultForStatistic
-                    Timber.tag("TAG").d("countTestTemperament find = $resultTemperament")
+                    resultTemperament = result.results.last().resultForStatistic
+                    Timber.tag("TAG").d("Temperament resultTemperament = $resultTemperament")
                 }
             }
 
             /**
              * Проверка и запуск записи по тревожности
              */
-            if (countTestAnxiety == 3) {
-                insertAnxiety(statisticsAll, resultAnxiety)
+            if (countTestAnxiety == forStatisticAnxiety.size) {
+                insert(statisticsAll, resultAnxiety, ANXIETY)
             } else {
                 Timber.tag("TAG").d("countTestAnxiety != 3 countTestAnxiety = $countTestAnxiety")
+            }
+
+            /**
+             * Проверка и запуск записи по депрессии
+             */
+            if (countTestDepression == forStatisticDepression.size) {
+                /**
+                 * Ограничиваем максимальные диапозоны
+                 */
+                if (resultDepression > 80.0) {
+                    resultDepression = 80.0
+                } else if (resultDepression < 0) {
+                    resultDepression = 0.0
+                }
+                insert(statisticsAll, resultDepression, DEPRESSION)
+            } else {
+                Timber.tag("TAG")
+                    .d("countTestDepression != 3 countTestDepression = $countTestAnxiety")
             }
 
             /**
@@ -112,9 +146,7 @@ class StatisticsClientImpl @Inject constructor(
         statisticsAll: List<StatisticEntity>,
         resultTemperament: Double
     ) {
-
         val oldResult = statisticsAll.find { it.id == TEMPERAMENT }
-
         if (oldResult != null) {//если не null значит запись в общую базу была, а если null, то надо записать новый результат в общую бд
 
             if (oldResult.result != resultTemperament) {//Проверяем есть ли изменения в нынешним результатом и предыдущем
@@ -130,8 +162,7 @@ class StatisticsClientImpl @Inject constructor(
                 ).addOnSuccessListener {
                     Timber.tag("TAG").d("StatisticsClientImpl addOnSuccessListener update")
                 }.addOnFailureListener {
-                    Timber.tag("TAG")
-                        .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                    Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
                 }
                 remoteDatabase.collection(STATISTICS).document(TEMPERAMENT.toString()).get()
                     .addOnSuccessListener {
@@ -194,17 +225,34 @@ class StatisticsClientImpl @Inject constructor(
                     }
             }
         } else {//если null, то надо записать новый результат в общую бд
+            var isGlobalFirstWrite = false
             remoteDatabase.collection(STATISTICS).document(TEMPERAMENT.toString()).update(
                 getNameTemperament(resultTemperament),
                 FieldValue.increment(1),//добавляем новую запись
-                "members",
+                MEMBERS,
                 FieldValue.increment(1)
             ).addOnSuccessListener {
                 Timber.tag("TAG").d("StatisticsClientImpl addOnSuccessListener")
+
             }.addOnFailureListener {
-                Timber.tag("TAG")
-                    .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                if (firestoreExceptionMapper(it) is DecideDatabaseException.NotFoundDocument) {
+                    Timber.tag("TAG").d("DecideDatabaseException.NotFoundDocument()")
+                    remoteDatabase.collection(STATISTICS).document(TEMPERAMENT.toString()).set(
+                        GlobalTemperament(
+                            choleric = 1.0,
+                            sanguine = 1.0,
+                            phlegmatic = 1.0,
+                            melancholic = 1.0
+                        )
+                    )
+                    coroutineScope.launch(Dispatchers.IO) {
+                        insertTemperament(statisticsAll, resultTemperament)
+                    }
+                    isGlobalFirstWrite = true
+                }
             }
+            if (isGlobalFirstWrite) return
 
             remoteDatabase.collection(STATISTICS).document(TEMPERAMENT.toString()).get()
                 .addOnSuccessListener {
@@ -232,36 +280,36 @@ class StatisticsClientImpl @Inject constructor(
                         }
                     }
                 }.addOnFailureListener {
-                    Timber.tag("TAG")
-                        .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                    Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
                 }
         }
     }
 
-    private suspend fun insertAnxiety(
+
+    private suspend fun insert(
         statisticsAll: List<StatisticEntity>,
-        resultAnxiety: Double
+        resultDepression: Double,
+        documentName: Int
     ) {
 
-        val oldResult = statisticsAll.find { it.id == ANXIETY }
+        val oldResult = statisticsAll.find { it.id == documentName }
 
         if (oldResult != null) {//если не null значит запись в общую базу была, а если null, то надо записать новый результат в общую бд
 
-            if (oldResult.result != resultAnxiety) {//Проверяем есть ли изменения в нынешним результатом и предыдущем
-                remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).update(
-                    "result",
-                    FieldValue.increment(-oldResult.result)//удаляем предыдущюю запись
+            if (oldResult.result != resultDepression) {//Проверяем есть ли изменения c нынешним результатом и предыдущем
+                remoteDatabase.collection(STATISTICS).document(DEPRESSION.toString()).update(
+                    RESULT, FieldValue.increment(-oldResult.result)//удаляем предыдущюю запись
                 )
                 delay(1000)//Ограничение firebase, запись возможoна с задержкой в 1 секунду
-                remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).update(
-                    "result", FieldValue.increment(resultAnxiety)//добавляем новую запись
+                remoteDatabase.collection(STATISTICS).document(documentName.toString()).update(
+                    RESULT, FieldValue.increment(resultDepression)//добавляем новую запись
                 ).addOnSuccessListener {
                     Timber.tag("TAG").d("StatisticsClientImpl addOnSuccessListener update")
                 }.addOnFailureListener {
                     Timber.tag("TAG")
-                        .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                        .d("StatisticsClientImpl 1 addOnFailureListener = ${it.message}")
                 }
-                remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).get()
+                remoteDatabase.collection(STATISTICS).document(documentName.toString()).get()
                     .addOnSuccessListener {
                         val statistics = it.toObject(GlobalStatistics::class.java)
                         if (statistics != null) {
@@ -270,22 +318,22 @@ class StatisticsClientImpl @Inject constructor(
                             coroutineScope.launch {
                                 localStorage.statisticsDao().insert(
                                     StatisticEntity(
-                                        id = ANXIETY,
-                                        result = resultAnxiety,
+                                        id = documentName,
+                                        result = resultDepression,
                                         oldResult = oldResult.result,
-                                        globalResults = statistics.result,
+                                        globalResults = mapOf(SINGLE to statistics.result),
                                         users = statistics.members
                                     )
                                 )
-                                updateRemoteStatistics(idStatistic = ANXIETY)
+                                updateRemoteStatistics(idStatistic = documentName)
                             }
                         }
                     }.addOnFailureListener {
                         Timber.tag("TAG")
-                            .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                            .d("StatisticsClientImpl 2 addOnFailureListener = ${it.message}")
                     }
             } else {
-                remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).get()
+                remoteDatabase.collection(STATISTICS).document(documentName.toString()).get()
                     .addOnSuccessListener {
                         val statistics = it.toObject(GlobalStatistics::class.java)
                         if (statistics != null) {
@@ -294,33 +342,42 @@ class StatisticsClientImpl @Inject constructor(
                             coroutineScope.launch {
                                 localStorage.statisticsDao().insert(
                                     StatisticEntity(
-                                        id = ANXIETY,
-                                        result = resultAnxiety,
-                                        oldResult = resultAnxiety,
-                                        globalResults = statistics.result,
+                                        id = documentName,
+                                        result = resultDepression,
+                                        oldResult = resultDepression,
+                                        globalResults = mapOf(SINGLE to statistics.result),
                                         users = statistics.members
                                     )
                                 )
-                                updateRemoteStatistics(idStatistic = ANXIETY)
+                                updateRemoteStatistics(idStatistic = documentName)
                             }
                         }
                     }.addOnFailureListener {
                         Timber.tag("TAG")
-                            .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                            .d("StatisticsClientImpl 3 addOnFailureListener = ${it.message}")
                     }
             }
         } else {//если null, то надо записать новый результат в общую бд
-            remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).update(
-                "result", FieldValue.increment(resultAnxiety),//добавляем новую запись
-                "members", FieldValue.increment(1)
+            remoteDatabase.collection(STATISTICS).document(documentName.toString()).update(
+                MEMBERS,
+                FieldValue.increment(1),
+                RESULT,
+                FieldValue.increment(resultDepression)//добавляем новую запись
             ).addOnSuccessListener {
                 Timber.tag("TAG").d("StatisticsClientImpl addOnSuccessListener")
             }.addOnFailureListener {
-                Timber.tag("TAG")
-                    .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                Timber.tag("TAG").d("StatisticsClientImpl 4 addOnFailureListener = ${it.message}")
+                if (firestoreExceptionMapper(it) is DecideDatabaseException.NotFoundDocument) {
+                    Timber.tag("TAG").d("DecideDatabaseException.NotFoundDocument()")
+                    remoteDatabase.collection(STATISTICS).document(documentName.toString()).set(
+                        GlobalStatistics(
+                            members = 1, result = resultDepression
+                        )
+                    )
+                }
             }
 
-            remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).get()
+            remoteDatabase.collection(STATISTICS).document(documentName.toString()).get()
                 .addOnSuccessListener {
                     val statistics = it.toObject(GlobalStatistics::class.java)
                     if (statistics != null) {
@@ -329,19 +386,19 @@ class StatisticsClientImpl @Inject constructor(
                         coroutineScope.launch {
                             localStorage.statisticsDao().insert(
                                 StatisticEntity(
-                                    id = ANXIETY,
-                                    result = resultAnxiety,
-                                    oldResult = resultAnxiety,
-                                    globalResults = statistics.result,
+                                    id = documentName,
+                                    result = resultDepression,
+                                    oldResult = resultDepression,
+                                    globalResults = mapOf(SINGLE to statistics.result),
                                     users = statistics.members
                                 )
                             )
-                            updateRemoteStatistics(idStatistic = ANXIETY)
+                            updateRemoteStatistics(idStatistic = documentName)
                         }
                     }
                 }.addOnFailureListener {
                     Timber.tag("TAG")
-                        .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+                        .d("StatisticsClientImpl 5 addOnFailureListener = ${it.message}")
                 }
         }
     }
@@ -355,14 +412,13 @@ class StatisticsClientImpl @Inject constructor(
                     results.documents.forEach {
                         val statistics = it.toObject(StatisticDTO::class.java)
                         if (statistics != null) {
-                            Timber.tag("TAG").d("StatisticsClientImpl getRemoteStatistic get")
                             coroutineScope.launch {
                                 localStorage.statisticsDao().insert(
                                     StatisticEntity(
                                         id = statistics.id,
                                         result = statistics.result,
                                         oldResult = statistics.oldResult,
-                                        globalResults = mapOf("result" to statistics.globalResults),
+                                        globalResults = statistics.globalResults,
                                         users = statistics.users
                                     )
                                 )
@@ -387,8 +443,7 @@ class StatisticsClientImpl @Inject constructor(
                 val userStatistic = localStorage.statisticsDao().getStatistic(idStatistic)
                 remoteDatabase.collection(USERS).document(userId).collection(STATISTIC)
                     .document(idStatistic.toString()).set(userStatistic).addOnSuccessListener {
-                        Timber.tag("FIREBASE")
-                            .d("StatisticsClientImpl updateStatistics Success")
+                        Timber.tag("FIREBASE").d("StatisticsClientImpl updateStatistics Success")
                     }.addOnFailureListener {
                         Timber.tag("FIREBASE")
                             .d("StatisticsClientImpl updateStatistics = ${it.message}")
@@ -404,5 +459,225 @@ class StatisticsClientImpl @Inject constructor(
 
     private companion object {
         const val STATISTIC = "STATISTIC"
+        const val RESULT = "result"
+        const val MEMBERS = "members"
     }
+
+//    private suspend fun insertAnxiety(
+//        statisticsAll: List<StatisticEntity>,
+//        resultAnxiety: Double
+//    ) {
+//
+//        val oldResult = statisticsAll.find { it.id == ANXIETY }
+//
+//        if (oldResult != null) {//если не null значит запись в общую базу была, а если null, то надо записать новый результат в общую бд
+//
+//            if (oldResult.result != resultAnxiety) {//Проверяем есть ли изменения c нынешним результатом и предыдущем
+//                remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).update(
+//                    RESULT, FieldValue.increment(-oldResult.result)//удаляем предыдущюю запись
+//                )
+//                delay(1000)//Ограничение firebase, запись возможoна с задержкой в 1 секунду
+//                remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).update(
+//                    RESULT, FieldValue.increment(resultAnxiety)//добавляем новую запись
+//                ).addOnSuccessListener {
+//                    Timber.tag("TAG").d("StatisticsClientImpl addOnSuccessListener update")
+//                }.addOnFailureListener {
+//                    Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                }
+//                remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).get()
+//                    .addOnSuccessListener {
+//                        val statistics = it.toObject(GlobalStatistics::class.java)
+//                        if (statistics != null) {
+//                            Timber.tag("TAG")
+//                                .d("StatisticsClientImpl addOnSuccessListener statistics != null")
+//                            coroutineScope.launch {
+//                                localStorage.statisticsDao().insert(
+//                                    StatisticEntity(
+//                                        id = ANXIETY,
+//                                        result = resultAnxiety,
+//                                        oldResult = oldResult.result,
+//                                        globalResults = mapOf(SINGLE to statistics.result),
+//                                        users = statistics.members
+//                                    )
+//                                )
+//                                updateRemoteStatistics(idStatistic = ANXIETY)
+//                            }
+//                        }
+//                    }.addOnFailureListener {
+//                        Timber.tag("TAG")
+//                            .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                    }
+//            } else {
+//                remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).get()
+//                    .addOnSuccessListener {
+//                        val statistics = it.toObject(GlobalStatistics::class.java)
+//                        if (statistics != null) {
+//                            Timber.tag("TAG")
+//                                .d("StatisticsClientImpl addOnSuccessListener else statistics != null")
+//                            coroutineScope.launch {
+//                                localStorage.statisticsDao().insert(
+//                                    StatisticEntity(
+//                                        id = ANXIETY,
+//                                        result = resultAnxiety,
+//                                        oldResult = resultAnxiety,
+//                                        globalResults = mapOf(SINGLE to statistics.result),
+//                                        users = statistics.members
+//                                    )
+//                                )
+//                                updateRemoteStatistics(idStatistic = ANXIETY)
+//                            }
+//                        }
+//                    }.addOnFailureListener {
+//                        Timber.tag("TAG")
+//                            .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                    }
+//            }
+//        } else {//если null, то надо записать новый результат в общую бд
+//            remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).update(
+//                RESULT, FieldValue.increment(resultAnxiety),//добавляем новую запись
+//                MEMBERS, FieldValue.increment(1)
+//            ).addOnSuccessListener {
+//                Timber.tag("TAG").d("StatisticsClientImpl addOnSuccessListener")
+//            }.addOnFailureListener {
+//                Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//            }
+//
+//            remoteDatabase.collection(STATISTICS).document(ANXIETY.toString()).get()
+//                .addOnSuccessListener {
+//                    val statistics = it.toObject(GlobalStatistics::class.java)
+//                    if (statistics != null) {
+//                        Timber.tag("TAG")
+//                            .d("StatisticsClientImpl addOnSuccessListener else statistics != null")
+//                        coroutineScope.launch {
+//                            localStorage.statisticsDao().insert(
+//                                StatisticEntity(
+//                                    id = ANXIETY,
+//                                    result = resultAnxiety,
+//                                    oldResult = resultAnxiety,
+//                                    globalResults = mapOf(SINGLE to statistics.result),
+//                                    users = statistics.members
+//                                )
+//                            )
+//                            updateRemoteStatistics(idStatistic = ANXIETY)
+//                        }
+//                    }
+//                }.addOnFailureListener {
+//                    Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                }
+//        }
+//    }
+//
+//    private suspend fun insertDepression(
+//        statisticsAll: List<StatisticEntity>,
+//        resultDepression: Double
+//    ) {
+//
+//        val oldResult = statisticsAll.find { it.id == DEPRESSION }
+//
+//        if (oldResult != null) {//если не null значит запись в общую базу была, а если null, то надо записать новый результат в общую бд
+//
+//            if (oldResult.result != resultDepression) {//Проверяем есть ли изменения c нынешним результатом и предыдущем
+//                remoteDatabase.collection(STATISTICS).document(DEPRESSION.toString()).update(
+//                    RESULT, FieldValue.increment(-oldResult.result)//удаляем предыдущюю запись
+//                )
+//                delay(1000)//Ограничение firebase, запись возможoна с задержкой в 1 секунду
+//                remoteDatabase.collection(STATISTICS).document(DEPRESSION.toString()).update(
+//                    RESULT, FieldValue.increment(resultDepression)//добавляем новую запись
+//                ).addOnSuccessListener {
+//                    Timber.tag("TAG").d("StatisticsClientImpl addOnSuccessListener update")
+//                }.addOnFailureListener {
+//                    Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                }
+//                remoteDatabase.collection(STATISTICS).document(DEPRESSION.toString()).get()
+//                    .addOnSuccessListener {
+//                        val statistics = it.toObject(GlobalStatistics::class.java)
+//                        if (statistics != null) {
+//                            Timber.tag("TAG")
+//                                .d("StatisticsClientImpl addOnSuccessListener statistics != null")
+//                            coroutineScope.launch {
+//                                localStorage.statisticsDao().insert(
+//                                    StatisticEntity(
+//                                        id = DEPRESSION,
+//                                        result = resultDepression,
+//                                        oldResult = oldResult.result,
+//                                        globalResults = mapOf(SINGLE to statistics.result),
+//                                        users = statistics.members
+//                                    )
+//                                )
+//                                updateRemoteStatistics(idStatistic = DEPRESSION)
+//                            }
+//                        }
+//                    }.addOnFailureListener {
+//                        Timber.tag("TAG")
+//                            .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                    }
+//            } else {
+//                remoteDatabase.collection(STATISTICS).document(DEPRESSION.toString()).get()
+//                    .addOnSuccessListener {
+//                        val statistics = it.toObject(GlobalStatistics::class.java)
+//                        if (statistics != null) {
+//                            Timber.tag("TAG")
+//                                .d("StatisticsClientImpl addOnSuccessListener else statistics != null")
+//                            coroutineScope.launch {
+//                                localStorage.statisticsDao().insert(
+//                                    StatisticEntity(
+//                                        id = DEPRESSION,
+//                                        result = resultDepression,
+//                                        oldResult = resultDepression,
+//                                        globalResults = mapOf(SINGLE to statistics.result),
+//                                        users = statistics.members
+//                                    )
+//                                )
+//                                updateRemoteStatistics(idStatistic = DEPRESSION)
+//                            }
+//                        }
+//                    }.addOnFailureListener {
+//                        Timber.tag("TAG")
+//                            .d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                    }
+//            }
+//        } else {//если null, то надо записать новый результат в общую бд
+//            remoteDatabase.collection(STATISTICS).document(DEPRESSION.toString()).update(
+//                MEMBERS,
+//                FieldValue.increment(1),
+//                RESULT,
+//                FieldValue.increment(resultDepression)//добавляем новую запись
+//            ).addOnSuccessListener {
+//                Timber.tag("TAG").d("StatisticsClientImpl addOnSuccessListener")
+//            }.addOnFailureListener {
+//                Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                if (firestoreExceptionMapper(it) is DecideDatabaseException.NotFoundDocument) {
+//                    Timber.tag("TAG").d("DecideDatabaseException.NotFoundDocument()")
+//                    remoteDatabase.collection(STATISTICS).document(DEPRESSION.toString()).set(
+//                        GlobalStatistics(
+//                            members = 1, result = resultDepression
+//                        )
+//                    )
+//                }
+//            }
+//
+//            remoteDatabase.collection(STATISTICS).document(DEPRESSION.toString()).get()
+//                .addOnSuccessListener {
+//                    val statistics = it.toObject(GlobalStatistics::class.java)
+//                    if (statistics != null) {
+//                        Timber.tag("TAG")
+//                            .d("StatisticsClientImpl addOnSuccessListener else statistics != null")
+//                        coroutineScope.launch {
+//                            localStorage.statisticsDao().insert(
+//                                StatisticEntity(
+//                                    id = DEPRESSION,
+//                                    result = resultDepression,
+//                                    oldResult = resultDepression,
+//                                    globalResults = mapOf(SINGLE to statistics.result),
+//                                    users = statistics.members
+//                                )
+//                            )
+//                            updateRemoteStatistics(idStatistic = DEPRESSION)
+//                        }
+//                    }
+//                }.addOnFailureListener {
+//                    Timber.tag("TAG").d("StatisticsClientImpl addOnFailureListener = ${it.message}")
+//                }
+//        }
+//    }
 }

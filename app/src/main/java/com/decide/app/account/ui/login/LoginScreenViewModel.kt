@@ -3,7 +3,8 @@ package com.decide.app.account.ui.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.account.authenticationClient.exception.DecideAuthException
-import com.decide.app.account.domain.useCase.SingInUseCase
+import com.decide.app.account.domain.useCase.SingInWithEmailUseCase
+import com.decide.app.account.domain.useCase.SingInWithVKUseCase
 import com.decide.app.account.modal.UserAuth
 import com.decide.app.account.ui.validators.ValidationEmail
 import com.decide.app.account.ui.validators.ValidationPassword
@@ -15,11 +16,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginScreenViewModel @Inject constructor(
-    private val singInUseCase: SingInUseCase
+    private val singInWithEmailUseCase: SingInWithEmailUseCase,
+    private val singInWithVKUseCase: SingInWithVKUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginScreenState())
     val state: StateFlow<LoginScreenState> = _state.asStateFlow()
@@ -50,7 +53,7 @@ class LoginScreenViewModel @Inject constructor(
                         )
                     }
                     viewModelScope.launch(Dispatchers.IO) {
-                        singInUseCase.invoke(user = UserAuth(
+                        singInWithEmailUseCase.invoke(user = UserAuth(
                             name = "",
                             password = _state.value.password,
                             email = _state.value.email,
@@ -127,11 +130,40 @@ class LoginScreenViewModel @Inject constructor(
                         _state.update { it.copy(isErrorEmail = ValidationEmail.CANT_EMPTY) }
                     }
                 }
-
             }
 
             is LoginScreenEvent.EmailFocused -> {
                 checkEmailError()
+            }
+
+            LoginScreenEvent.AuthWithVK -> {
+                _state.update {
+                    it.copy(
+                        uiState = UIState.PROCESS_AUTH
+                    )
+                }
+                viewModelScope.launch {
+                    singInWithVKUseCase.invoke {
+                        when (it) {
+                            is Resource.Success -> {
+                                Timber.tag("TAG").d("AuthWithVK SUCCESS_AUTH")
+                                _state.update { state ->
+                                    state.copy(
+                                        uiState = UIState.SUCCESS_AUTH
+                                    )
+                                }
+                            }
+
+                            is Resource.Error -> {
+                                _state.update { state ->
+                                    state.copy(
+                                        uiState = UIState.DATA_ENTRY
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

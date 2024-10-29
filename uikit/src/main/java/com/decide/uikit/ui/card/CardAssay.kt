@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,13 +39,13 @@ fun CardAssay(
     textColorCategory: Color = DecideTheme.colors.accentPink,
     textStyleCategory: TextStyle = DecideTheme.typography.bodySmall,
     textAssay: String,
-    textColorAssay: Color = DecideTheme.colors.inputBlack,
+    textColorAssay: Color = DecideTheme.colors.text,
     textStyleAssay: TextStyle = DecideTheme.typography.bodyMedium,
     textRating: String = "0.0",
-    textColorRating: Color = DecideTheme.colors.inputBlack,
+    textColorRating: Color = DecideTheme.colors.text,
     textStyleRating: TextStyle = DecideTheme.typography.labelSmall,
     textQuestion: String,
-    textColorQuestion: Color = DecideTheme.colors.inputBlack,
+    textColorQuestion: Color = DecideTheme.colors.text,
     textStyleQuestion: TextStyle = DecideTheme.typography.labelMedium,
     onClickAssay: () -> Unit,
 ) {
@@ -56,7 +54,7 @@ fun CardAssay(
             .fillMaxWidth()
             .clickable { onClickAssay() }
             .clip(RoundedCornerShape(16.dp))
-            .background(DecideTheme.colors.inputWhite),
+            .background(DecideTheme.colors.container),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -98,19 +96,6 @@ fun CardAssay(
                     .padding(top = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = icon,
-                    contentDescription = "icon",
-                    tint = DecideTheme.colors.accentYellow
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = textRating, color = textColorRating, style = textStyleRating)
-
-                Icon(
-                    painter = painterResource(id = R.drawable.divider_small),
-                    contentDescription = "",
-                    tint = DecideTheme.colors.inputBlack
-                )
                 Text(text = textQuestion, color = textColorQuestion, style = textStyleQuestion)
             }
         }

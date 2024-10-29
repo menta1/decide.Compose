@@ -31,8 +31,8 @@ open class DecideException(
     ) : DecideException(message, messageLog)
 
     class NoFindElementDB(
-        message: String,
-        messageLog: String
+        message: String = "Empty result",
+        messageLog: String = "Пустой результат"
     ) : DecideException(message, messageLog)
 
     class UserNotAuthorization(

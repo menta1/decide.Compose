@@ -3,7 +3,6 @@ package com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.imp
 import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.ui.Answer
 import com.decide.app.feature.passed.models.ResultCompletedAssay
-import timber.log.Timber
 
 internal fun assay8(
     answers: List<Answer>,
@@ -13,8 +12,6 @@ internal fun assay8(
     var points2 = 0f
 
     answers.forEach {
-        Timber.tag("TAG").d("points1 = $points1")
-        Timber.tag("TAG").d("points2 = $points2")
         when {
             (it.idQuestion in 1..2) -> {
                 points2 += it.answerValue
@@ -64,7 +61,6 @@ internal fun assay8(
 
     val result = points1 - points2 + 35f
     val forStatistics = 0.6 * (result - 5)
-    Timber.tag("TAG").d("assay 8 = $result")
     return when {
         (result <= 30f) -> {
             getResultCompletedAssay(key = "1", keyAssay = key, resultForStatistic = forStatistics)

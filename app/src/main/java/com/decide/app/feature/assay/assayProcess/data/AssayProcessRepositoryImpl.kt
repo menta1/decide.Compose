@@ -11,19 +11,25 @@ import com.decide.app.feature.assay.assayMain.modals.Assay
 import com.decide.app.feature.assay.assayProcess.KeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.useCase.AssayProcessRepository
 import com.decide.app.feature.passed.models.ResultCompletedAssay
+import com.decide.app.utils.DecideException
+import com.decide.app.utils.NetworkChecker
 import com.decide.app.utils.Resource
+import timber.log.Timber
 import javax.inject.Inject
 
 class AssayProcessRepositoryImpl @Inject constructor(
     private val localStorage: AppDatabase,
     private val remoteAssayStorage: RemoteAssayStorage,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val networkChecker: NetworkChecker,
 ) : AssayProcessRepository {
 
-    override suspend fun getAssay(id: Int): Resource<Assay, Exception> {
-        remoteAssayStorage.getKey(id.toString())
-        val result = localStorage.assayDao().getAssay(id)
-        return Resource.Success(result.toAssay())
+    override suspend fun getAssay(id: Int): Resource<Assay, DecideException> {
+        return if (networkChecker.isConnected()) {
+            Resource.Success(localStorage.assayDao().getAssay(id).toAssay())
+        } else {
+            Resource.Error(DecideException.NoInternet())
+        }
     }
 
     override suspend fun saveResult(
@@ -34,7 +40,8 @@ class AssayProcessRepositoryImpl @Inject constructor(
             localStorage.assayDao().getAssay(id).results.sortedBy { it.date }.toMutableList()
 
         if (results.size > 5) {
-            results.removeLast()
+            Timber.tag("TAG").d("saveResult > 5")
+            results.removeAt(results.lastIndex)
             results.add(
                 ResultCompletedAssayEntity(
                     date = result.date,
@@ -45,6 +52,7 @@ class AssayProcessRepositoryImpl @Inject constructor(
                 )
             )
         } else {
+            Timber.tag("TAG").d("saveResult < 5")
             results.add(
                 ResultCompletedAssayEntity(
                     date = result.date,

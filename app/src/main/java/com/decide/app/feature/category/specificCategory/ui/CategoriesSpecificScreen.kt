@@ -20,13 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.feature.assay.assayMain.ui.AssayUI
 import com.decide.app.utils.setDrawable
 import com.decide.uikit.R
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
 import com.decide.uikit.ui.buttons.ButtonBackArrow
@@ -52,7 +52,7 @@ fun CategoriesSpecificScreen(
 }
 
 @Composable
-fun CategoriesSpecificScreen(
+private fun CategoriesSpecificScreen(
     modifier: Modifier = Modifier,
     state: CategoriesSpecificState,
     onClickAssay: (id: Int) -> Unit,
@@ -81,7 +81,7 @@ fun CategoriesSpecificScreen(
                 Text(
                     text = state.description,
                     style = DecideTheme.typography.labelLarge,
-                    color = DecideTheme.colors.inputBlack,
+                    color = DecideTheme.colors.text,
                 )
                 LazyColumn {
                     items(state.assays) { assay ->
@@ -130,9 +130,9 @@ fun CategoriesSpecificScreen(
 }
 
 
-@Preview
+@MainPreview
 @Composable
-fun PreviewCategoriesSpecificScreen() {
+private fun Preview() {
     val state: CategoriesSpecificState by remember {
         mutableStateOf(
             CategoriesSpecificState.Loaded(
@@ -172,30 +172,3 @@ fun PreviewCategoriesSpecificScreen() {
         }
     }
 }
-
-@Preview
-@Composable
-fun PreviewErrorCategoriesSpecificScreen() {
-    DecideTheme {
-        Column(modifier = Modifier.fillMaxSize()) {
-            CategoriesSpecificScreen(
-                state = CategoriesSpecificState.Error(""),
-                onClickAssay = {},
-                onClickBack = {})
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewLoadingCategoriesSpecificScreen() {
-    DecideTheme {
-        Column(modifier = Modifier.fillMaxSize()) {
-            CategoriesSpecificScreen(
-                state = CategoriesSpecificState.Loading,
-                onClickAssay = {},
-                onClickBack = {})
-        }
-    }
-}
-

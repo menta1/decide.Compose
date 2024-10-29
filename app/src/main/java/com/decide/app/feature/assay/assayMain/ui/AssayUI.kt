@@ -6,5 +6,6 @@ data class AssayUI(
     val idCategory: Int,
     val nameCategory: String,
     val countQuestions: String,
-    val rating: String
+    val rating: String = "",
+    val rated: Int = 0
 )

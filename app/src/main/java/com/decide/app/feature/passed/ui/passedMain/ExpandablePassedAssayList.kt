@@ -1,6 +1,5 @@
 package com.decide.app.feature.passed.ui.passedMain
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,12 +13,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.decide.app.feature.passed.models.PassedAssay
 import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.app.utils.dateFormatter
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.card.CardResultAssay
 
@@ -53,49 +51,53 @@ fun ExpandablePassedAssayList(
     }
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
-fun ExpandablePassedAssayListPreview() {
+private fun Preview() {
     DecideTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Red)
         ) {
-            ExpandablePassedAssayList(list = mockPassedAssay) {}
+            ExpandablePassedAssayList(
+                list = listOf(
+                    PassedAssay(
+                        id = 1,
+                        idCategory = 1,
+                        name = "Тест 1",
+                        nameCategory = "Категория 1",
+                        rating = 0f,
+                        results = listOf(
+                            ResultCompletedAssay(
+                                date = 13287653264,
+                                shortResults = listOf("Good"),
+                                results = listOf("semiprecious")
+                            ),
+                            ResultCompletedAssay(
+                                date = 1324587653264,
+                                shortResults = listOf("Bad"),
+                                results = listOf("semiprecious")
+                            ),
+                            ResultCompletedAssay(
+                                date = 1328765323264,
+                                shortResults = listOf("Nice"),
+                                results = listOf("semiprecious")
+                            ),
+                            ResultCompletedAssay(
+                                date = 1328765323264,
+                                shortResults = listOf("Great"),
+                                results = listOf("semiprecious")
+                            ),
+                            ResultCompletedAssay(
+                                date = 13287653213264,
+                                shortResults = listOf("NotBad"),
+                                results = listOf("semiprecious")
+                            ),
+                        )
+                    )
+                )
+            ) {}
         }
     }
 }
 
-val mockPassedAssay = listOf(
-    PassedAssay(
-        id = 1,
-        idCategory = 1,
-        name = "Тест 1",
-        nameCategory = "Категория 1",
-        rating = "2.3",
-        results = listOf(
-            ResultCompletedAssay(
-                date = 13287653264, shortResults = listOf("Good"), results = listOf("semiprecious")
-            ),
-            ResultCompletedAssay(
-                date = 1324587653264, shortResults = listOf("Bad"), results = listOf("semiprecious")
-            ),
-            ResultCompletedAssay(
-                date = 1328765323264,
-                shortResults = listOf("Nice"),
-                results = listOf("semiprecious")
-            ),
-            ResultCompletedAssay(
-                date = 1328765323264,
-                shortResults = listOf("Great"),
-                results = listOf("semiprecious")
-            ),
-            ResultCompletedAssay(
-                date = 13287653213264,
-                shortResults = listOf("NotBad"),
-                results = listOf("semiprecious")
-            ),
-        )
-    )
-)

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +27,7 @@ class ProfileViewModel @Inject constructor(
             isAuthUserUseCase.invoke().collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        Timber.tag("TAG").d("temperamet ViewModel = ${result.data.temperament}")
                         _state.update {
                             ProfileState.Loaded(result.data)
                         }

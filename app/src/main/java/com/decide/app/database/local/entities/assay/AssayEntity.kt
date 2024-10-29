@@ -19,8 +19,10 @@ data class AssayEntity(
     val type: Int,
     val timeForTest: Long,
     val timeForQuestions: Long,
-    val rating: String,
-    val results: List<ResultCompletedAssayEntity> = listOf()
+    val rating: Float,
+    val results: List<ResultCompletedAssayEntity> = listOf(),
+    val rated: Int,
+    val finished: Int
 )
 
 fun AssayEntity.toAssay() = Assay(
@@ -34,7 +36,9 @@ fun AssayEntity.toAssay() = Assay(
     type = type,
     timeForTest = timeForTest,
     timeForQuestions = timeForQuestions,
-    rating = rating
+    rating = rating,
+    rated = rated,
+    finished = finished
 )
 
 fun AssayEntity.toPassedAssay() = PassedAssay(

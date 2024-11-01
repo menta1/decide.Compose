@@ -22,10 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.decide.uikit.R
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 
 @Composable
@@ -34,7 +33,7 @@ fun ButtonVariant(
     background: Color = DecideTheme.colors.container,
     text: String,
     textColor: Color = DecideTheme.colors.text,
-    textStyle: TextStyle = DecideTheme.typography.bodyMedium,
+    textStyle: TextStyle = DecideTheme.typography.bodySmall,
     selected: Boolean = false,
     iconSelected: Painter = painterResource(id = R.drawable.ic_checkbox_selected),
     tintIconSelected: Color = DecideTheme.colors.accentGreen,
@@ -63,44 +62,47 @@ fun ButtonVariant(
                 .padding(vertical = 4.dp),
             text = text,
             color = textColor,
-            style = if (selected) textStyle.copy(fontSize = 15.sp) else textStyle
+            style = textStyle
         )
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@MainPreview
 @Composable
-fun PreviewButtonVariant() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 39.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        ButtonVariant(text = "Начать") {
+private fun PreviewButtonVariant() {
+    DecideTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 39.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            ButtonVariant(text = "Начать") {
 
+            }
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@MainPreview
 @Composable
-fun PreviewButtonVariantSelected() {
-
-    var selected by remember {
-        mutableStateOf(true)
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 39.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        ButtonVariant(
-            text = "категорически не согласна с тем, что он делает и говорит в данной ситуации; активно выражаю несогласие и настаиваю на своем",
-            selected = selected
+private fun PreviewButtonVariantSelected() {
+    DecideTheme {
+        var selected by remember {
+            mutableStateOf(true)
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 39.dp),
+            verticalArrangement = Arrangement.Center
         ) {
-            selected = !selected
+            ButtonVariant(
+                text = "категорически не согласна с тем, что он делает и говорит в данной ситуации; активно выражаю несогласие и настаиваю на своем",
+                selected = selected
+            ) {
+                selected = !selected
+            }
         }
     }
 }

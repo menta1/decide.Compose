@@ -1,6 +1,5 @@
 package com.decide.app.feature.profile.editProfile.ui
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -23,17 +22,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,9 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
+import com.decide.app.utils.dateFormatter
 import com.decide.uikit.R
 import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
+import com.decide.uikit.ui.DatePickerModal
 import com.decide.uikit.ui.buttons.ButtonBackArrow
 import com.decide.uikit.ui.buttons.ButtonEntry
 import com.decide.uikit.ui.buttons.ButtonVariant
@@ -62,15 +57,11 @@ import com.decide.uikit.ui.defaultScreens.LoadingScreen
 import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
 import com.decide.uikit.ui.dialog.SuccessDialog
 import com.decide.uikit.ui.text.EditTextField
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun EditProfileScreen(
     onClickBack: () -> Unit,
 ) {
-
     val viewModel: EditProfileScreenViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -89,25 +80,18 @@ private fun EditProfileScreen(
     onEvent: (event: EditProfileEvent) -> Unit,
     onClickBack: () -> Unit,
 ) {
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-
     val galleryLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent(),
             onResult = { uri ->
                 uri?.let {
                     onEvent(EditProfileEvent.SetUriAvatar(it))
-                    imageUri = it
                 }
             })
 
     var showDatePicker by remember { mutableStateOf(false) }
 
-
     when (state.uiState) {
         UIState.DATA_ENTRY -> {
-
             Column(
                 modifier = modifier
                     .fillMaxHeight()
@@ -142,13 +126,12 @@ private fun EditProfileScreen(
                                 galleryLauncher.launch("image/*")
                             }, contentAlignment = Alignment.BottomEnd
                         ) {
-
                             Image(
-                                painter = if (imageUri == null) {
+                                painter = if (state.avatar == null) {
                                     painterResource(id = R.drawable.placeholder_fill_profile)
                                 } else {
                                     rememberAsyncImagePainter(
-                                        model = imageUri
+                                        model = state.avatar
                                     )
                                 },
                                 contentDescription = null,
@@ -157,7 +140,7 @@ private fun EditProfileScreen(
                                     .size(114.dp),
                                 contentScale = ContentScale.Crop
                             )
-                            if (imageUri == null) {
+                            if (state.avatar == null) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_select_picture),
                                     contentDescription = "select picture",
@@ -192,15 +175,14 @@ private fun EditProfileScreen(
                                 .onFocusChanged {
                                     if (it.isFocused) showDatePicker = !showDatePicker
                                 },
-                            value = if (state.dateOFBirth == -1L) "" else convertMillisToDate(state.dateOFBirth),
+                            value = if (state.dateOFBirth == -1L) "" else dateFormatter(state.dateOFBirth),
                             onValueChange = { },
                             maxLines = 1,
                             readOnly = true,
                             label = {
                                 Text(
                                     text = "День рождения",
-                                    style = DecideTheme.typography.titleSmall,
-                                    color = DecideTheme.colors.text,
+                                    style = DecideTheme.typography.titleSmall
                                 )
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -266,13 +248,11 @@ private fun EditProfileScreen(
                     onDismissRequest = { onClickBack() }
                 )
             }
-
         }
 
         UIState.LOADING -> {
             LoadingScreen()
         }
-
 
         UIState.ERROR -> {
             ErrorScreen {
@@ -342,67 +322,6 @@ private fun ChooseGander(
 
 }
 
-private fun convertMillisToDate(millis: Long?): String {
-    val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    return if (millis != null) {
-        formatter.format(Date(millis))
-    } else {
-        ""
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val datePickerState = rememberDatePickerState()
-
-    DatePickerDialog(onDismissRequest = onDismiss, confirmButton = {
-        TextButton(onClick = {
-            onDateSelected(datePickerState.selectedDateMillis)
-            onDismiss()
-        }) {
-            Text(
-                text = "Выбрать",
-                style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.text
-            )
-        }
-    }, dismissButton = {
-        TextButton(onClick = onDismiss) {
-            Text(
-                text = "Отмена",
-                style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.text
-            )
-        }
-    },
-        colors = DatePickerDefaults.colors().copy(
-            containerColor = DecideTheme.colors.background
-        )
-    ) {
-        DatePicker(
-            state = datePickerState,
-            colors = DatePickerDefaults.colors().copy(
-                containerColor = DecideTheme.colors.background,
-                selectedDayContentColor = DecideTheme.colors.text,
-                selectedDayContainerColor = DecideTheme.colors.accentGreen,
-                todayDateBorderColor = DecideTheme.colors.accentYellow,
-                todayContentColor = DecideTheme.colors.text,
-                titleContentColor = DecideTheme.colors.text,
-                headlineContentColor = DecideTheme.colors.text,
-                weekdayContentColor = DecideTheme.colors.text,
-                navigationContentColor = DecideTheme.colors.text,
-                yearContentColor = DecideTheme.colors.text,
-                selectedYearContainerColor = DecideTheme.colors.unFocused,
-                dayContentColor = DecideTheme.colors.unFocused,
-            )
-        )
-    }
-}
-
 @MainPreview
 @Composable
 private fun Preview() {
@@ -420,16 +339,3 @@ private fun Preview() {
         }
     }
 }
-
-@MainPreview
-@Composable
-private fun PreviewDatePickerModal() {
-    DecideTheme {
-        Column(modifier = Modifier.fillMaxSize()) {
-            DatePickerModal(
-                {}, {}
-            )
-        }
-    }
-}
-

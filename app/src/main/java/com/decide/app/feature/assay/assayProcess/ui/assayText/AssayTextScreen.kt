@@ -74,7 +74,6 @@ private fun AssayTextScreen(
                 progress = state.progress,
                 onClickBack = { onClickBack() },
                 onEvent = { onEvent(it) })
-
         }
 
         AssayTextState.Loading -> {
@@ -152,7 +151,6 @@ private fun AssayWithText(
                 .padding(top = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             LinearProgressIndicator(
                 progress = { progress },
                 color = DecideTheme.colors.accentYellow,
@@ -160,9 +158,7 @@ private fun AssayWithText(
                 strokeCap = StrokeCap.Round,
                 drawStopIndicator = {}
             )
-
             Spacer(modifier = Modifier.height(22.dp))
-
         }
 
         Box(modifier = Modifier.fillMaxHeight()) {
@@ -191,7 +187,6 @@ private fun AssayWithText(
                     }
                     Spacer(modifier = Modifier.height(84.dp))
                 }
-
             }
 
             ButtonMain(

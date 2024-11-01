@@ -9,6 +9,10 @@ data class ProfileUI(
     val email: String,
     val avatar: Uri? = null,
     val anxiety: Pair<Float, Float>?,
+    val dateAnxiety: String? = null,
     val depression: Pair<Float, Float>?,
-    val temperament: TemperamentUI?
+    val dateDepression: String? = null,
+    val temperament: TemperamentUI?,
+    val temperamentUser: String? = null,
+    val dateTemperament: String? = null
 )

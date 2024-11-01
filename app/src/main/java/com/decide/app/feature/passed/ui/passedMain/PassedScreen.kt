@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.decide.app.feature.passed.models.PassedAssay
+import com.decide.app.feature.passed.models.ResultCompletedAssay
 import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.ErrorMessage
@@ -119,7 +121,27 @@ private fun PassedScreen(
 @Composable
 private fun Preview() {
     val state by remember {
-        mutableStateOf(PassedScreenState.Initial)
+        mutableStateOf(
+            PassedScreenState.Success(
+                listOf(
+                    PassedAssay(
+                        id = 1,
+                        name = "Оценка социальной неудовлетворенности",
+                        idCategory = 1,
+                        nameCategory = "Психическое состояние",
+                        rating = 3.3f,
+                        results = listOf(
+                            ResultCompletedAssay(
+                                date = 123123123L,
+                                shortResults = listOf("HGFKjshd"),
+                                results = listOf("asdkjbalsdh")
+                            )
+                        )
+
+                    )
+                )
+            )
+        )
     }
     DecideTheme {
         Column {

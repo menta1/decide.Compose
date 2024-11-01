@@ -27,9 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastJoinToString
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -46,11 +46,11 @@ fun CardResultAssay(
     textStyleCategory: TextStyle = DecideTheme.typography.labelMedium,
     textAssay: String,
     textColorAssay: Color = DecideTheme.colors.text,
-    textStyleAssay: TextStyle = DecideTheme.typography.titleMedium,
+    textStyleAssay: TextStyle = DecideTheme.typography.bodyLarge,
     textDate: String,
     listDateResults: List<Pair<Long, List<String>>>,
     textColorDate: Color = DecideTheme.colors.text,
-    textStyleDate: TextStyle = DecideTheme.typography.titleMedium,
+    textStyleDate: TextStyle = DecideTheme.typography.titleSmall,
     onClickResult: (id: Int) -> Unit,
     onShowDetailResult: (date: Long) -> Unit
 ) {
@@ -184,7 +184,7 @@ private fun dateFormatter(date: Long): String {
     return sdf.format(dates)
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@MainPreview
 @Composable
 fun PreviewCardResultAssay() {
     DecideTheme {

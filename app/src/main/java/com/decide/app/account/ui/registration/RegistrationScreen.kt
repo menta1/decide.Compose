@@ -69,7 +69,7 @@ fun RegistrationScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistrationScreen(
+private fun RegistrationScreen(
     modifier: Modifier = Modifier,
     onClickLogin: () -> Unit,
     state: RegistrationState,
@@ -111,20 +111,18 @@ fun RegistrationScreen(
             Column(
                 modifier = modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
-                    .padding(top = 12.dp)
-                    .verticalScroll(rememberScrollState()),
+                    .padding(top = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
+                Column {
                     Text(
-                        modifier = Modifier.padding(bottom = 24.dp),
+                        modifier = Modifier
+                            .padding(bottom = 24.dp)
+                            .align(Alignment.CenterHorizontally),
                         text = "decide",
                         style = DecideTheme.typography.displayLarge,
                         color = DecideTheme.colors.text
@@ -200,6 +198,7 @@ fun RegistrationScreen(
                     ) {
                         skip()
                     }
+
                 }
 
                 Column(
@@ -208,9 +207,7 @@ fun RegistrationScreen(
                         .padding(bottom = 26.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-
                     Spacer(modifier = Modifier.height(4.dp))
-
                     Text(
                         text = "или с помощью",
                         style = DecideTheme.typography.titleSmall,
@@ -241,11 +238,11 @@ fun RegistrationScreen(
                                 .clickable { onClickLogin() },
                             text = "Вход",
                             color = DecideTheme.colors.accentPink,
-                            style = DecideTheme.typography.titleMedium,
+                            style = DecideTheme.typography.titleSmall,
                         )
                     }
-
                 }
+
             }
         }
 

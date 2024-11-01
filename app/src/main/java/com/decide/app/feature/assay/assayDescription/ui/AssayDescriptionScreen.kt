@@ -78,7 +78,6 @@ private fun AssayDescriptionScreen(
                             style = DecideTheme.typography.bodyLarge,
                             color = DecideTheme.colors.text,
                         )
-
                     }
                     ButtonMain(
                         modifier = Modifier

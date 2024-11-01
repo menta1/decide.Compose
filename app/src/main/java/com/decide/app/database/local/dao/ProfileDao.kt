@@ -15,6 +15,9 @@ interface ProfileDao {
     @Query("SELECT * FROM profile_table WHERE id = :id")
     suspend fun get(id: String): ProfileEntity?
 
+    @Query("SELECT * FROM profile_table")
+    suspend fun getAccountInfo(): ProfileEntity?
+
     @Query("DELETE FROM profile_table")
     suspend fun deleteUserInfo()
 

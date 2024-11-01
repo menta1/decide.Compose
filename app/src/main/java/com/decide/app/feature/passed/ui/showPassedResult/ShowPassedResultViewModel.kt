@@ -46,7 +46,5 @@ class ShowPassedResultViewModel @Inject constructor(
         } else {
             _state.update { ShowPassedResultState.Error }
         }
-
     }
-
 }

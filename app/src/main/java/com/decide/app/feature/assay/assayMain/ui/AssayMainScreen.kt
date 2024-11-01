@@ -52,9 +52,7 @@ fun AssayMainScreen(
 ) {
     val viewModel: AssayMainViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
-
     val widthAd = LocalConfiguration.current.screenWidthDp
-
     LaunchedEffect(Unit) {
         viewModel.onEvent(AssayMainEvent.LoadAds(widthAd))
     }
@@ -152,7 +150,6 @@ private fun Loaded(
         )
     )
 
-
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 14.dp),
@@ -182,7 +179,8 @@ private fun Loaded(
                 ),
                 onClickAssay = {
                     onClickAssay(assay.id)
-                }
+                },
+                idCategory = assay.idCategory
             )
 
             if ((index + 1) % 9 == 0 && state.adView != null) {
@@ -201,7 +199,6 @@ private fun Loaded(
                     )
                 }
             }
-
         }
     }
 }

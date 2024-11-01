@@ -1,6 +1,7 @@
 package com.decide.app.feature.profile.profileMain.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -35,9 +41,9 @@ import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.defaultScreens.ErrorScreen
 import com.decide.uikit.ui.defaultScreens.LoadingScreen
+import com.decide.uikit.ui.dialog.SuccessDialog
 import com.decide.uikit.ui.statistic.LineStatistic
 import com.decide.uikit.ui.statistic.PieStatistic
-import com.decide.uikit.ui.statistic.modal.TemperamentUI
 
 @Composable
 fun ProfileScreen(
@@ -82,12 +88,14 @@ private fun ProfileScreen(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Loaded(
     modifier: Modifier = Modifier,
     onClickSetting: () -> Unit = {},
     profileUI: ProfileUI,
 ) {
+    var show by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -127,7 +135,9 @@ private fun Loaded(
                     rememberAsyncImagePainter(
                         model = profileUI.avatar
                     )
-                }, contentDescription = null, modifier = Modifier
+                },
+                contentDescription = null,
+                modifier = Modifier
                     .clip(CircleShape)
                     .size(110.dp),
                 contentScale = ContentScale.Crop
@@ -138,7 +148,7 @@ private fun Loaded(
                         .padding(top = 4.dp)
                         .padding(start = 8.dp),
                     text = profileUI.firstName + " " + profileUI.lastName,
-                    style = DecideTheme.typography.titleLarge,
+                    style = DecideTheme.typography.bodyLarge,
                     color = DecideTheme.colors.text
                 )
                 Text(
@@ -146,64 +156,95 @@ private fun Loaded(
                         .padding(top = 4.dp)
                         .padding(start = 8.dp),
                     text = profileUI.email,
-                    style = DecideTheme.typography.titleMedium,
+                    style = DecideTheme.typography.titleSmall,
                     color = DecideTheme.colors.gray
                 )
             }
 
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            modifier = Modifier
-                .padding(top = 4.dp),
-            text = "Ваша статистика",
-            style = DecideTheme.typography.titleLarge,
-            color = DecideTheme.colors.text
-        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = "Cтатистика",
+                style = DecideTheme.typography.titleLarge,
+                color = DecideTheme.colors.text
+            )
+
+            IconButton(onClick = {
+                show = true
+            }) {
+                Icon(
+                    painter = painterResource(com.decide.app.R.drawable.ic_help_circle),
+                    contentDescription = null,
+                    tint = DecideTheme.colors.accentPink
+                )
+            }
+        }
+        if (show) {
+            SuccessDialog(title = "Это общая статистика среди всех участников. Чтобы получать статистику нужно проходить больше тестов, так как результат считается исходя из результатов нескольких тестов",
+                textStyle = DecideTheme.typography.bodyMedium,
+                containerPadding = 8.dp,
+                onDismissRequest = { show = false })
+        }
 
         Spacer(modifier = Modifier.height(18.dp))
 
         ContentProfile(
-            anxiety = profileUI.anxiety,
-            depression = profileUI.depression,
-            temperament = profileUI.temperament
+            profileUI = profileUI
         )
-
     }
 }
 
 @Composable
 private fun ContentProfile(
-    anxiety: Pair<Float, Float>?,
-    depression: Pair<Float, Float>?,
-    temperament: TemperamentUI?
+    profileUI: ProfileUI,
 ) {
 
     Box(
         modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(DecideTheme.colors.container), contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .alpha(if (temperament == null) 0.4f else 1f),
+                .alpha(if (profileUI.temperament == null) 0.4f else 1f),
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(top = 4.dp),
-                text = "Темперамент",
-                style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.text
-            )
+            Row(
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .padding(start = 4.dp),
+                    text = "Темперамент",
+                    style = DecideTheme.typography.titleLarge,
+                    color = DecideTheme.colors.text
+                )
+                if (profileUI.dateTemperament != null) {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .padding(start = 4.dp),
+                        text = "от " + profileUI.dateTemperament,
+                        style = DecideTheme.typography.titleSmall,
+                        color = DecideTheme.colors.text
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
 
             PieStatistic(
-                data = temperament
+                data = profileUI.temperament
             )
         }
 
-        if (temperament == null) {
+        if (profileUI.temperament == null) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -225,37 +266,65 @@ private fun ContentProfile(
 
     Spacer(modifier = Modifier.height(32.dp))
 
-    Statistic(data = anxiety, nameStat = "Уровень тревожности")
+    Statistic(
+        data = profileUI.anxiety,
+        nameStat = "Уровень тревожности",
+        date = profileUI.dateAnxiety
+    )
     Spacer(modifier = Modifier.height(18.dp))
-    Statistic(data = depression, nameStat = "Уровень депрессии")
-
+    Statistic(
+        data = profileUI.depression,
+        nameStat = "Уровень депрессии",
+        date = profileUI.dateDepression
+    )
 }
 
 @Composable
 private fun Statistic(
     data: Pair<Float, Float>?,
-    nameStat: String
+    nameStat: String,
+    date: String? = null
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(DecideTheme.colors.container), contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(if (data == null) 0.4f else 1f),
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(top = 4.dp),
-                text = nameStat,
-                style = DecideTheme.typography.titleMedium,
-                color = DecideTheme.colors.text
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .padding(start = 4.dp),
+                    text = nameStat,
+                    style = DecideTheme.typography.titleLarge,
+                    color = DecideTheme.colors.text
+                )
+
+                if (date != null) {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .padding(start = 4.dp),
+                        text = "от $date",
+                        style = DecideTheme.typography.titleSmall,
+                        color = DecideTheme.colors.text
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
             LineStatistic(
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(bottom = 4.dp),
                 your = data?.first ?: 80f,
                 all = data?.second ?: 20f,
                 isHasResult = true,
@@ -289,9 +358,7 @@ private fun Preview() {
     DecideTheme {
         Column {
             Loaded(
-                modifier = Modifier,
-                onClickSetting = {},
-                profileUI = ProfileUI(
+                modifier = Modifier, onClickSetting = {}, profileUI = ProfileUI(
                     firstName = "Ainur",
                     lastName = "a;sldajkdjaskd",
                     email = "asdasd@asdasd.eer",

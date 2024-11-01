@@ -4,9 +4,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-fun dateFormatter(date: Long): String {
-    val dates = Date(date)
-    val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-
-    return sdf.format(dates)
+fun dateFormatter(millis: Long?): String {
+    val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    return if (millis != null) {
+        formatter.format(Date(millis))
+    } else {
+        ""
+    }
 }

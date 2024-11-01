@@ -28,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -97,134 +96,131 @@ fun LoginScreen(
                     .padding(horizontal = 16.dp)
                     .padding(top = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Text(
-                    modifier = Modifier.padding(bottom = 24.dp),
-                    text = "decide",
-                    style = DecideTheme.typography.displayLarge,
-                    color = DecideTheme.colors.text
-                )
+                Column {
+                    Text(
+                        modifier = Modifier
+                            .padding(bottom = 24.dp)
+                            .align(Alignment.CenterHorizontally),
+                        text = "decide",
+                        style = DecideTheme.typography.displayLarge,
+                        color = DecideTheme.colors.text
+                    )
+                    Text(
+                        text = "Давайте войдем в систему",
+                        style = DecideTheme.typography.displayMedium,
+                        color = DecideTheme.colors.text
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Войдите в свою учетную запись",
+                        style = DecideTheme.typography.labelLarge,
+                        color = DecideTheme.colors.gray
+                    )
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Column {
-                        Text(
-                            text = "Давайте войдем в систему",
-                            style = DecideTheme.typography.displaySmall,
-                            color = DecideTheme.colors.text
-                        )
+                    if (state.exceptionAuth) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Войдите в свою учетную запись",
-                            style = DecideTheme.typography.titleSmall,
-                            color = DecideTheme.colors.gray
+                            text = "Неверный email или пароль",
+                            style = DecideTheme.typography.titleMedium,
+                            color = DecideTheme.colors.error
                         )
+                    }
 
-                        if (state.exceptionAuth) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Неверный email или пароль",
-                                style = DecideTheme.typography.titleMedium,
-                                color = DecideTheme.colors.error
-                            )
-                        }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    EditTextField(
+                        value = state.email,
+                        onValueChange = { onEvent(LoginScreenEvent.SetEmail(it)) },
+                        labelText = "Email",
+                        isError = state.isErrorEmail.isError,
+                        supportingText = state.isErrorEmail.nameError,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        isFocus = {})
 
-                        Spacer(modifier = Modifier.height(12.dp))
-                        EditTextField(value = state.email,
-                            onValueChange = { onEvent(LoginScreenEvent.SetEmail(it)) },
-                            labelText = "email",
-                            isError = state.isErrorEmail.isError,
-                            supportingText = state.isErrorEmail.nameError,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                            isFocus = {})
+                    EditTextField(
+                        value = state.password,
+                        onValueChange = { onEvent(LoginScreenEvent.SetPassword(it)) },
+                        labelText = "Пароль",
+                        trailingIcon = {
+                            if (state.password.isNotBlank()) IconButton(onClick = {
+                                passwordVisibility = !passwordVisibility
+                            }) {
+                                Icon(
+                                    painter = icon,
+                                    contentDescription = "Visibility",
+                                    tint = DecideTheme.colors.gray
+                                )
+                            }
+                        },
+                        isError = state.isErrorPassword.isError,
+                        supportingText = state.isErrorPassword.nameError,
+                        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                        isFocus = {})
 
-                        EditTextField(
-                            value = state.password,
-                            onValueChange = { onEvent(LoginScreenEvent.SetPassword(it)) },
-                            labelText = "Пароль",
-                            trailingIcon = {
-                                if (state.password.isNotBlank()) IconButton(onClick = {
-                                    passwordVisibility = !passwordVisibility
-                                }) {
-                                    Icon(
-                                        painter = icon,
-                                        contentDescription = "Visibility",
-                                        tint = DecideTheme.colors.gray
-                                    )
-                                }
-                            },
-                            isError = state.isErrorPassword.isError,
-                            supportingText = state.isErrorPassword.nameError,
-                            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                            isFocus = {})
-
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
                         Text(
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .clickable {
                                     onClickForgotPassword()
                                 },
                             style = DecideTheme.typography.titleSmall,
                             color = DecideTheme.colors.text,
-                            textAlign = TextAlign.End,
                             text = "Забыли пароль?"
                         )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        ButtonEntry(text = "Вход") {
-                            onEvent(LoginScreenEvent.TryAuth)
-                        }
                     }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 26.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ButtonEntry(text = "Вход") {
+                        onEvent(LoginScreenEvent.TryAuth)
+                    }
+                }
 
-                        Text(
-                            text = "или с помощью",
-                            style = DecideTheme.typography.titleSmall,
-                            color = DecideTheme.colors.unFocused
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 26.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "или с помощью",
+                        style = DecideTheme.typography.titleSmall,
+                        color = DecideTheme.colors.unFocused
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    IconButton(onClick = {
+                        onEvent(LoginScreenEvent.AuthWithVK)
+                    }) {
+                        Icon(
+                            painter = painterResource(com.decide.uikit.R.drawable.ic_vk),
+                            tint = null,
+                            contentDescription = null
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        IconButton(onClick = {
-                            onEvent(LoginScreenEvent.AuthWithVK)
-                        }) {
-                            Icon(
-                                painter = painterResource(com.decide.uikit.R.drawable.ic_vk),
-                                tint = null,
-                                contentDescription = null
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row {
-                            Text(
-                                text = "У вас нет профиля?",
-                                style = DecideTheme.typography.titleSmall,
-                                color = DecideTheme.colors.text
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 4.dp)
-                                    .clickable { onClickRegistration() },
-                                text = "Регистрация",
-                                style = DecideTheme.typography.titleMedium,
-                                color = DecideTheme.colors.accentPink
-                            )
-                        }
-
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "У вас нет профиля?",
+                            style = DecideTheme.typography.titleSmall,
+                            color = DecideTheme.colors.text
+                        )
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .clickable { onClickRegistration() },
+                            text = "Регистрация",
+                            style = DecideTheme.typography.titleSmall,
+                            color = DecideTheme.colors.accentPink
+                        )
                     }
                 }
 

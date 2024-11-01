@@ -9,7 +9,6 @@ import com.decide.app.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class SaveResultUseCaseImpl @Inject constructor(
@@ -30,11 +29,10 @@ class SaveResultUseCaseImpl @Inject constructor(
         )
         when (endingResult) {
             is Resource.Error -> {
-                Timber.tag("TAG").d("Error")
+
             }
 
             is Resource.Success -> {
-                Timber.tag("TAG").d("Success")
                 CoroutineScope(Dispatchers.IO).launch {
                     repository.saveResult(
                         id = id,

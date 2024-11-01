@@ -31,7 +31,6 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), ShowAds {
@@ -45,7 +44,6 @@ class MainActivity : ComponentActivity(), ShowAds {
 
         viewModel.initApp()
         enableEdgeToEdge()
-
         setContent {
             val state by viewModel.authState.collectAsStateWithLifecycle()
 
@@ -99,13 +97,11 @@ class MainActivity : ComponentActivity(), ShowAds {
         interstitialAdLoader = InterstitialAdLoader(this).apply {
             setAdLoadListener(object : InterstitialAdLoadListener {
                 override fun onAdLoaded(ad: InterstitialAd) {
-                    Timber.tag("TAG").d("onAdLoaded")
                     interstitialAd = ad
                     onAdLoaded(ad)
                 }
 
                 override fun onAdFailedToLoad(adRequestError: AdRequestError) {
-                    Timber.tag("TAG").d("onAdFailedToLoad")
                     onAdFailedToLoad(adRequestError)
                 }
             })
@@ -123,12 +119,10 @@ class MainActivity : ComponentActivity(), ShowAds {
         interstitialAd?.apply {
             setAdEventListener(object : InterstitialAdEventListener {
                 override fun onAdShown() {
-                    Timber.tag("TAG").d("onAdShown")
                     onAdShown()
                 }
 
                 override fun onAdFailedToShow(adError: AdError) {
-                    Timber.tag("TAG").d("onAdFailedToShow")
                     interstitialAd?.setAdEventListener(null)
                     interstitialAd = null
                     onAdFailedToShow(adError)
@@ -136,19 +130,16 @@ class MainActivity : ComponentActivity(), ShowAds {
                 }
 
                 override fun onAdDismissed() {
-                    Timber.tag("TAG").d("onAdDismissed")
                     interstitialAd?.setAdEventListener(null)
                     interstitialAd = null
                     onAdDismissed()
                 }
 
                 override fun onAdClicked() {
-                    Timber.tag("TAG").d("onAdClicked")
                     onAdClicked()
                 }
 
                 override fun onAdImpression(impressionData: ImpressionData?) {
-                    Timber.tag("TAG").d("onAdImpression")
                     onAdImpression(impressionData)
                 }
             })
@@ -162,5 +153,4 @@ class MainActivity : ComponentActivity(), ShowAds {
         interstitialAd?.setAdEventListener(null)
         interstitialAd = null
     }
-
 }

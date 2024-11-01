@@ -11,11 +11,13 @@ data class StatisticEntity(
     val oldResult: Double = 0.0,//результат для статистики. Общее количество баллов всех тестов для статистики,
     val globalResults: Map<String, Double> = emptyMap(),
     val users: Int = 0,
+    val date: Long
 )
 
 fun StatisticEntity.toStatistic() = Statistic(
     id = id,
     result = result,
     globalResults = globalResults,
-    users = users
+    users = users,
+    date = date
 )

@@ -3,6 +3,7 @@ package com.decide.app.feature.assay.assayMain.ui
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.decide.app.account.adsManager.AccountInfo
 import com.decide.app.account.adsManager.AdsManager
 import com.decide.app.activity.domain.InitApp
 import com.decide.app.feature.assay.assayMain.data.AssayMainRepository
@@ -38,13 +39,16 @@ class AssayMainViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(AssayMainState())
     val state: StateFlow<AssayMainState> = _state.asStateFlow()
+
+    private var adsInfo: AccountInfo? = null
     private var lastScrollIndex = 0
     private var nowDownloadAttempts = 0
 
-    private var assays = emptyList<AssayUI>()
+    private var assayUIList = emptyList<AssayUI>()
 
     init {
         viewModelScope.launch {
+            adsInfo = adsManager.getAccountInfo()
             getAssays()
         }
     }
@@ -84,7 +88,7 @@ class AssayMainViewModel @Inject constructor(
             }
         })
         loadAd(
-            AdRequest.Builder().build()
+            AdRequest.Builder().setAge(adsInfo?.dateBirth).setGender(adsInfo?.gender).build()
         )
     }
 
@@ -100,21 +104,13 @@ class AssayMainViewModel @Inject constructor(
                         }
                     } else {
                         _state.update { state ->
-                            state.copy(uiState = UIState.SUCCESS,
+                            state.copy(
+                                uiState = UIState.SUCCESS,
                                 assays = assays.map { it.toAssayUI() })
                         }
+                        assayUIList = assays.map { it.toAssayUI() }
                     }
                 }
-//                assays = result.data.map { it.toAssayUI() }
-//                if (assays.isEmpty()) {
-//                    _state.update { state ->
-//                        state.copy(
-//                            uiState = UIState.LOADING
-//                        )
-//                    }
-//                } else {
-//
-//                }
             }
 
             is Resource.Error -> {
@@ -159,7 +155,6 @@ class AssayMainViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
 
@@ -167,12 +162,14 @@ class AssayMainViewModel @Inject constructor(
         when (event) {
             is AssayMainEvent.SetSearch -> {
                 _state.update { state ->
-                    state.copy(searchText = event.search, assays = if (event.search.isBlank()) {
-                        assays.toImmutableList()
-                    } else {
-                        assays.filter { it.name.contains(event.search, ignoreCase = true) }
-                            .toImmutableList()
-                    })
+                    state.copy(
+                        searchText = event.search,
+                        assays = if (event.search.isBlank()) {
+                            assayUIList.toImmutableList()
+                        } else {
+                            assayUIList.filter { it.name.contains(event.search, ignoreCase = true) }
+                                .toImmutableList()
+                        })
                 }
             }
 
@@ -191,8 +188,6 @@ class AssayMainViewModel @Inject constructor(
                     state.copy(scrollUp = event.newScrollIndex > lastScrollIndex)
                 }
                 lastScrollIndex = event.newScrollIndex
-
-
             }
 
             is AssayMainEvent.LoadAds -> {
@@ -216,7 +211,6 @@ class AssayMainViewModel @Inject constructor(
                             }
                         }
                     }
-
                 }
             }
         }

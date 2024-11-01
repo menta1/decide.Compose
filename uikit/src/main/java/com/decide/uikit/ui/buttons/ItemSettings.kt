@@ -35,7 +35,7 @@ fun ItemSettings(
     checked: Boolean = false,
     onCheckedChange: (Boolean) -> Unit = {},
     textColor: Color = DecideTheme.colors.text,
-    textStyle: TextStyle = DecideTheme.typography.bodyMedium,
+    textStyle: TextStyle = DecideTheme.typography.titleSmall,
     iconItem: Painter = painterResource(id = R.drawable.ic_bookmark_unselected),
     tintItem: Color = DecideTheme.colors.mainColor,
     iconArrow: Painter = painterResource(id = R.drawable.ic_arrow_right),

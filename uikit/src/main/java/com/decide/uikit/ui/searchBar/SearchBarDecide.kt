@@ -1,7 +1,6 @@
 package com.decide.uikit.ui.searchBar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -33,9 +32,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.decide.uikit.R
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 
 @Composable
@@ -44,17 +43,12 @@ fun SearchBarDecide(
     value: String,
     onValueChange: (String) -> Unit,
     hint: String = "Поиск...",
-    backgroundColor: Color = DecideTheme.colors.background,
+    backgroundColor: Color = DecideTheme.colors.container,
 ) {
     val focusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
     Row(
         modifier = modifier
-            .border(
-                width = 0.2.dp,
-                color = DecideTheme.colors.gray,
-                shape = RoundedCornerShape(15.dp),
-            )
             .height(56.dp)
             .fillMaxWidth()
             .background(color = backgroundColor, shape = RoundedCornerShape(15.dp))
@@ -66,7 +60,9 @@ fun SearchBarDecide(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Spacer(modifier = Modifier.width(16.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_search),
@@ -74,7 +70,6 @@ fun SearchBarDecide(
                 tint = DecideTheme.colors.text
             )
             Spacer(modifier = Modifier.width(16.dp))
-
             BasicTextField(
                 modifier = Modifier.focusRequester(focusRequester),
                 value = value,
@@ -86,17 +81,18 @@ fun SearchBarDecide(
                     if (value.isEmpty()) {
                         Text(
                             text = hint,
-                            color = Color.Gray.copy(alpha = 0.5f),
-                            style = DecideTheme.typography.titleMedium
+                            color = DecideTheme.colors.unFocused,
+                            style = DecideTheme.typography.titleSmall
                         )
                     }
                     innerTextField()
                 },
                 keyboardActions = KeyboardActions(KeyboardActions().onSearch),
                 cursorBrush = SolidColor(DecideTheme.colors.text),
-                textStyle = DecideTheme.typography.titleMedium.copy(
-                    color = DecideTheme.colors.text
-                )
+                textStyle = DecideTheme.typography.titleSmall.copy(
+                    color = DecideTheme.colors.text,
+
+                    )
             )
         }
 
@@ -128,16 +124,14 @@ fun SearchBarDecide(
 
 }
 
-
-@Preview
+@MainPreview
 @Composable
-fun PreviewSearchBar() {
+private fun Preview() {
     DecideTheme {
         var text by remember { mutableStateOf("") }
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(DecideTheme.colors.background)
         ) {
             Spacer(modifier = Modifier.height(80.dp))
             SearchBarDecide(
@@ -147,79 +141,5 @@ fun PreviewSearchBar() {
                 },
             )
         }
-
     }
 }
-
-//
-//@Composable
-//fun SearchBarDecide(
-//    value: String,
-//    onValueChange: (String) -> Unit,
-//    onClickRemoveText: () -> Unit,
-//    hint: String = "Поиск...",
-//    backgroundColor: Color = DecideTheme.colors.inputWhite,
-//) {
-//    TextField(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .border(
-//                width = 1.dp,
-//                color = backgroundColor,
-//                shape = RoundedCornerShape(15.dp),
-//            ),
-//        value = value,
-//        onValueChange = onValueChange,
-//        maxLines = 1,
-//        singleLine = true,
-//        keyboardActions = KeyboardActions(KeyboardActions().onSearch),
-//        shape = RoundedCornerShape(20.dp),
-//        leadingIcon = {
-//            Icon(
-//                painter = painterResource(id = R.drawable.ic_search), contentDescription = "Search"
-//            )
-//        },
-//        trailingIcon = {
-//            if (value.isNotBlank()) {
-//                IconButton(onClick = { onValueChange("") }) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.ic_remove_text),
-//                        contentDescription = "Remove search"
-//                    )
-//                }
-//            }
-//        },
-//        placeholder = {
-//            Text(
-//                text = hint,
-//                style = DecideTheme.typography.titleSmall,
-//                color = DecideTheme.colors.gray
-//            )
-//        },
-//        colors = TextFieldDefaults.colors().copy(
-//            focusedContainerColor = DecideTheme.colors.background,
-//            unfocusedContainerColor = DecideTheme.colors.background,
-////            focusedIndicatorColor = Color.Transparent,
-////            unfocusedIndicatorColor = Color.Transparent,
-//        )
-//    )
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewLKHYGU() {
-//    DecideTheme {
-//        var text by remember {
-//            mutableStateOf("")
-//        }
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(DecideTheme.colors.inputBlack)
-//        ) {
-//            SearchBarDecide(value = text, onValueChange = {}, onClickRemoveText = {})
-//        }
-//
-//
-//    }
-//}

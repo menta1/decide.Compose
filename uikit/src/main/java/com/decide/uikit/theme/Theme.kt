@@ -97,6 +97,19 @@ data class DecideColors(
     val textLink: Color = Color.Unspecified,
     val error: Color = Color.Unspecified,
     val notificationBadge: Color = error,
+
+    val category1: Color = category_1,
+    val category2: Color = category_2,
+    val category3: Color = category_3,
+    val category4: Color = category_4,
+    val category5: Color = category_5,
+    val category6: Color = category_6,
+    val category7: Color = category_7,
+    val category8: Color = category_8,
+    val category9: Color = category_9,
+    val category10: Color = category_10,
+    val category11: Color = category_11,
+
     val isDark: Boolean = false
 )
 

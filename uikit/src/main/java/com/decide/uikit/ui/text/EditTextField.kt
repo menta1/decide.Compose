@@ -1,5 +1,7 @@
 package com.decide.uikit.ui.text
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
@@ -12,6 +14,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 
 @Composable
@@ -60,8 +63,7 @@ fun EditTextField(
         label = {
             Text(
                 text = labelText,
-                style = labelStyle,
-                color = labelColor
+                style = labelStyle
             )
         },
         colors = OutlinedTextFieldDefaults.colors(
@@ -75,4 +77,36 @@ fun EditTextField(
             unfocusedTextColor = unfocusedTextColor,
         )
     )
+}
+
+@MainPreview
+@Composable
+private fun Preview() {
+    DecideTheme {
+        Column(Modifier.fillMaxSize()) {
+            EditTextField(
+                value = "",
+                onValueChange = {},
+                labelText = "labelText",
+                supportingText = "supportingText",
+                isFocus = {}
+            )
+        }
+    }
+}
+
+@MainPreview
+@Composable
+private fun PreviewWithValue() {
+    DecideTheme {
+        Column(Modifier.fillMaxSize()) {
+            EditTextField(
+                value = "asdasd",
+                onValueChange = {},
+                labelText = "labelText",
+                supportingText = "supportingText",
+                isFocus = {}
+            )
+        }
+    }
 }

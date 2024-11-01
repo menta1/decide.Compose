@@ -11,19 +11,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 
 @Composable
 fun SuccessDialog(
     title: String,
+    textColor: Color = DecideTheme.colors.text,
+    textStyle: TextStyle = DecideTheme.typography.titleMedium,
     backgroundColor: Color = DecideTheme.colors.container,
+    containerPadding: Dp = 34.dp,
     onDismissRequest: () -> Unit
 ) {
-
     Dialog(
         onDismissRequest = onDismissRequest
     ) {
@@ -31,21 +35,21 @@ fun SuccessDialog(
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .background(backgroundColor)
-                .padding(34.dp)
+                .padding(containerPadding)
         ) {
             Text(
                 text = title,
-                style = DecideTheme.typography.titleMedium,
+                style = textStyle,
                 textAlign = TextAlign.Start,
-                color = DecideTheme.colors.text
+                color = textColor
             )
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true, locale = "ru")
+@MainPreview
 @Composable
-fun PreviewSuccessDialog() {
+private fun Preview() {
     DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             SuccessDialog(

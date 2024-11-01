@@ -101,7 +101,7 @@ private fun AssayWithResultScreen(
                             .padding(horizontal = 14.dp)
                             .padding(top = 8.dp),
                         text = "Результат",
-                        style = DecideTheme.typography.titleLarge,
+                        style = DecideTheme.typography.headlineLarge,
                         color = DecideTheme.colors.text
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -132,7 +132,7 @@ private fun AssayWithResultScreen(
                                 ) {
                                     Text(
                                         text = value,
-                                        style = DecideTheme.typography.titleMedium,
+                                        style = DecideTheme.typography.titleLarge,
                                         color = DecideTheme.colors.text
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))

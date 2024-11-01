@@ -7,8 +7,10 @@ import androidx.datastore.preferences.core.edit
 import com.decide.app.account.adsManager.Constants.BANNER_ADS_PREF
 import com.decide.app.account.adsManager.Constants.FULL_SCREEN_ADS_PREF
 import com.decide.app.account.domain.useCase.IsUserAuthUseCase
+import com.decide.app.account.statisticsClient.StatisticsClient
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.remote.RemoteAssayStorage
+import com.decide.app.utils.Resource
 import com.google.firebase.remoteconfig.ConfigUpdate
 import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -27,28 +29,44 @@ class MainRepositoryImpl @Inject constructor(
     private val isUserAuthUseCase: IsUserAuthUseCase,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val dataStore: DataStore<Preferences>,
-    private val remoteConfig: FirebaseRemoteConfig
+    private val remoteConfig: FirebaseRemoteConfig,
+    private val statisticsClient: StatisticsClient
 ) : MainRepository {
 
     override suspend fun initAssays() {
-        //checkVersion remote DB тогда обновлять базу//Сделать позже
-        remoteStorage.getAssays {
-            coroutineScope.launch {
-                remoteStorage.getKeys()
-                val userAuth = isUserAuthUseCase.invoke()
-                if (userAuth != null) {
-                    remoteStorage.getPassedAssays(userAuth)
+        val isDataInit = dataStore.data.map { it[DATA_INIT] }.firstOrNull()
+        if (isDataInit == null || isDataInit == false) {
+            Timber.tag("TAG").d("isDataInit != null && isDataInit == false")
+            remoteStorage.getAssays { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Timber.tag("TAG").d("getAssays Success")
+                        coroutineScope.launch {
+                            remoteStorage.getKeys()
+                            remoteStorage.getCategories()
+                            val userAuth = isUserAuthUseCase.invoke()
+                            if (userAuth != null) {
+                                remoteStorage.getPassedAssays(userAuth)
+                                statisticsClient.getRemoteStatistic(userAuth, true)
+                            }
+                            dataStore.edit { it[DATA_INIT] = true }
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        Timber.tag("TAG").d("getAssays Error")
+                    }
                 }
+
             }
         }
     }
 
     override suspend fun initCategories() {
-        //checkVersion remote DB тогда обновлять базу//Сделать позже
-        remoteStorage.getCategories()
+
     }
 
-    override suspend fun initProfile() {//При Входе на следующий день нужно обновлять пройденные тесты
+    override suspend fun initProfile() {
 
     }
 
@@ -137,6 +155,9 @@ class MainRepositoryImpl @Inject constructor(
 
         val FIRST_LAUNCH = booleanPreferencesKey(
             name = "isFirstLaunch"
+        )
+        val DATA_INIT = booleanPreferencesKey(
+            name = "date"
         )
     }
 }

@@ -2,6 +2,7 @@ package com.decide.app.database.local.entities.profile
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.decide.app.account.adsManager.AccountInfo
 import com.decide.app.feature.profile.editProfile.modal.ProfileEdit
 
 @Entity(tableName = "profile_table")
@@ -21,6 +22,12 @@ fun ProfileEntity.toProfileEdit() = ProfileEdit(
     firstName = firstName,
     lastName = lastName,
     dateBirth = dateBirth,
+    gender = gender,
+    city = city
+)
+
+fun ProfileEntity.toAccountInfo() = AccountInfo(
+    dateBirth = dateBirth.toString(),
     gender = gender,
     city = city
 )

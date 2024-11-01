@@ -23,12 +23,11 @@ class PassedScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            statisticsClient.updateStatistic()
+
             val allAssaysWithResults = repository.fetchAllResults()
             if (allAssaysWithResults.isNotEmpty()) {
                 _state.update {
                     PassedScreenState.Success(allAssaysWithResults)
-                    //Отфильтровать и получить последнюю дату результат
                 }
             } else {
                 _state.update {

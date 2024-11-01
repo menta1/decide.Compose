@@ -26,12 +26,12 @@ class MainActivityViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            initApp.initApp()
             _authState.update {
                 it.copy(
                     isFirstLaunch = isFirstLaunchUseCase.invoke()
                 )
             }
-            initApp.initApp()
             initRemoteConfig.invoke()
         }
     }

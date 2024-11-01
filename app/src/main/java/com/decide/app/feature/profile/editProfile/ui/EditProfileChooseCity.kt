@@ -4,8 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,11 +37,14 @@ fun EditProfileChooseCity(
     Scaffold(
         topBar = {
             Row(
+                modifier = Modifier.padding(end = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
                 ButtonBackArrow(
-                    modifier = Modifier.padding(start = 12.dp),
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .padding(top = 4.dp),
                     text = "",
                     onClick = { onEvent(EditProfileEvent.SetCity("")) })
 
@@ -75,7 +80,9 @@ fun EditProfileChooseCity(
         contentColor = DecideTheme.colors.background,
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(horizontal = 14.dp)
         ) {
             items(state.cities) {
                 Row(
@@ -94,6 +101,7 @@ fun EditProfileChooseCity(
                         textAlign = TextAlign.Center,
                         color = DecideTheme.colors.text
                     )
+                    Spacer(Modifier.height(4.dp))
                     Icon(
                         painter = painterResource(com.decide.uikit.R.drawable.ic_arrow_right),
                         tint = DecideTheme.colors.gray,

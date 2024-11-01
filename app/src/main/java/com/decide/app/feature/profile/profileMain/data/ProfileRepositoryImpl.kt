@@ -14,6 +14,7 @@ import com.decide.app.feature.profile.profileMain.modal.ProfileUI
 import com.decide.app.feature.profile.profileMain.modal.Statistic
 import com.decide.app.utils.DecideException
 import com.decide.app.utils.Resource
+import com.decide.app.utils.dateFormatter
 import com.decide.uikit.ui.statistic.modal.TemperamentUI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -32,6 +33,9 @@ class ProfileRepositoryImpl @Inject constructor(
             val statistic = localStorage.statisticsDao().getAll().map { it.toStatistic() }
             val anxiety = statistic.find { it.id == 1 }
             val temperament = statistic.find { it.id == 2 }
+            if (temperament != null) {
+                localStorage.assayDao().getAssay(4).results.last().resultForStatistic
+            }
             val depression = statistic.find { it.id == 3 }
             if (profile != null) {
                 when (val uri = getAvatarUseCase.invoke()) {
@@ -46,13 +50,17 @@ class ProfileRepositoryImpl @Inject constructor(
                                         anxiety.result.toFloat(),
                                         (anxiety.globalResults[SINGLE]?.div(anxiety.users))!!.toFloat()
                                     ) else null,
+                                    dateAnxiety = dateFormatter(anxiety?.date),
                                     depression = if (depression != null) Pair(
                                         depression.result.toFloat(),
                                         (depression.globalResults[SINGLE]?.div(depression.users))!!.toFloat()
                                     ) else null,
+                                    dateDepression = dateFormatter(depression?.date),
                                     temperament = if (temperament != null) parseTemperament(
-                                        temperament.globalResults
+                                        temperament.globalResults,
+                                        temperament.result
                                     ) else null,
+                                    dateTemperament = dateFormatter(temperament?.date)
                                 )
                             )
                         )
@@ -70,13 +78,17 @@ class ProfileRepositoryImpl @Inject constructor(
                                         anxiety.result.toFloat(),
                                         (anxiety.globalResults[SINGLE]?.div(anxiety.users))!!.toFloat()
                                     ) else null,
+                                    dateAnxiety = dateFormatter(anxiety?.date),
                                     depression = if (depression != null) Pair(
                                         depression.result.toFloat(),
                                         (depression.globalResults[SINGLE]?.div(depression.users))!!.toFloat()
                                     ) else null,
+                                    dateDepression = dateFormatter(depression?.date),
                                     temperament = if (temperament != null) parseTemperament(
-                                        temperament.globalResults
+                                        temperament.globalResults,
+                                        temperament.result
                                     ) else null,
+                                    dateTemperament = dateFormatter(temperament?.date)
                                 )
                             )
                         )
@@ -107,11 +119,37 @@ class ProfileRepositoryImpl @Inject constructor(
         return localStorage.statisticsDao().getAll().map { it.toStatistic() }
     }
 
-    private fun parseTemperament(statistic: Map<String, Double>): TemperamentUI {
+    private fun parseTemperament(
+        statistic: Map<String, Double>,
+        resultUser: Double
+    ): TemperamentUI {
         var choleric = 0.0
         var sanguine = 0.0
         var phlegmatic = 0.0
         var melancholic = 0.0
+
+        var cholericName = "Холерик"
+        var sanguineName = "Сангвиник"
+        var phlegmaticName = "Флегматик"
+        var melancholicName = "Меланхолик"
+
+        when (resultUser) {
+            18.0 -> {
+                cholericName = cholericName.plus(" (Вы)")
+            }
+
+            19.0 -> {
+                sanguineName = sanguineName.plus(" (Вы)")
+            }
+
+            20.0 -> {
+                phlegmaticName = phlegmaticName.plus(" (Вы)")
+            }
+
+            else -> {
+                melancholicName = melancholicName.plus(" (Вы)")
+            }
+        }
         val sum = if (statistic.values.sum() < 4) {
             4.0
         } else {
@@ -138,22 +176,21 @@ class ProfileRepositoryImpl @Inject constructor(
         }
         return TemperamentUI(
             choleric = Pair(
-                first = "Холерик",
+                first = cholericName,
                 second = if (choleric != 0.0) choleric else (1.0 / sum) * 100
             ),
             sanguine = Pair(
-                first = "Сангвиник",
+                first = sanguineName,
                 second = if (sanguine != 0.0) sanguine else (1.0 / sum) * 100
             ),
             phlegmatic = Pair(
-                first = "Меланхолик",
+                first = phlegmaticName,
                 second = if (phlegmatic != 0.0) phlegmatic else (1.0 / sum) * 100
             ),
             melancholic = Pair(
-                first = "Флегматик",
+                first = melancholicName,
                 second = if (melancholic != 0.0) melancholic else (1.0 / sum) * 100
             )
         )
-
     }
 }

@@ -30,7 +30,9 @@ fun NavGraphBuilder.addNestedAuthenticationGraph(
             RegistrationScreen(onClickFillProfile = {
                 navController.navigate(route = FillProfile.route)
             },
-                onClickLogin = {},
+                onClickLogin = {
+                    navController.navigate(route = Authentication.route)
+                },
                 onClickBack = { navController.popBackStack() },
                 onClickMainPage = {
                     navController.navigate(route = Assay.route) {

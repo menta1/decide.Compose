@@ -43,10 +43,4 @@ interface RemoteAssayStorage {
         id: String?,
         onResult: (result: Resource<Boolean, DecideException>) -> Unit
     )
-
-//    suspend fun updateExamRating(
-//        id: Int,
-//        star: Int
-//    )
-
 }

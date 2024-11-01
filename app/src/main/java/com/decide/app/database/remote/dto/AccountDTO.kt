@@ -1,7 +1,6 @@
 package com.decide.app.database.remote.dto
 
 import androidx.annotation.Keep
-import com.decide.app.database.local.entities.profile.PassedAssayEntity
 import com.decide.app.database.local.entities.profile.ProfileEntity
 
 @Keep
@@ -13,8 +12,7 @@ data class AccountDTO(
     val dateBirth: Long = -1,
     val gender: String = "",
     val city: String = "",
-    val dateRegistration: Long = -1,
-//    val listAssayPassed: List<PassedAssayDTO> = emptyList()
+    val dateRegistration: Long = -1
 )
 
 fun AccountDTO.toProfileEntity() = ProfileEntity(
@@ -25,10 +23,5 @@ fun AccountDTO.toProfileEntity() = ProfileEntity(
     dateBirth = dateBirth,
     gender = gender,
     city = city,
-    dateRegistration = dateRegistration,
-//    listAssayPassed = convertToPassedAssayEntity(listAssayPassed)
+    dateRegistration = dateRegistration
 )
-
-fun convertToPassedAssayEntity(passedAssay: List<PassedAssayDTO>): List<PassedAssayEntity> {
-    return passedAssay.map { it.toPassedAssayEntity() }
-}

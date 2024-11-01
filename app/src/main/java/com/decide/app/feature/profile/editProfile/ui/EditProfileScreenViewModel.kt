@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,10 +26,8 @@ class EditProfileScreenViewModel @Inject constructor(
     private val kladrClient: KladrClient
 ) : ViewModel() {
 
-
     private val _state = MutableStateFlow(EditProfileState())
     val state: StateFlow<EditProfileState> = _state
-
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -42,7 +39,8 @@ class EditProfileScreenViewModel @Inject constructor(
                         secondName = profile.lastName,
                         city = profile.city,
                         dateOFBirth = profile.dateBirth,
-                        gender = profile.gender
+                        gender = profile.gender,
+                        avatar = profile.avatar
                     )
                 }
             }
@@ -126,6 +124,9 @@ class EditProfileScreenViewModel @Inject constructor(
             is EditProfileEvent.SetUriAvatar -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     saveAvatarUseCase.invoke(event.uri)
+                    _state.update {
+                        it.copy(avatar = event.uri)
+                    }
                 }
             }
 
@@ -157,8 +158,6 @@ class EditProfileScreenViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     when (val result = kladrClient.getCities(event.city)) {
                         is Resource.Error -> {
-
-                            Timber.tag("TAG").d("ERROR")
                         }
 
                         is Resource.Success -> {
@@ -180,8 +179,6 @@ class EditProfileScreenViewModel @Inject constructor(
                     )
                 }
             }
-
-
         }
     }
 }

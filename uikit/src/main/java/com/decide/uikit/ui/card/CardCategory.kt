@@ -31,7 +31,7 @@ fun CardCategory(
     imageId: Int,
     textCategory: String,
     textColorCategory: Color = DecideTheme.colors.white,
-    textStyleCategory: TextStyle = DecideTheme.typography.titleMedium,
+    textStyleCategory: TextStyle = DecideTheme.typography.bodyLarge,
     overlayColor: Color = DecideTheme.colors.black,
     overlayAlpha: Float = 0.5f,
     onClickAssay: () -> Unit,

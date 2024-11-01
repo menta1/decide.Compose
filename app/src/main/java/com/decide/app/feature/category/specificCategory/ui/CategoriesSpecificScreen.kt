@@ -80,7 +80,7 @@ private fun CategoriesSpecificScreen(
             is CategoriesSpecificState.Loaded -> {
                 Text(
                     text = state.description,
-                    style = DecideTheme.typography.labelLarge,
+                    style = DecideTheme.typography.bodyMedium,
                     color = DecideTheme.colors.text,
                 )
                 LazyColumn {
@@ -99,7 +99,8 @@ private fun CategoriesSpecificScreen(
                             ),
                             onClickAssay = {
                                 onClickAssay(assay.id)
-                            }
+                            },
+                            idCategory = assay.idCategory
                         )
                     }
                 }

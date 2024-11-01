@@ -20,9 +20,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.statistic.modal.TemperamentUI
 
@@ -172,15 +172,12 @@ fun DetailsPieChartItem(
     itemsPercentStyle: TextStyle,
     itemsPercentColor: Color,
 ) {
-
     Surface(
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 20.dp), color = Color.Transparent
     ) {
-
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Box(
                 modifier = Modifier
                     .background(
@@ -188,7 +185,6 @@ fun DetailsPieChartItem(
                     )
                     .size(height)
             )
-
             Column(
                 modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center
             ) {
@@ -205,49 +201,48 @@ fun DetailsPieChartItem(
                     color = itemsPercentColor
                 )
             }
-
         }
-
     }
-
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
 fun Preview() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        verticalArrangement = Arrangement.Center
-    ) {
-        PieStatistic(
-            data = TemperamentUI(
-                choleric = Pair(first = "Холерик", second = 25.0),
-                sanguine = Pair(first = "Сангвиник", second = 25.0),
-                melancholic = Pair(first = "Меланхолик", second = 25.0),
-                phlegmatic = Pair(first = "Флегматик", second = 25.0)
-            ),
-        )
-
+    DecideTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black),
+            verticalArrangement = Arrangement.Center
+        ) {
+            PieStatistic(
+                data = TemperamentUI(
+                    choleric = Pair(first = "Холерик", second = 25.0),
+                    sanguine = Pair(first = "Сангвиник", second = 25.0),
+                    melancholic = Pair(first = "Меланхолик", second = 25.0),
+                    phlegmatic = Pair(first = "Флегматик", second = 25.0)
+                ),
+            )
+        }
     }
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
-fun PreviewDetailsPieChartItem() {
-    Column(
-        modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center
-    ) {
-        DetailsPieChartItem(
-            data = Pair("Холерик", 30),
-            color = DecideTheme.colors.accentPink,
-            itemsStyle = DecideTheme.typography.labelLarge,
-            itemsColor = DecideTheme.colors.text,
-            itemsPercentStyle = DecideTheme.typography.labelMedium,
-            itemsPercentColor = DecideTheme.colors.gray,
-        )
-
+private fun PreviewDetailsPieChartItem() {
+    DecideTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center
+        ) {
+            DetailsPieChartItem(
+                data = Pair("Холерик", 30),
+                color = DecideTheme.colors.accentPink,
+                itemsStyle = DecideTheme.typography.labelLarge,
+                itemsColor = DecideTheme.colors.text,
+                itemsPercentStyle = DecideTheme.typography.labelMedium,
+                itemsPercentColor = DecideTheme.colors.gray,
+            )
+        }
     }
 }
 

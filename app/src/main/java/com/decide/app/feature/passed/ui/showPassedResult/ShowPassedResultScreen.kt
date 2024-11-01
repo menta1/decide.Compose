@@ -85,7 +85,7 @@ private fun ShowPassedResultScreen(
                             .padding(horizontal = 14.dp)
                             .padding(top = 8.dp),
                         text = state.nameAssay,
-                        style = DecideTheme.typography.titleMedium,
+                        style = DecideTheme.typography.titleSmall,
                         color = DecideTheme.colors.text
                     )
                     Text(
@@ -93,7 +93,7 @@ private fun ShowPassedResultScreen(
                             .padding(horizontal = 14.dp)
                             .padding(top = 8.dp),
                         text = dateFormatter(state.result.date),
-                        style = DecideTheme.typography.titleMedium,
+                        style = DecideTheme.typography.bodyLarge,
                         color = DecideTheme.colors.text
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -167,7 +167,7 @@ private fun Preview() {
                     results = listOf("Result", "Result", "Result"),
                     keyResults = listOf(1)
                 ),
-                nameAssay = "Анализ крови"
+                nameAssay = "Анализ крови Оценка социальной неудовлетворенности"
             )
         )
     }

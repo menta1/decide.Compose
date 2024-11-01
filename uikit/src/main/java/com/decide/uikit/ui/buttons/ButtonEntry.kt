@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 
 
@@ -28,7 +28,7 @@ fun ButtonEntry(
     background: Color = DecideTheme.colors.buttonPrimary,
     text: String,
     textColor: Color = DecideTheme.colors.white,
-    textStyle: TextStyle = DecideTheme.typography.titleLarge,
+    textStyle: TextStyle = DecideTheme.typography.headlineMedium,
     onClick: () -> Unit
 ) {
     Row(
@@ -49,17 +49,19 @@ fun ButtonEntry(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@MainPreview
 @Composable
 fun PreviewButtonEntry() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 39.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        ButtonEntry(text = "Регистрация") {
+    DecideTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 39.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            ButtonEntry(text = "Регистрация") {
 
+            }
         }
     }
 }

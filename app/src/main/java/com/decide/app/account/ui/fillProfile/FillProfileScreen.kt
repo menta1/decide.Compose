@@ -139,7 +139,7 @@ private fun FillProfileScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.Start
                         ) {
-                            ButtonBackArrow(text = "Заполните свой профиль",
+                            ButtonBackArrow(text = "Заполните профиль",
                                 onClick = { onClickBack() })
 
                             Spacer(modifier = Modifier.height(24.dp))
@@ -181,14 +181,16 @@ private fun FillProfileScreen(
                             color = DecideTheme.colors.gray
                         )
 
-                        EditTextField(value = state.firstName,
+                        EditTextField(
+                            value = state.firstName,
                             onValueChange = { onEvent(FillProfileEvent.SetFirstName(it)) },
                             supportingText = if (state.isErrorFirstName) "Это поле не может быть пустым!" else "",
                             isError = state.isErrorFirstName,
                             labelText = "Имя*",
                             isFocus = {})
 
-                        EditTextField(value = state.secondName,
+                        EditTextField(
+                            value = state.secondName,
                             onValueChange = { onEvent(FillProfileEvent.SetSecondName(it)) },
                             supportingText = "",
                             labelText = "Фамилия",
@@ -207,7 +209,7 @@ private fun FillProfileScreen(
                             label = {
                                 Text(
                                     text = "День рождения",
-                                    style = DecideTheme.typography.titleSmall
+                                    style = DecideTheme.typography.labelMedium
                                 )
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -311,7 +313,7 @@ private fun ChooseGander(
             modifier = Modifier
                 .padding(start = 4.dp)
                 .padding(top = 4.dp),
-            text = "Укажите пол",
+            text = "Пол",
             style = DecideTheme.typography.titleMedium,
             textAlign = TextAlign.Start,
             color = DecideTheme.colors.text

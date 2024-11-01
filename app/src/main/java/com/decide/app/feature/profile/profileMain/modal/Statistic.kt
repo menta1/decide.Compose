@@ -5,4 +5,5 @@ data class Statistic(
     val result: Double = 0.0,
     val globalResults: Map<String, Double> = emptyMap(),
     val users: Int = 0,
+    val date: Long
 )

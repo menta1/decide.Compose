@@ -53,7 +53,6 @@ class FirebaseAuthenticationClientImpl @Inject constructor(
         onResult: (response: Resource<UserDto, DecideAuthException>) -> Unit
     ) {
         if (checkerNetworkConnection(onResult)) {
-
             try {
                 firebaseAuth.signInWithEmailAndPassword(user.email, user.password)
                     .addOnSuccessListener { task ->
@@ -131,7 +130,6 @@ class FirebaseAuthenticationClientImpl @Inject constructor(
                     )
                 )
             }
-
         }
     }
 
@@ -159,7 +157,7 @@ class FirebaseAuthenticationClientImpl @Inject constructor(
     }
 
     override suspend fun getUser() {
-        TODO("Not yet implemented")
+
     }
 
     override suspend fun logOutUser() {

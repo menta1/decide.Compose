@@ -11,5 +11,6 @@ class InitAppImpl @Inject constructor(
         mainRepository.initAssays()
         mainRepository.initCategories()
         mainRepository.initProfile()
+
     }
 }

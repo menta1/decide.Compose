@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -44,8 +45,8 @@ fun LineStatistic(
 ) {
 
     Column(
-        modifier = modifier
-            .height(70.dp),
+//        modifier = modifier
+//            .height(70.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -99,6 +100,7 @@ fun LineStatistic(
 
         }
 
+        Spacer(Modifier.height(34.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -183,19 +185,20 @@ fun LineStatistic(
     }
 }
 
-@Preview(showBackground = true)
+@MainPreview
 @Composable
 fun PreviewLine() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LineStatistic(
-        )
+    DecideTheme{
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LineStatistic(
+            )
 
+        }
     }
 }

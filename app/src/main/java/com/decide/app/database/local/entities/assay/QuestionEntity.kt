@@ -1,8 +1,10 @@
 package com.decide.app.database.local.entities.assay
 
+import androidx.annotation.Keep
 import com.decide.app.feature.assay.assayMain.modals.QuestionAssay
 import kotlinx.serialization.Serializable
 
+@Keep
 @Serializable
 data class QuestionEntity(
     val id: Int,

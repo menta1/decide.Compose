@@ -21,8 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +48,7 @@ import com.decide.uikit.ui.defaultScreens.LoadingScreen
 import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
 import com.decide.uikit.ui.searchBar.SearchBarDecide
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun AssayMainScreen(
@@ -53,7 +57,7 @@ fun AssayMainScreen(
     val viewModel: AssayMainViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val widthAd = LocalConfiguration.current.screenWidthDp
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = state.assays) {
         viewModel.onEvent(AssayMainEvent.LoadAds(widthAd))
     }
 
@@ -140,15 +144,18 @@ private fun Loaded(
 ) {
     val scrollState = rememberLazyListState()
 
-    val firstVisible by remember {
-        derivedStateOf { scrollState.firstVisibleItemIndex }
-    }
+    var previousFirstVisible by remember { mutableIntStateOf(-1) }
 
-    onEvent(
-        AssayMainEvent.ScrollState(
-            newScrollIndex = firstVisible
-        )
-    )
+    LaunchedEffect(scrollState) {
+        snapshotFlow { scrollState.firstVisibleItemIndex }
+            .distinctUntilChanged()
+            .collect { newIndex ->
+                if (newIndex != previousFirstVisible) {
+                    onEvent(AssayMainEvent.ScrollState(newScrollIndex = newIndex))
+                    previousFirstVisible = newIndex
+                }
+            }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -183,7 +190,7 @@ private fun Loaded(
                 idCategory = assay.idCategory
             )
 
-            if ((index + 1) % 9 == 0 && state.adView != null) {
+            if ((index + 1) % 9 == 0 && state.adView.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Box(
                     modifier = Modifier
@@ -194,7 +201,7 @@ private fun Loaded(
                     AndroidView(
                         modifier = Modifier.fillMaxSize(),
                         factory = {
-                            state.adView
+                            state.adView[((index) / 9)]
                         }
                     )
                 }

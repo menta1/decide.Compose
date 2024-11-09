@@ -1,5 +1,6 @@
 package com.decide.app.feature.assay.assayProcess.ui.assayTimer
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -23,7 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,6 +37,7 @@ import com.decide.uikit.ui.buttons.ButtonMain
 import com.decide.uikit.ui.buttons.ButtonVariant
 import com.decide.uikit.ui.buttons.CircleDecideIndicator
 import com.decide.uikit.ui.card.CardQuestion
+import com.decide.uikit.ui.dialog.BackDialog
 import java.util.Locale
 
 @Composable
@@ -48,6 +49,8 @@ fun AssayTimerScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val timer by viewModel.countValue.collectAsStateWithLifecycle()
 
+    var onBackPressed by remember { mutableStateOf(false) }
+
     AssayTimerScreen(timer = timer,
         state = state,
         onClickDone = { onClickDone(it) },
@@ -55,6 +58,17 @@ fun AssayTimerScreen(
         onEvent = { event ->
             viewModel.onEvent(event)
         })
+
+    BackHandler {
+        onBackPressed = true
+    }
+
+    if (onBackPressed) {
+        BackDialog(
+            onDismissRequest = { onBackPressed = false  },
+            onConfirmRequest = { onClickBack() }
+        )
+    }
 }
 
 @Composable
@@ -203,9 +217,11 @@ private fun AssayWithTimer(
         ) {
 
             LinearProgressIndicator(
-                modifier = Modifier.clip(RoundedCornerShape(40.dp)),
                 progress = { progress },
-                color = DecideTheme.colors.accentYellow
+                color = DecideTheme.colors.accentYellow,
+                gapSize = 0.dp,
+                strokeCap = StrokeCap.Round,
+                drawStopIndicator = {}
             )
 
             Spacer(modifier = Modifier.height(8.dp))

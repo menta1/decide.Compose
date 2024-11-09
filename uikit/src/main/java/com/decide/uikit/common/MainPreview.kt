@@ -13,5 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Dark theme",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     locale = "ru",
+    device = "spec:width=300dp,height=891dp"
 )
 annotation class MainPreview

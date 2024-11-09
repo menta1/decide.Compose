@@ -2,6 +2,7 @@ package com.decide.app.feature.profile.profileMain.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -87,8 +88,6 @@ private fun ProfileScreen(
 
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Loaded(
     modifier: Modifier = Modifier,
@@ -146,7 +145,8 @@ private fun Loaded(
                 Text(
                     modifier = Modifier
                         .padding(top = 4.dp)
-                        .padding(start = 8.dp),
+                        .padding(start = 8.dp)
+                        .basicMarquee(),
                     text = profileUI.firstName + " " + profileUI.lastName,
                     style = DecideTheme.typography.bodyLarge,
                     color = DecideTheme.colors.text
@@ -154,10 +154,13 @@ private fun Loaded(
                 Text(
                     modifier = Modifier
                         .padding(top = 4.dp)
-                        .padding(start = 8.dp),
+                        .padding(start = 8.dp)
+                        .basicMarquee(),
                     text = profileUI.email,
                     style = DecideTheme.typography.titleSmall,
-                    color = DecideTheme.colors.gray
+                    color = DecideTheme.colors.gray,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
@@ -215,9 +218,7 @@ private fun ContentProfile(
                 .fillMaxWidth()
                 .alpha(if (profileUI.temperament == null) 0.4f else 1f),
         ) {
-            Row(
-                verticalAlignment = Alignment.Bottom
-            ) {
+            Column {
                 Text(
                     modifier = Modifier
                         .padding(top = 4.dp)
@@ -226,7 +227,7 @@ private fun ContentProfile(
                     style = DecideTheme.typography.titleLarge,
                     color = DecideTheme.colors.text
                 )
-                if (profileUI.dateTemperament != null) {
+                if (!profileUI.dateTemperament.isNullOrEmpty()) {
                     Text(
                         modifier = Modifier
                             .padding(top = 4.dp)
@@ -296,9 +297,7 @@ private fun Statistic(
                 .fillMaxWidth()
                 .alpha(if (data == null) 0.4f else 1f),
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Column {
                 Text(
                     modifier = Modifier
                         .padding(top = 4.dp)
@@ -308,7 +307,7 @@ private fun Statistic(
                     color = DecideTheme.colors.text
                 )
 
-                if (date != null) {
+                if (!date.isNullOrEmpty()) {
                     Text(
                         modifier = Modifier
                             .padding(top = 4.dp)
@@ -359,9 +358,9 @@ private fun Preview() {
         Column {
             Loaded(
                 modifier = Modifier, onClickSetting = {}, profileUI = ProfileUI(
-                    firstName = "Ainur",
-                    lastName = "a;sldajkdjaskd",
-                    email = "asdasd@asdasd.eer",
+                    firstName = "AinurвввввввввввввввввввввввввввввввввввAinurввввввввввввввввввввввввввввввввввввввAinurввввввввввввввввввввввввввввввввввввввAinurввввввввввввввввввввввввввввввввввввввввв",
+                    lastName = "a;sldajkdAinurввввввввввввввввввввввввввввввввввввввAinurввввввввввввввввввввввввввввввввввввввAinurввввввввввввввввввввввввввввввввввввввjaskd",
+                    email = "asdasd@asdasAinurввввввввввввввввввввввввввввввввввввввAinurввввввввввввввввввввввввввввввввввввввAinurввввввввввввввввввввввввввввввввввввввAinurввввввввввввввввввввввввввввввввввввввd.eer",
                     anxiety = null,
 //                    Pair(34f, 66f),
                     depression = null,

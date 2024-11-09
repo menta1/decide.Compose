@@ -132,19 +132,28 @@ object DecideTheme {
 
 @Composable
 fun DecideTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    theme: Themes = Themes.SYSTEM,
     typography: Typography = DecideTheme.typography,
     content: @Composable () -> Unit
 ) {
-    val color = if (darkTheme) DarkColorPalette else LightColorPalette
+    val systemTheme = isSystemInDarkTheme()
+    val color = when (theme) {
+        Themes.DARK -> DarkColorPalette
+        Themes.LIGHT -> LightColorPalette
+        Themes.SYSTEM -> if (systemTheme) DarkColorPalette else LightColorPalette
+    }
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
+            val controller = WindowCompat.getInsetsController(window, view)
             window.statusBarColor = color.background.toArgb()
             window.navigationBarColor = color.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            controller.isAppearanceLightStatusBars =
+                if (color == LightColorPalette) !systemTheme else systemTheme
+            controller.isAppearanceLightNavigationBars =
+                if (color == LightColorPalette) !systemTheme else systemTheme
         }
     }
 

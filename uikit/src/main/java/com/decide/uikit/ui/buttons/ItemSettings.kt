@@ -54,9 +54,7 @@ fun ItemSettings(
     ) {
         Row(
             modifier = modifier
-                .padding(vertical = 12.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(background),
+                .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(

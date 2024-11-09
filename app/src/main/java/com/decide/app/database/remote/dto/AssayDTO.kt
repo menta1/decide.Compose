@@ -28,7 +28,7 @@ fun AssayDTO.toAssayEntity() = AssayEntity(
     name = name,
     description = description,
     nameCategory = nameCategory,
-    convertToQuestionEntity(questions),
+    questions = convertToQuestionEntity(questions),
     dateCreation = dateCreation,
     rating = rating,
     type = type,

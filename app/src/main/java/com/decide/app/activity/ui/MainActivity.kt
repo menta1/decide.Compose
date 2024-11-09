@@ -46,7 +46,6 @@ class MainActivity : ComponentActivity(), ShowAds {
         enableEdgeToEdge()
         setContent {
             val state by viewModel.authState.collectAsStateWithLifecycle()
-
             val isFirstLaunch by remember { mutableStateOf(state.isFirstLaunch) }
             var isAuthenticate by remember { mutableStateOf(false) }
 
@@ -65,7 +64,9 @@ class MainActivity : ComponentActivity(), ShowAds {
                 }
             }
 
-            DecideTheme {
+            DecideTheme(
+                theme = state.theme
+            ) {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()

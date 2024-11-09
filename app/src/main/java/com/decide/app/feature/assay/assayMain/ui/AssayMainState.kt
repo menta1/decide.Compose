@@ -7,7 +7,7 @@ data class AssayMainState(
     val assays: List<AssayUI> = emptyList(),
     val uiState: UIState = UIState.LOADING,
     val scrollUp: Boolean = false,
-    val adView: BannerAdView? = null
+    val adView: List<BannerAdView> = emptyList()
 )
 
 enum class UIState {

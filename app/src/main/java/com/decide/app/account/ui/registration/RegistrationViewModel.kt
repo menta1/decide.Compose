@@ -1,5 +1,8 @@
 package com.decide.app.account.ui.registration
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.account.authenticationClient.exception.DecideAuthException
@@ -9,8 +12,10 @@ import com.decide.app.account.modal.UserAuth
 import com.decide.app.account.ui.validators.ValidationEmail
 import com.decide.app.account.ui.validators.ValidationPassword
 import com.decide.app.activity.domain.ChangeVariableFirstLaunchUseCase
+import com.decide.app.feature.profile.settings.ui.SettingsScreenViewModel.Companion.LINK_PRIVACY_POLICY
 import com.decide.app.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +27,8 @@ import javax.inject.Inject
 class RegistrationViewModel @Inject constructor(
     private val createUserUseCase: CreateUserUseCase,
     private val changeVariableFirstLaunchUseCase: ChangeVariableFirstLaunchUseCase,
-    private val singInWithVKUseCase: SingInWithVKUseCase
+    private val singInWithVKUseCase: SingInWithVKUseCase,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RegistrationState())
@@ -181,6 +187,17 @@ class RegistrationViewModel @Inject constructor(
                             }
                         }
                     }
+                }
+            }
+
+            RegistrationEvent.PrivacyPolicy -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(LINK_PRIVACY_POLICY))
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+                try {
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }

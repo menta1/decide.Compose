@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -239,6 +240,25 @@ private fun RegistrationScreen(
                             text = "Вход",
                             color = DecideTheme.colors.accentPink,
                             style = DecideTheme.typography.titleSmall,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "продолжая Вы соглашайтесь с ",
+                            style = DecideTheme.typography.labelSmall,
+                            color = DecideTheme.colors.gray
+                        )
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .clickable { onEvent(RegistrationEvent.PrivacyPolicy) },
+                            text = "политикой конфиденциальности",
+                            color = DecideTheme.colors.gray,
+                            style = DecideTheme.typography.labelSmall,
+                            textDecoration = TextDecoration.Underline
                         )
                     }
                 }

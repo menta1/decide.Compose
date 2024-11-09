@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import com.decide.app.account.adsManager.Constants.BANNER_ADS_PREF
 import com.decide.app.account.adsManager.Constants.FULL_SCREEN_ADS_PREF
 import com.decide.app.account.domain.useCase.IsUserAuthUseCase
@@ -11,12 +12,14 @@ import com.decide.app.account.statisticsClient.StatisticsClient
 import com.decide.app.database.local.AppDatabase
 import com.decide.app.database.remote.RemoteAssayStorage
 import com.decide.app.utils.Resource
+import com.decide.uikit.theme.Themes
 import com.google.firebase.remoteconfig.ConfigUpdate
 import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -57,7 +60,6 @@ class MainRepositoryImpl @Inject constructor(
                         Timber.tag("TAG").d("getAssays Error")
                     }
                 }
-
             }
         }
     }
@@ -68,6 +70,20 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun initProfile() {
 
+    }
+
+    override suspend fun initTheme(): Flow<Themes> {
+        return dataStore.data.map {
+            when (it[SWITCH_THEME]) {
+                1 -> Themes.LIGHT
+                2 -> Themes.DARK
+                else -> Themes.SYSTEM
+            }
+        }
+    }
+
+    override suspend fun switchTheme(themes: Themes) {
+        dataStore.edit { it[SWITCH_THEME] = themes.value }
     }
 
     override suspend fun checkNewPassedAssay() {
@@ -86,8 +102,9 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun updateRemoteConfig() {
         remoteConfig.fetchAndActivate()
             .addOnCompleteListener { task ->
+                Timber.tag("TAG").d("pre task.isSuccessful ")
                 if (task.isSuccessful) {
-
+                    Timber.tag("TAG").d("task.isSuccessful ")
                     coroutineScope.launch(Dispatchers.IO) {
                         dataStore.edit {
                             it[FULL_SCREEN_ADS_PREF] = remoteConfig.getBoolean("full_screen_ads")
@@ -152,12 +169,14 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     private companion object {
-
         val FIRST_LAUNCH = booleanPreferencesKey(
             name = "isFirstLaunch"
         )
         val DATA_INIT = booleanPreferencesKey(
             name = "date"
+        )
+        val SWITCH_THEME = intPreferencesKey(
+            name = "theme"
         )
     }
 }

@@ -20,12 +20,6 @@ class AssayMainRepositoryImpl @Inject constructor(
             Resource.Success(localStorageAssay.getFlowAllAssays().map { entities ->
                 entities.map { it.toAssay() }.shuffled()
             })
-//            val list = localStorageAssay.getAllAssays().map {  }
-//            if (list.isNotEmpty()) {
-//                Resource.Success(list.shuffled())
-//            } else {
-//                Resource.Error(DecideException.NoFindElementDB())
-//            }
         } else {
             Resource.Error(DecideException.NoInternet())
         }

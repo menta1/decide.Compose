@@ -6,4 +6,5 @@ sealed interface LoginScreenEvent {
     class SetEmail(val email: String) : LoginScreenEvent
     class SetPassword(val password: String) : LoginScreenEvent
     class EmailFocused(val focus: Boolean) : LoginScreenEvent
+    data object PrivacyPolicy : LoginScreenEvent
 }

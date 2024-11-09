@@ -438,7 +438,7 @@ private fun PreviewError() {
 @MainPreview
 @Composable
 private fun PreviewDatePicker() {
-    DecideTheme(darkTheme = true) {
+    DecideTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             DatePickerModal(onDateSelected = {}) {
 

@@ -1,5 +1,6 @@
 package com.decide.app.feature.profile.editProfile.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -55,6 +56,7 @@ import com.decide.uikit.ui.buttons.ButtonVariant
 import com.decide.uikit.ui.defaultScreens.ErrorScreen
 import com.decide.uikit.ui.defaultScreens.LoadingScreen
 import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
+import com.decide.uikit.ui.dialog.BackDialog
 import com.decide.uikit.ui.dialog.SuccessDialog
 import com.decide.uikit.ui.text.EditTextField
 
@@ -64,6 +66,7 @@ fun EditProfileScreen(
 ) {
     val viewModel: EditProfileScreenViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var onBackPressed by remember { mutableStateOf(false) }
 
     EditProfileScreen(
         modifier = Modifier,
@@ -71,6 +74,24 @@ fun EditProfileScreen(
         onEvent = viewModel::onEvent,
         onClickBack = onClickBack
     )
+
+    BackHandler {
+        onBackPressed = true
+    }
+
+    if (onBackPressed) {
+        BackDialog(
+            title = "Сохранить изменения?",
+            onDismissRequest = {
+                onBackPressed = false
+                onClickBack()
+            },
+            onConfirmRequest = {
+                viewModel.onEvent(EditProfileEvent.Continue)
+                onBackPressed = false
+            }
+        )
+    }
 }
 
 @Composable

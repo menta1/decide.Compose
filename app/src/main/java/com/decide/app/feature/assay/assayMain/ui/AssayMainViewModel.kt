@@ -43,6 +43,8 @@ class AssayMainViewModel @Inject constructor(
     private var adsInfo: AccountInfo? = null
     private var lastScrollIndex = 0
     private var nowDownloadAttempts = 0
+    private var width: Int = -1
+    private val adsList: MutableList<BannerAdView> = mutableListOf()
 
     private var assayUIList = emptyList<AssayUI>()
 
@@ -56,35 +58,36 @@ class AssayMainViewModel @Inject constructor(
     private fun getAd(width: Int) = BannerAdView(
         context = context,
     ).apply {
+        Timber.tag("TAG").d("BannerAdView")
         setAdSize(
             BannerAdSize.inlineSize(
                 context = context, width = width - 28, maxHeight = 100
             )
         )
-        setAdUnitId("demo-banner-yandex")
+        setAdUnitId("R-M-12145706-1")
         setBannerAdEventListener(object : BannerAdEventListener {
             override fun onAdLoaded() {
-
+                Timber.tag("TAG").d("onAdLoaded")
             }
 
             override fun onAdFailedToLoad(adRequestError: AdRequestError) {
-
+                Timber.tag("TAG").d("onAdFailedToLoad")
             }
 
             override fun onAdClicked() {
-
+                Timber.tag("TAG").d("onAdClicked")
             }
 
             override fun onLeftApplication() {
-
+                Timber.tag("TAG").d("onLeftApplication")
             }
 
             override fun onReturnedToApplication() {
-
+                Timber.tag("TAG").d("onReturnedToApplication")
             }
 
             override fun onImpression(impressionData: ImpressionData?) {
-
+                Timber.tag("TAG").d("onImpression")
             }
         })
         loadAd(
@@ -157,7 +160,6 @@ class AssayMainViewModel @Inject constructor(
         }
     }
 
-
     fun onEvent(event: AssayMainEvent) {
         when (event) {
             is AssayMainEvent.SetSearch -> {
@@ -182,7 +184,7 @@ class AssayMainViewModel @Inject constructor(
             }
 
             is AssayMainEvent.ScrollState -> {
-                if (event.newScrollIndex == lastScrollIndex) return
+                if (event.newScrollIndex == lastScrollIndex || _state.value.searchText.isNotEmpty()) return
 
                 _state.update { state ->
                     state.copy(scrollUp = event.newScrollIndex > lastScrollIndex)
@@ -196,19 +198,18 @@ class AssayMainViewModel @Inject constructor(
                     adsManager.isShowBannerScreenAds().collect {
                         Timber.tag("TAG").d("AssayMainEvent.LoadAds collect")
                         if (it) {
-                            Timber.tag("TAG").d("AssayMainEvent.LoadAds true")
-                            _state.update { state ->
-                                state.copy(
-                                    adView = getAd(event.width)
-                                )
-                            }
-                        } else {
-                            Timber.tag("TAG").d("AssayMainEvent.LoadAds false")
-                            _state.update { state ->
-                                state.copy(
-                                    adView = null
-                                )
-                            }
+                                width = event.width
+                                Timber.tag("TAG").d("width $width")
+                                Timber.tag("TAG").d("assayUIList ${assayUIList.size}")
+                                if (adsList.isEmpty()) {
+                                    repeat(assayUIList.size / 9) {
+                                        Timber.tag("TAG").d("repeat")
+                                        adsList.add(getAd(width))
+                                    }
+                                    _state.update { state ->
+                                        state.copy(adView = adsList)
+                                    }
+                                }
                         }
                     }
                 }

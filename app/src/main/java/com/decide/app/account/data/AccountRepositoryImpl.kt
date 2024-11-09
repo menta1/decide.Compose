@@ -183,12 +183,10 @@ class AccountRepositoryImpl @Inject constructor(
                             }
                         } else {
                             continuation.resume(Resource.Error(DecideException.UserNotAuthorization()))
-                            Timber.tag("TAG").d("updateUser profile == null")
                         }
 
                     } else {
                         continuation.resume(Resource.Error(DecideException.UserNotAuthorization()))
-                        Timber.tag("TAG").d("updateUser = else")
                     }
                 }
             }
@@ -258,7 +256,7 @@ class AccountRepositoryImpl @Inject constructor(
                                                                         }
 
                                                                         is Resource.Error -> {
-//                                                            Resource.Error(it.error)
+
                                                                         }
                                                                     }
                                                                 })

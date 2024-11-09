@@ -1,5 +1,6 @@
 package com.decide.app.feature.assay.assayProcess.ui.assayText
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,8 @@ import com.decide.uikit.ui.buttons.CircleDecideIndicator
 import com.decide.uikit.ui.card.CardQuestion
 import com.decide.uikit.ui.defaultScreens.ErrorScreen
 import com.decide.uikit.ui.defaultScreens.NetworkErrorScreen
+import com.decide.uikit.ui.dialog.BackDialog
+import timber.log.Timber
 
 @Composable
 fun AssayTextScreen(
@@ -47,7 +50,7 @@ fun AssayTextScreen(
 ) {
     val viewModel: AssayTextViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    var onBackPressed by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = Unit) {
         viewModel.onEvent(EventAssayText.Ad(ads))
     }
@@ -58,6 +61,18 @@ fun AssayTextScreen(
         onEvent = { event ->
             viewModel.onEvent(event)
         })
+
+
+    BackHandler {
+        onBackPressed = true
+    }
+
+    if (onBackPressed) {
+        BackDialog(
+            onDismissRequest = { onBackPressed = false },
+            onConfirmRequest = { onClickBack() }
+        )
+    }
 }
 
 @Composable
@@ -125,16 +140,29 @@ private fun AssayWithText(
         selectedValue.contains(it)
     }
 
-    val onChangeState = { value: Int ->
-        selectedValue = if (selectedValue.contains(value)) {
-            selectedValue.filter { it != value }
+    val onChangeState = onChangeState@{ value: Int ->
+        if (selectedValue.contains(value)) {
+            return@onChangeState
+        } else if (selectedValue.isEmpty()) {
+            selectedValue = listOf(+ value)
+        } else if (selectedValue.size >= questionAssay.countResponses) {
+            val temp = selectedValue.toMutableList()
+            temp.removeAt(index = 0)
+            temp.add(value)
+            selectedValue = temp.toList()
         } else {
-            if (selectedValue.size < questionAssay.countResponses) {
-                selectedValue + value
-            } else {
-                selectedValue
-            }
+            selectedValue + value
         }
+
+//        selectedValue = if (selectedValue.contains(value)) {
+//            selectedValue.filter { it != value }
+//        } else {
+//            if (selectedValue.size < questionAssay.countResponses) {
+//                selectedValue + value
+//            } else {
+//                selectedValue
+//            }
+//        }
     }
 
     Column(

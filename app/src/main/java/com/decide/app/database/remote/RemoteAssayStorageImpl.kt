@@ -75,9 +75,7 @@ class RemoteAssayStorageImpl @Inject constructor(
     }
 
     override suspend fun getAssays(onResult: (result: Resource<Boolean, DecideException>) -> Unit) {
-        Timber.tag("TAG").d(" suspend fun getAssays")
         remoteDatabase.collection(EXAMS).get().addOnCompleteListener { task: Task<QuerySnapshot> ->
-            Timber.tag("TAG").d(" suspend fun getAssays addOnCompleteListener")
             coroutineScope.launch {
                 try {
                     localStorage.assayDao().insert(task.result.map {
@@ -85,7 +83,6 @@ class RemoteAssayStorageImpl @Inject constructor(
                     })
                     onResult(Resource.Success(true))
                 } catch (e: Exception) {
-                    Timber.tag("TAG").d(e.message)
                     onResult(Resource.Success(false))
                 }
             }

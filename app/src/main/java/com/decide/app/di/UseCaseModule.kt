@@ -22,11 +22,13 @@ import com.decide.app.activity.domain.ChangeVariableFirstLaunchUseCase
 import com.decide.app.activity.domain.CheckForSync
 import com.decide.app.activity.domain.InitApp
 import com.decide.app.activity.domain.InitRemoteConfig
+import com.decide.app.activity.domain.InitThemeUseCase
 import com.decide.app.activity.domain.IsFirstLaunchUseCase
 import com.decide.app.activity.domain.impl.ChangeVariableFirstLaunchUseCaseImpl
 import com.decide.app.activity.domain.impl.CheckForSyncImpl
 import com.decide.app.activity.domain.impl.InitAppImpl
 import com.decide.app.activity.domain.impl.InitRemoteConfigImpl
+import com.decide.app.activity.domain.impl.InitThemeUseCaseImpl
 import com.decide.app.activity.domain.impl.IsFirstLaunchUseCaseImpl
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.AnalysisKeyAssay
 import com.decide.app.feature.assay.assayProcess.domain.analysisAssayResult.impl.AnalysisKeyAssayImpl
@@ -36,6 +38,8 @@ import com.decide.app.feature.assay.assayProcess.domain.useCase.GetAssayUseCase
 import com.decide.app.feature.assay.assayProcess.domain.useCase.SaveResultUseCase
 import com.decide.app.feature.profile.profileMain.domain.IsAuthUserUseCase
 import com.decide.app.feature.profile.profileMain.domain.IsAuthUserUseCaseImpl
+import com.decide.app.feature.profile.settings.data.SwitchThemesUseCaseImpl
+import com.decide.app.feature.profile.settings.domain.SwitchThemesUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -98,4 +102,10 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindChangeVariableFirstLaunchUseCase(changeVariableFirstLaunchUseCaseImpl: ChangeVariableFirstLaunchUseCaseImpl): ChangeVariableFirstLaunchUseCase
+
+    @Binds
+    abstract fun bindInitThemeUseCase(initThemeUseCaseImpl: InitThemeUseCaseImpl): InitThemeUseCase
+
+    @Binds
+    abstract fun bindSwitchThemesUseCase(switchThemesUseCaseImpl: SwitchThemesUseCaseImpl): SwitchThemesUseCase
 }

@@ -6,8 +6,5 @@ sealed interface RegistrationEvent {
     class SetEmail(val email: String) : RegistrationEvent
     class SetPassword(val password: String) : RegistrationEvent
     class SetConfirmPassword(val password: String) : RegistrationEvent
-
-//    class EmailFocused(val focus: Boolean) : RegistrationEvent
-//    class PasswordFocused(val focus: Boolean) : RegistrationEvent
-//    class ConfirmPasswordFocused(val focus: Boolean) : RegistrationEvent
+    data object PrivacyPolicy : RegistrationEvent
 }

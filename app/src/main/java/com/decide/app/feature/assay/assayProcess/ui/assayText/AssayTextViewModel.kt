@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -96,7 +97,6 @@ class AssayTextViewModel @Inject constructor(
                     }
 
                     if (adsLoaded) {
-
                         ads.showAds(
                             onAdShown = {
                                 _state.update {
@@ -171,11 +171,11 @@ class AssayTextViewModel @Inject constructor(
                             }
                         }
                     }
-
                 }
 
                 is Resource.Success -> {
                     listQuestions = assay.data.questions
+                    Timber.tag("TAG").d("listQuestions $listQuestions")
                     _state.update {
                         AssayTextState.Loaded(listQuestions.first(), 0f)
                     }

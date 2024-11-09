@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decide.app.feature.profile.settings.data.SettingsRepository
+import com.decide.app.feature.profile.settings.domain.SwitchThemesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsScreenViewModel @Inject constructor(
     private val repository: SettingsRepository,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val switchThemesUseCase: SwitchThemesUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsScreenState())
     val state: StateFlow<SettingsScreenState> = _state.asStateFlow()
@@ -61,6 +63,11 @@ class SettingsScreenViewModel @Inject constructor(
                 }
             }
 
+            is SettingsScreenEvent.SwitchTheme -> {
+                viewModelScope.launch {
+                    switchThemesUseCase.switchTheme (event.themes)
+                }
+            }
         }
     }
 

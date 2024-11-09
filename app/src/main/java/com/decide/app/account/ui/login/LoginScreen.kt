@@ -28,10 +28,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decide.app.R
+import com.decide.app.account.ui.registration.RegistrationEvent
 import com.decide.uikit.common.MainPreview
 import com.decide.uikit.theme.DecideTheme
 import com.decide.uikit.ui.buttons.ButtonEntry
@@ -220,6 +222,26 @@ fun LoginScreen(
                             text = "Регистрация",
                             style = DecideTheme.typography.titleSmall,
                             color = DecideTheme.colors.accentPink
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "продолжая Вы соглашайтесь с ",
+                            style = DecideTheme.typography.labelSmall,
+                            color = DecideTheme.colors.gray
+                        )
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .clickable { onEvent(LoginScreenEvent.PrivacyPolicy) },
+                            text = "политикой конфиденциальности",
+                            color = DecideTheme.colors.gray,
+                            style = DecideTheme.typography.labelSmall,
+                            textDecoration = TextDecoration.Underline
                         )
                     }
                 }

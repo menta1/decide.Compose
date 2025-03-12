@@ -29,10 +29,10 @@ android {
         }
 
         getByName("debug") {
-            storeFile = file("C:\\Users\\ainur\\Desktop\\decide_key\\key_store.jks")
-            storePassword = "ZX73yXUgQM3c"
-            keyAlias = "key"
-            keyPassword = "ljoOfszrcN9l"
+            storeFile = file(keyProperties["storeFile"] as String)
+            storePassword = keyProperties["storePasswordDebug"] as String
+            keyAlias = keyProperties["keyAliasDebug"] as String
+            keyPassword = keyProperties["keyPasswordDebug"] as String
         }
     }
     namespace = "com.decide.app"
@@ -52,10 +52,10 @@ android {
 
         addManifestPlaceholders(
             mapOf(
-                "VKIDClientID" to "52560464", // ID вашего приложения (app_id).
-                "VKIDClientSecret" to "9zAXn29yajqbLukFRvTL", // Ваш защищенный ключ (client_secret).
-                "VKIDRedirectHost" to "vk.com", // Обычно используется vk.com.
-                "VKIDRedirectScheme" to "vk52560464", // Обычно используется vk{ID приложения}.
+                "VKIDClientID" to keyProperties["VKIDClientID"] as String,
+                "VKIDClientSecret" to keyProperties["VKIDClientSecret"] as String,
+                "VKIDRedirectHost" to keyProperties["VKIDRedirectHost"] as String,
+                "VKIDRedirectScheme" to keyProperties["VKIDRedirectScheme"] as String,
             )
         )
     }
